@@ -1,0 +1,10 @@
+.nav {
+  height: 50px;
+  width: 100%;
+  background-color: red;
+}
+
+.logo {
+  justify-content: center;
+  align-self: center;
+}
