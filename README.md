@@ -62,6 +62,7 @@ Optionally, there is an npm package you can download called [nodemon](https://ww
 `nodemon .`
 
 __Note:__ The backend requires that there be connection to the database to funcion properly
+
 __Note:__ Features of the front-end will rely on the back-end being up and running. Always make sure that both are running together to ensure that evrything works as intended.
 
 ## Tools & Resources
