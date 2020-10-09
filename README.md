@@ -51,7 +51,7 @@ This will create a `node_modules` folder holding all third party libraries
 
 In the command prompt or terminal, in the root of the local repository, type the following:
 
-`cd back-end`
+`cd backend`
 
 In the folder, install the packages:
 
@@ -61,7 +61,7 @@ In the folder, install the packages:
 The frontend and backend must both be run seperately.
 
 #### frontend
-In the command prompt or terminal, move to the backend directory and run the following command:
+In the command prompt or terminal, move to the frontend directory and run the following command:
 
 `npm start`
 
