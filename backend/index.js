@@ -41,10 +41,10 @@ app.get("/test", (req, res) => {
 
 app.get("/login", (req, res) => {
   //Destructure Username and Password params
-  const { firstName, lastName, password } = req.query;
+  const { email, password } = req.query;
   // Attempt SQL Query
   opensim.query(
-    `SELECT auth.UUID, auth.passwordHash, auth.passwordSalt, auth.webLoginKey FROM auth INNER JOIN useraccounts ON useraccounts.PrincipalID=auth.UUID WHERE LastName="${lastName}" and FirstName="${firstName}";`,
+    `SELECT auth.UUID, auth.passwordHash, auth.passwordSalt, auth.webLoginKey FROM auth INNER JOIN useraccounts ON useraccounts.PrincipalID=auth.UUID WHERE Email="${email}";`,
     (err, result, fields) => {
       //Check to see if password matches
       for (let i = 0; i < result.length; i++) {
@@ -63,7 +63,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/item", (req, res) => {
-  marketplace.query("SELECT * from auth", (err, result, fields) => {
+  marketplace.query("SELECT * from assets", (err, result, fields) => {
     return res.send(result);
   });
 });
