@@ -5,7 +5,6 @@ const port = 5000;
 const md5 = require("md5");
 const uuid = require("uuid");
 const now = require("performance-now");
-const util = require("./util");
 
 /* Different MySQL Database Connections */
 
@@ -29,7 +28,12 @@ opensim.connect();
 /* Endpoints */
 
 app.get("/", (req, res) => {
-  return res.send("Hello World!");
+  /*
+  res.status(200).json({
+    message: "Hello, World!",
+  });
+  */
+  res.send("Hello, World");
 });
 
 app.get("/test", (req, res) => {
@@ -66,8 +70,10 @@ app.get("/item", (req, res) => {
   marketplace.query("SELECT * from assets", (err, result, fields) => {
     return res.send(result);
   });
-});
-
+}); /*
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+*/
+
+module.exports = app;
