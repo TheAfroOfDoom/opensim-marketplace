@@ -1,14 +1,54 @@
 import React from "react";
 import "./Navbar.css";
 import Navbar from "react-bootstrap/Navbar";
-import {Nav, Form, FormControl, NavDropdown, Button} from "react-bootstrap";
+import { Nav, Form, FormControl, NavDropdown, Button } from "react-bootstrap";
+import axios from "axios";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  withRouter,
+} from "react-router-dom";
 
-export default class NavigationBar extends React.Component {
+class NavigationBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { search: "" };
+  }
+
+  onClick = () => {
+    axios
+      .get("/search", {
+        params: {
+          searchString: this.state.search,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        this.props.searchData(response.data);
+      });
+  };
+
+  handleChange(event) {
+    let fleldVal = event.target.value;
+    this.setState({ search: fleldVal });
+  }
+
+  handleKeyPress(target) {
+    if (target.charCode == 13) {
+      this.onClick();
+    }
+  }
+
   render() {
+    console.log(this.props);
     return (
       <header>
         <Navbar bg="light" expand="lg">
-          <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+          <Link to="/">
+            <Navbar.Brand>React-Bootstrap</Navbar.Brand>
+          </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
@@ -33,8 +73,14 @@ export default class NavigationBar extends React.Component {
                 type="text"
                 placeholder="Search"
                 className="mr-sm-2"
+                onChange={this.handleChange.bind(this)}
               />
-              <Button variant="outline-success">Search</Button>
+
+              <Link to="/search">
+                <Button onClick={this.onClick} variant="outline-success">
+                  <span>Search</span>
+                </Button>
+              </Link>
             </Form>
           </Navbar.Collapse>
         </Navbar>
@@ -42,3 +88,5 @@ export default class NavigationBar extends React.Component {
     );
   }
 }
+
+export default NavigationBar;

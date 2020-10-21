@@ -5,6 +5,7 @@ const port = 5000;
 const md5 = require("md5");
 const uuid = require("uuid");
 const now = require("performance-now");
+const { db_url } = require("./config");
 
 /* Different MySQL Database Connections */
 
@@ -43,29 +44,6 @@ app.get("/test", (req, res) => {
   });
 });
 
-app.get("/login", (req, res) => {
-  //Destructure Username and Password params
-  const { email, password } = req.query;
-  // Attempt SQL Query
-  opensim.query(
-    `SELECT auth.UUID, auth.passwordHash, auth.passwordSalt, auth.webLoginKey FROM auth INNER JOIN useraccounts ON useraccounts.PrincipalID=auth.UUID WHERE Email="${email}";`,
-    (err, result, fields) => {
-      //Check to see if password matches
-      for (let i = 0; i < result.length; i++) {
-        user = result[i];
-        console.log(user);
-        let hashedPassword = md5(md5(password) + ":" + user.passwordSalt);
-        if (hashedPassword === user.passwordHash) {
-          let obj;
-          return res.send({ UUID: user.UUID, webLoginKey: user.webLoginKey });
-        }
-      }
-
-      return res.send("Name/Password Does not match");
-    }
-  );
-});
-
 app.get("/item", (req, res) => {
   marketplace.query("SELECT * from assets", (err, result, fields) => {
     return res.send(result);
@@ -75,5 +53,26 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 */
+
+app.get("/search", (req, res) => {
+  const { searchString, assetType } = req.query;
+  console.log(assetType);
+
+  if (assetType === undefined) {
+    opensim.query(
+      `SELECT name, assetType FROM assets WHERE name LIKE '%${searchString}%'`,
+      (err, result, fields) => {
+        return res.send(result);
+      }
+    );
+  } else {
+    opensim.query(
+      `SELECT name, assetType FROM assets WHERE name LIKE '%${searchString}%' AND assetType='${assetType}'`,
+      (err, result, fields) => {
+        return res.send(result);
+      }
+    );
+  }
+});
 
 module.exports = app;
