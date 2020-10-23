@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import NavigationBar from "./components/Navbar/Navbar";
+import Card from "react-bootstrap/Card";
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import ItemPage from "./components/item";
@@ -49,10 +50,22 @@ class App extends React.Component {
           <Route path="/search">
             <div className="grid-container">
               {this.state.data2 &&
-                this.state.data2.map((obj) => {
+                this.state.data2.map((obj, index) => {
                   return (
-                    <div className="grid-item">
-                      <Link to={`/item/${obj.id}`}>{obj.name}</Link>
+                    <div style={{ margin: "1rem" }}>
+                      <Card
+                        bg={"Info".toLowerCase()}
+                        style={{ width: "18rem", height: "9rem" }}
+                        className="mb-2"
+                      >
+                        <Card.Header>Card #{index}</Card.Header>
+                        <Card.Body>
+                          <Link to={`/item/${obj.id}`}>
+                            <Card.Title>{obj.name}</Card.Title>
+                          </Link>
+                          <Card.Text>Quick Text</Card.Text>
+                        </Card.Body>
+                      </Card>
                     </div>
                   );
                 })}

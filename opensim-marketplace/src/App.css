@@ -8,8 +8,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto auto;
-  background-color: #2196f3;
+  grid-template-columns: auto auto auto auto auto;
   padding: 10px;
 }
 .grid-item {

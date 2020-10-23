@@ -104,6 +104,7 @@ export default class itemPage extends React.Component {
                 );
               })}
           </div>
+          //
           <img src={`data:image/png;base64,${this.state.dataString}`} />
         </div>
       );
