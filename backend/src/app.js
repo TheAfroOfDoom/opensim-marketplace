@@ -6,6 +6,9 @@ const md5 = require("md5");
 const uuid = require("uuid");
 const now = require("performance-now");
 const { db_url } = require("./config");
+const FileType = require("file-type");
+var Readable = require("stream").Readable;
+const { openjpeg } = require("./openjpeg");
 
 /* Different MySQL Database Connections */
 
@@ -45,9 +48,36 @@ app.get("/test", (req, res) => {
 });
 
 app.get("/item", (req, res) => {
-  marketplace.query("SELECT * from assets", (err, result, fields) => {
-    return res.send(result);
-  });
+  const { id } = req.query;
+  console.log(id);
+  opensim.query(
+    `SELECT * FROM assets WHERE id="${id}";`,
+    (err, result, fields) => {
+      console.log(result[0].data);
+
+      let arr = [];
+
+      for (let i = 0; i < result[0].data.length; i++) {
+        arr.push(result[0].data[i]);
+      }
+      let j2k = openjpeg(arr, "j2k");
+
+      var endString = "";
+      for (var i = 0; i < j2k.data.length; i++) {
+        endString += String.fromCharCode(parseInt(j2k.data[i], 2));
+      }
+      //console.log(endString);
+      /*
+      console.log(result[0].data.data)
+      for(let i=0;i < result[0].data.data.length; i++) {
+        console.log(result[0].data.data[i]);
+      }
+      */
+      //console.log(JSON.stringify(j2k));
+
+      return res.send({ result, j2k, endString });
+    }
+  );
 }); /*
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
@@ -56,11 +86,11 @@ app.listen(port, () => {
 
 app.get("/search", (req, res) => {
   const { searchString, assetType } = req.query;
-  console.log(assetType);
+  //console.log(assetType);
 
   if (assetType === undefined) {
     opensim.query(
-      `SELECT name, assetType FROM assets WHERE name LIKE '%${searchString}%'`,
+      `SELECT name, assetType, id FROM assets WHERE name LIKE '%${searchString}%'`,
       (err, result, fields) => {
         return res.send(result);
       }
@@ -69,6 +99,7 @@ app.get("/search", (req, res) => {
     opensim.query(
       `SELECT name, assetType FROM assets WHERE name LIKE '%${searchString}%' AND assetType='${assetType}'`,
       (err, result, fields) => {
+        console.log(result);
         return res.send(result);
       }
     );
