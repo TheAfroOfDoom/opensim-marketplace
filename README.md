@@ -71,17 +71,19 @@ While editing the project in the code, any edits that are made to the `src` fold
 #### backend
 In the command prompt or terminal, move to the backend directory and run the following command:
 
-`node .`
+`npm run dev`
 
 This will start a local Node.js server at __localhost:5000__.
 
 Optionally, there is an npm package you can download called [nodemon](https://www.npmjs.com/package/nodemon). When run with this package, changes to backend code will automatically update and restart the server. Install with `npm install -g nodemon` then start the server with the following command:
 
-`nodemon .`
+`nodemon ./src/index,js`
 
 __Note:__ The backend requires that there be connection to the database to funcion properly
 
 __Note:__ Features of the frontend will rely on the backend being up and running. Always make sure that both are running together to ensure that evrything works as intended.
+
+__Note:__ Any time you pull from the repository, make sure you run `npm install` or `yarn` to download any new modules
 
 ## Tools & Resources
 
