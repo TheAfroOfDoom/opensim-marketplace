@@ -1,10 +1,17 @@
+//Import React
 import React from "react";
+
+//Import CSS
 import "./App.css";
-import NavigationBar from "./components/Navbar/Navbar";
-import Card from "react-bootstrap/Card";
+
+//Import NPM Packages
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import ItemPage from "./components/item";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+//Import Custom Components
+import NavigationBar from "./components/Navbar/Navbar";
+import ItemScreen from "./components/ItemScreen/ItemScreen";
+import SearchScreen from "./components/Search/SearchScreen";
 
 class App extends React.Component {
   constructor() {
@@ -48,30 +55,9 @@ class App extends React.Component {
             </div>
           </Route>
           <Route path="/search">
-            <div className="grid-container">
-              {this.state.data2 &&
-                this.state.data2.map((obj, index) => {
-                  return (
-                    <div style={{ margin: "1rem" }}>
-                      <Card
-                        bg={"Info".toLowerCase()}
-                        style={{ width: "18rem", height: "9rem" }}
-                        className="mb-2"
-                      >
-                        <Card.Header>Card #{index}</Card.Header>
-                        <Card.Body>
-                          <Link to={`/item/${obj.id}`}>
-                            <Card.Title>{obj.name}</Card.Title>
-                          </Link>
-                          <Card.Text>Quick Text</Card.Text>
-                        </Card.Body>
-                      </Card>
-                    </div>
-                  );
-                })}
-            </div>
+            <SearchScreen data={this.state.data2} />
           </Route>
-          <Route path="/item/:assetId" component={ItemPage} />
+          <Route path="/item/:assetId" component={ItemScreen} />
         </Router>
       </div>
     );

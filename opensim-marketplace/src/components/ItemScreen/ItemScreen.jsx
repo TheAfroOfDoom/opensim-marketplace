@@ -4,7 +4,7 @@ import Moment from "react-moment";
 import ReactDOM from "react-dom";
 import ReactCanvas from "@gfodor/react-canvas";
 
-export default class itemPage extends React.Component {
+export default class ItemScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { data: null, dataString: "" };
