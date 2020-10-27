@@ -53,29 +53,21 @@ app.get("/item", (req, res) => {
   opensim.query(
     `SELECT * FROM assets WHERE id="${id}";`,
     (err, result, fields) => {
-      console.log(result[0].data);
-
+      /*
       let arr = [];
 
       for (let i = 0; i < result[0].data.length; i++) {
         arr.push(result[0].data[i]);
       }
       let j2k = openjpeg(arr, "j2k");
-
       var endString = "";
       for (var i = 0; i < j2k.data.length; i++) {
         endString += String.fromCharCode(parseInt(j2k.data[i], 2));
       }
-      //console.log(endString);
-      /*
-      console.log(result[0].data.data)
-      for(let i=0;i < result[0].data.data.length; i++) {
-        console.log(result[0].data.data[i]);
-      }
-      */
-      //console.log(JSON.stringify(j2k));
 
       return res.send({ result, j2k, endString });
+      */
+      return res.send({ result });
     }
   );
 }); /*
@@ -87,7 +79,6 @@ app.listen(port, () => {
 app.get("/search", (req, res) => {
   const { searchString, assetType } = req.query;
   //console.log(assetType);
-
   if (assetType === undefined) {
     opensim.query(
       `SELECT name, assetType, id FROM assets WHERE name LIKE '%${searchString}%'`,
@@ -104,6 +95,58 @@ app.get("/search", (req, res) => {
       }
     );
   }
+});
+
+app.get("/login", (req, res) => {
+  //Destructure Username and Password params
+  const { email, password } = req.query;
+  // Attempt SQL Query
+  opensim.query(
+    `SELECT auth.UUID, auth.passwordHash, auth.passwordSalt, auth.webLoginKey FROM auth INNER JOIN useraccounts ON useraccounts.PrincipalID=auth.UUID WHERE Email="${email}";`,
+    (err, result, fields) => {
+      //Check to see if password matches
+      for (let i = 0; i < result.length; i++) {
+        user = result[i];
+        console.log(user);
+        let hashedPassword = md5(md5(password) + ":" + user.passwordSalt);
+        if (hashedPassword === user.passwordHash) {
+          let obj;
+          return res.send({ UUID: user.UUID, webLoginKey: user.webLoginKey });
+        }
+      }
+
+      return res.send("Name/Password Does not match");
+    }
+  );
+});
+
+app.get("/upload", (req, res) => {
+  const {
+    name,
+    description,
+    assetType,
+    local,
+    temporary,
+    data,
+    id,
+    create_time,
+    access_time,
+    asset_flags,
+    CreatorID,
+  } = req.query;
+  console.log(req.query);
+
+  console.log("Name: " + name);
+
+  opensim.query(
+    `INSERT INTO assets(name, description, assetType, local, temporary, data, id, create_time, access_time, asset_flags, CreatorID)
+VALUES
+("${name}", "${description}", ${assetType}, ${local}, ${temporary}, "${data}", "${id}", UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), ${asset_flags}, '${CreatorID}');`,
+    (err, result, fields) => {
+      if (err) return res.send(err);
+      else return res.send(result);
+    }
+  );
 });
 
 module.exports = app;
