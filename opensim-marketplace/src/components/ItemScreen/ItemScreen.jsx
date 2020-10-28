@@ -23,7 +23,6 @@ export default class ItemScreen extends React.Component {
 
         this.setState({
           data: response.data,
-          dataString: response.data.endString,
         });
         //this.props.searchData(response.data);
       });
@@ -99,12 +98,10 @@ export default class ItemScreen extends React.Component {
                     <h6>
                       Create Time: {<Moment unix>{obj.create_time}</Moment>}
                     </h6>
-                    <p>{this.state.dataString}</p>
                   </div>
                 );
               })}
           </div>
-          <img src={`data:image/png;base64,${this.state.dataString}`} />
         </div>
       );
     }

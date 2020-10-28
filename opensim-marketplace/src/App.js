@@ -22,7 +22,6 @@ class App extends React.Component {
   getsqldata = () => {
     axios.get("/test").then((response) => {
       console.log(response.data);
-      this.setState({ data: response.data });
     });
   };
 
@@ -38,20 +37,6 @@ class App extends React.Component {
           <Route exact path="/">
             <div className="App">
               <button onClick={this.getsqldata}>Get table</button>
-              <div>
-                {this.state.data &&
-                  this.state.data.fields.map((obj) => {
-                    return <h1>{obj.name}</h1>;
-                  })}
-                {this.state.data &&
-                  this.state.data.result.map((obj) => {
-                    return (
-                      <h3>
-                        {obj.Id} | {obj.value}
-                      </h3>
-                    );
-                  })}
-              </div>
             </div>
           </Route>
           <Route path="/search">

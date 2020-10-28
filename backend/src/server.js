@@ -5,5 +5,5 @@ const { port } = require("./config");
 const server = http.createServer(app);
 
 server.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app listening at port ${port}`);
 });

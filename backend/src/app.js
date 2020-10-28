@@ -7,8 +7,11 @@ const uuid = require("uuid");
 const now = require("performance-now");
 const { db_url } = require("./config");
 const FileType = require("file-type");
-var Readable = require("stream").Readable;
+const compression = require("compression");
 const { openjpeg } = require("./openjpeg");
+
+//Database
+const sequelize = require("./config/database");
 
 /* Different MySQL Database Connections */
 
@@ -19,33 +22,32 @@ const opensim = mysql.createConnection({
   database: "opensim",
 });
 
-const marketplace = mysql.createConnection({
-  host: "25.1.197.128",
-  user: "ryanw",
-  password: "2EvXhxnn",
-  database: "opensim_marketplace",
-});
-
-marketplace.connect();
 opensim.connect();
 
 /* Endpoints */
 
 app.get("/", (req, res) => {
-  /*
-  res.status(200).json({
-    message: "Hello, World!",
-  });
-  */
   res.send("Hello, World");
 });
 
-app.get("/test", (req, res) => {
-  marketplace.query("SELECT * FROM test_table", (err, result, fields) => {
-    console.log(fields);
-    return res.send({ fields, result });
-  });
+app.use(compression());
+
+/*
+app.get("/test", async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+    return res.send("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+    return res.send("Unable to connect to the database:", error);
+  }
 });
+*/
+
+app.use("/test", require("./api/routes/test"));
+
+app.use("/login", require("./api/routes/login"));
 
 app.get("/item", (req, res) => {
   const { id } = req.query;
@@ -70,11 +72,7 @@ app.get("/item", (req, res) => {
       return res.send({ result });
     }
   );
-}); /*
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
 });
-*/
 
 app.get("/search", (req, res) => {
   const { searchString, assetType } = req.query;
@@ -95,29 +93,6 @@ app.get("/search", (req, res) => {
       }
     );
   }
-});
-
-app.get("/login", (req, res) => {
-  //Destructure Username and Password params
-  const { email, password } = req.query;
-  // Attempt SQL Query
-  opensim.query(
-    `SELECT auth.UUID, auth.passwordHash, auth.passwordSalt, auth.webLoginKey FROM auth INNER JOIN useraccounts ON useraccounts.PrincipalID=auth.UUID WHERE Email="${email}";`,
-    (err, result, fields) => {
-      //Check to see if password matches
-      for (let i = 0; i < result.length; i++) {
-        user = result[i];
-        console.log(user);
-        let hashedPassword = md5(md5(password) + ":" + user.passwordSalt);
-        if (hashedPassword === user.passwordHash) {
-          let obj;
-          return res.send({ UUID: user.UUID, webLoginKey: user.webLoginKey });
-        }
-      }
-
-      return res.send("Name/Password Does not match");
-    }
-  );
 });
 
 app.get("/upload", (req, res) => {
