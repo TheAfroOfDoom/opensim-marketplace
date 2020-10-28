@@ -10,7 +10,6 @@ app.use(compression());
 const sequelize = require("./config/database");
 
 /* Endpoints */
-
 app.use("/test", require("./api/routes/test"));
 
 app.use("/login", require("./api/routes/login"));
