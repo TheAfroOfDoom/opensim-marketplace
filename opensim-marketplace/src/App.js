@@ -32,7 +32,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="App">
         <Router>
           <NavigationBar searchData={this.handleSearchChange} />
           <Route exact path="/">

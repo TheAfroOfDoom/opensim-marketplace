@@ -8,20 +8,18 @@ export default class SearchScreen extends React.Component {
     return (
       <div className="grid-container">
         {this.props.data &&
-          this.props.data.map((obj, index) => {
+          this.props.data.slice(0,20).map((obj, index) => {
             return (
               <div style={{ margin: "1rem" }}>
                 <Card
                   bg={"Info".toLowerCase()}
                   style={{ width: "18rem", height: "9rem" }}
-                  className="mb-2"
+                  className="grid-item"
                 >
-                  <Card.Header>Card #{index}</Card.Header>
                   <Card.Body>
                     <Link to={`/item/${obj.id}`}>
-                      <Card.Title>{obj.name}</Card.Title>
+                      <Card.Title className="grid-item">{obj.name}</Card.Title>
                     </Link>
-                    <Card.Text>Quick Text</Card.Text>
                   </Card.Body>
                 </Card>
               </div>
@@ -31,3 +29,7 @@ export default class SearchScreen extends React.Component {
     );
   }
 }
+
+
+
+//<Card.Header>Card #{index}</Card.Header>
