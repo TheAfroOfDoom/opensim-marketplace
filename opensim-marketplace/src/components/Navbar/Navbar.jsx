@@ -51,6 +51,12 @@ class NavigationBar extends React.Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto"></Nav>
+            <Link to="/Upload">
+              <Navbar.Brand>Upload</Navbar.Brand>
+            </Link>
+            <Link to="/Login">
+              <Navbar.Brand>Login</Navbar.Brand>
+            </Link>
             <Form inline>
               <FormControl
                 type="text"
