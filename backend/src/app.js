@@ -1,28 +1,15 @@
+// Install Express
 const express = require("express");
-var mysql = require("mysql");
 const app = express();
-const { db_url } = require("./config");
-const FileType = require("file-type");
+
+// Compression reduces file sizes of transactions making them faster
 const compression = require("compression");
-const { openjpeg } = require("./openjpeg");
+app.use(compression());
 
 //Database
 const sequelize = require("./config/database");
 
-/* Different MySQL Database Connections */
-
-const opensim = mysql.createConnection({
-  host: "25.1.197.128",
-  user: "ryanw",
-  password: "2EvXhxnn",
-  database: "opensim",
-});
-
-opensim.connect();
-
 /* Endpoints */
-
-app.use(compression());
 
 app.use("/test", require("./api/routes/test"));
 

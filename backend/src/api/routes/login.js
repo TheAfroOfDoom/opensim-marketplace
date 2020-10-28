@@ -11,45 +11,50 @@ router.get("/", async (req, res) => {
   Auth.hasMany(UserAccounts);
   UserAccounts.belongsTo(Auth);
 
-  const loginInfo = await Auth.findAll({
-    attributes: ["UUID", "passwordHash", "passwordSalt"],
-    include: [
-      {
-        model: UserAccounts,
-        attributes: [],
-        required: true,
-        where: {
-          FirstName: firstName,
-          LastName: lastName,
+  try {
+    const loginInfo = await Auth.findAll({
+      attributes: ["UUID", "passwordHash", "passwordSalt"],
+      include: [
+        {
+          model: UserAccounts,
+          attributes: [],
+          required: true,
+          where: {
+            FirstName: firstName,
+            LastName: lastName,
+          },
+          on: {
+            col1: sequelize.where(
+              sequelize.col("auth.UUID"),
+              "=",
+              sequelize.col("useraccounts.PrincipalID")
+            ),
+          },
         },
-        on: {
-          col1: sequelize.where(
-            sequelize.col("auth.UUID"),
-            "=",
-            sequelize.col("useraccounts.PrincipalID")
-          ),
-        },
-      },
-    ],
-    required: true,
-  });
+      ],
+      required: true,
+    });
 
-  for (let i = 0; i < loginInfo.length; i++) {
-    user = loginInfo[i];
-    console.log(user);
-    let hashedPassword = md5(
-      md5(password) + ":" + user.dataValues.passwordSalt
-    );
-    if (hashedPassword === user.dataValues.passwordHash) {
-      let obj;
-      return res.send({
-        UUID: user.dataValues.UUID,
-      });
-      break;
+    for (let i = 0; i < loginInfo.length; i++) {
+      user = loginInfo[i];
+      console.log(user);
+      let hashedPassword = md5(
+        md5(password) + ":" + user.dataValues.passwordSalt
+      );
+      if (hashedPassword === user.dataValues.passwordHash) {
+        let obj;
+        return res.send({
+          UUID: user.dataValues.UUID,
+        });
+        break;
+      }
     }
-  }
 
-  return res.send("Name/Password Does not match");
+    return res.send("Name/Password Does not match");
+  } catch (error) {
+    console.log(error);
+    return res.send("Name/Password Does not match");
+  }
 });
 
 module.exports = router;

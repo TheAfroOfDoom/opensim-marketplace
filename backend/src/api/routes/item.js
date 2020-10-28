@@ -5,8 +5,14 @@ const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
   const { id } = req.query;
-  const itemInfo = await Assets.findAll({ where: { id: id } });
-  return res.send(itemInfo);
+
+  try {
+    const itemInfo = await Assets.findAll({ where: { id: id } });
+    return res.send(itemInfo);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
 });
 
 module.exports = router;

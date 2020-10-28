@@ -5,12 +5,20 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
-  const { searchString, assetType } = req.query;
-  const searchInfo = await Assets.findAll({
-    where: { name: { [Op.like]: `%${searchString}%` } },
-    attributes: ["name", "description", "assetType", "id"],
-  });
-  return res.send(searchInfo);
+  let { searchString, assetType } = req.query;
+  if (searchString == undefined) {
+    searchString = "";
+  }
+  try {
+    const searchInfo = await Assets.findAll({
+      where: { name: { [Op.like]: `%${searchString}%` } },
+      attributes: ["name", "description", "assetType", "id"],
+    });
+    return res.send(searchInfo);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
 router.get("/");

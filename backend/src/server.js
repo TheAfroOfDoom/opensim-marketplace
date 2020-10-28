@@ -5,5 +5,5 @@ const { port } = require("./config");
 const server = http.createServer(app);
 
 server.listen(port, () => {
-  console.log(`Example app listening at port ${port}`);
+  console.log(`Backend listening at port ${port}`);
 });
