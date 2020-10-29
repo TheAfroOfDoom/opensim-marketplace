@@ -21,8 +21,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/");
-
 module.exports = router;
 
 /*app.get("/search", (req, res) => {
