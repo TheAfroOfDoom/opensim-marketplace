@@ -12,6 +12,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import NavigationBar from "./components/Navbar/Navbar";
 import ItemScreen from "./components/ItemScreen/ItemScreen";
 import SearchScreen from "./components/Search/SearchScreen";
+import LoginScreen from "./components/LoginScreen/LoginScreen";
 
 class App extends React.Component {
   constructor() {
@@ -34,8 +35,9 @@ class App extends React.Component {
       <div className="App">
         <Router>
           <NavigationBar searchData={this.handleSearchChange} />
+          <Route path="/login" component={LoginScreen} />
           <Route exact path="/">
-            <div className="App">
+            <div>
               <button onClick={this.getsqldata}>Get table</button>
             </div>
           </Route>

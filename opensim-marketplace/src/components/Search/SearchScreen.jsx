@@ -8,7 +8,7 @@ export default class SearchScreen extends React.Component {
     return (
       <div className="grid-container">
         {this.props.data &&
-          this.props.data.slice(0,20).map((obj, index) => {
+          this.props.data.map((obj, index) => {
             return (
               <div style={{ margin: "1rem" }}>
                 <Card
@@ -29,7 +29,5 @@ export default class SearchScreen extends React.Component {
     );
   }
 }
-
-
 
 //<Card.Header>Card #{index}</Card.Header>

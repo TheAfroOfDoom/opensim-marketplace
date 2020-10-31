@@ -42,10 +42,12 @@ router.get("/", async (req, res) => {
         md5(password) + ":" + user.dataValues.passwordSalt
       );
       if (hashedPassword === user.dataValues.passwordHash) {
-        let obj;
-        return res.send({
-          UUID: user.dataValues.UUID,
-        });
+        console.log(user.dataValues.UUID.toString());
+        res.header("Access-Control-Allow-Origin", req.headers.origin);
+        return res
+          .status(201)
+          .cookie("uuid", user.dataValues.UUID.toString())
+          .redirect("/");
         break;
       }
     }
