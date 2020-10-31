@@ -13,6 +13,8 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import NavigationBar from "./components/Navbar/Navbar";
 import ItemScreen from "./components/ItemScreen/ItemScreen";
 import SearchScreen from "./components/Search/SearchScreen";
+import LoginScreen from "./components/LoginScreen/LoginScreen";
+import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 
 
 class App extends React.Component {
@@ -36,13 +38,15 @@ class App extends React.Component {
       <div className="App">
         <Router>
           <NavigationBar searchData={this.handleSearchChange} />
+          <Route path="/login" component={LoginScreen} />
+          <Route path="/inventory" component={InventoryScreen} />
           <Route exact path="/">
-            <div className="App">
+            <div>
               <button onClick={this.getsqldata}>Get table</button>
             </div>
           </Route>
           <Route path="/search">
-            <SearchScreen data={this.state.data2} />
+            <SearchScreen data={this.state.data2} activeDefault={0} />
           </Route>
 
           <Route path="/item/:assetId" component={ItemScreen} />

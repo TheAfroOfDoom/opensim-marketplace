@@ -3,20 +3,8 @@
   margin: 0;
 }
 
-html{
-
-  background: #678581;
-  background-size: 100%;
-  width:100%;
-  height:100%;
+.App {
+  height: 100vh;
+  background: #02394a;
   overflow: auto;
-}
-
-.App{
-  background: #678581;
-  background-size: 100%;
-  width:100%;
-  height:100%;
-  overflow: auto;
-
 }
