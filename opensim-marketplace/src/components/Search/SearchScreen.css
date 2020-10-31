@@ -1,9 +1,6 @@
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  padding: 10px;
-  margin: 10px;
-
 }
 
 .grid-item {
@@ -12,10 +9,8 @@
   padding: 10px;
   font-size: 30px;
   text-align: center;
-
 }
 
-.text-item{
-  color:black;
-
+.text-item {
+  color: black;
 }

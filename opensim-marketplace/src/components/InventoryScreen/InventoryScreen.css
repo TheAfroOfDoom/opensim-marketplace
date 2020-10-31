@@ -1,0 +1,11 @@
+.InventoryContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card {
+  margin-left: 5vw;
+  margin-right: 5vw;
+  margin-top: 5vh;
+}

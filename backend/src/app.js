@@ -30,4 +30,6 @@ app.use("/search", require("./api/routes/search"));
 
 app.use("/inventory", require("./api/routes/inventory"));
 
+app.use("/add", require("./api/routes/add"));
+
 module.exports = app;

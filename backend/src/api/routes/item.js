@@ -7,7 +7,19 @@ router.get("/", async (req, res) => {
   const { id } = req.query;
 
   try {
-    const itemInfo = await Assets.findAll({ where: { id: id } });
+    const itemInfo = await Assets.findAll({
+      attributes: [
+        "name",
+        "description",
+        "assetType",
+        "id",
+        "create_time",
+        "access_time",
+        "builtin",
+        "public",
+      ],
+      where: { id: id },
+    });
     return res.send(itemInfo);
   } catch (error) {
     console.log(error);

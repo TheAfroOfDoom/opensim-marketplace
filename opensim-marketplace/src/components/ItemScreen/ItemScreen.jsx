@@ -2,8 +2,18 @@ import React from "react";
 import axios from "axios";
 import Moment from "react-moment";
 import ReactDOM from "react-dom";
-import { Nav, Form, FormControl, NavDropdown, Button } from "react-bootstrap";
+import {
+  Nav,
+  Form,
+  FormControl,
+  NavDropdown,
+  Button,
+  Image,
+} from "react-bootstrap";
 import "./ItemScreen.css";
+
+//import { Link } from "react-router-dom";
+import { HashLink as Link } from "react-router-hash-link";
 //import ReactCanvas from "@gfodor/react-canvas";
 
 export default class ItemScreen extends React.Component {
@@ -12,23 +22,26 @@ export default class ItemScreen extends React.Component {
     this.state = { data: null, dataString: "" };
   }
 
-  componentDidMount() {
-    axios
-      .get("/item", {
-        params: {
-          id: this.props.match.params.assetId,
-          color: "green",
-        },
-      })
-      .then((response) => {
-        console.log("Item Data: " + response);
+  async componentDidMount() {
+    const response = await axios.get("/item", {
+      params: {
+        id: this.props.match.params.assetId,
+        color: "green",
+      },
+    });
 
-        this.setState({
-          data: response.data,
-        });
-        //this.props.searchData(response.data);
-      });
+    this.setState({
+      data: response.data,
+    });
   }
+
+  handleAdd = async () => {
+    const response = await axios.get("/add", {
+      params: {
+        assetID: this.props.match.params.assetId,
+      },
+    });
+  };
 
   getAssetType = (assetType) => {
     let result = "";
@@ -80,11 +93,6 @@ export default class ItemScreen extends React.Component {
   };
 
   render() {
-    //var Surface = ReactCanvas.Surface;
-    //var Image = ReactCanvas.Image;
-    //var Text = ReactCanvas.Text;
-    var surfaceWidth = window.innerWidth;
-    var surfaceHeight = window.innerHeight;
     if (this.state.data == null) {
       return <div />;
     } else {
@@ -92,12 +100,12 @@ export default class ItemScreen extends React.Component {
         <body className="page">
           <div>
             {this.state.data &&
-              this.state.data.result.map((obj) => {
+              this.state.data.map((obj) => {
                 return (
                   <body>
                     <h1 className="title">{obj.name}</h1>
 
-                    <img
+                    <Image
                       className="image"
                       src="https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg"
                     />
@@ -115,7 +123,11 @@ export default class ItemScreen extends React.Component {
                         Create Time: {<Moment unix>{obj.create_time}</Moment>}
                       </p>
                       <p>{this.state.dataString.substring(0, 10)}</p>
-                      <Button>Add To Inventory</Button>
+                      <Link to={`/inventory#${obj.name}`}>
+                        <Button onClick={this.handleAdd}>
+                          Add To Inventory
+                        </Button>
+                      </Link>
                     </div>
                   </body>
                 );

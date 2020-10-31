@@ -23,5 +23,26 @@ router.get("/inventory", async (req, res) => {
     res.sendStatus(400);
   }
 });
+router.get("/add", async (req, res) => {
+  try {
+    const { uuid } = req.cookies;
+    let asset = "2e349029-118a-995e-a7bf-d4fa32c1e9aa";
+    let error = 0;
+    const info = await sequelize
+      .query(`CALL marketplaceDownloadAsset(:userID, :assetID, @error)`, {
+        replacements: { userID: uuid, assetID: asset },
+      })
+      .spread((result) => {
+        if (result) {
+          console.log("\nInside result : " + JSON.stringify(result));
+        }
+      });
+    console.log("Info:", info);
+    return res.send(info);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 
 module.exports = router;
