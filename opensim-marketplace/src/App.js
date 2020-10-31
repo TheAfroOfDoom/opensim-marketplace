@@ -1,8 +1,19 @@
+//Import React
 import React from "react";
+
+//Import CSS
 import "./App.css";
-import NavigationBar from "./components/Navbar/Navbar";
+
+//Import NPM Packages
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+//Import Custom Components
+import NavigationBar from "./components/Navbar/Navbar";
+import ItemScreen from "./components/ItemScreen/ItemScreen";
+import SearchScreen from "./components/Search/SearchScreen";
+import LoginScreen from "./components/LoginScreen/LoginScreen";
+import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 
 class App extends React.Component {
   constructor() {
@@ -13,7 +24,6 @@ class App extends React.Component {
   getsqldata = () => {
     axios.get("/test").then((response) => {
       console.log(response.data);
-      this.setState({ data: response.data });
     });
   };
 
@@ -23,43 +33,22 @@ class App extends React.Component {
 
   render() {
     return (
-      <Router>
-        <Route exact path="/">
-          <div className="App">
-            <NavigationBar searchData={this.handleSearchChange} />
-            <button onClick={this.getsqldata}>Get table</button>
-            <div>
-              {this.state.data &&
-                this.state.data.fields.map((obj) => {
-                  return <h1>{obj.name}</h1>;
-                })}
-              {this.state.data &&
-                this.state.data.result.map((obj) => {
-                  return (
-                    <h3>
-                      {obj.Id} | {obj.value}
-                    </h3>
-                  );
-                })}
-            </div>
-          </div>
-        </Route>
-        <Route path="/search">
+      <div className="App">
+        <Router>
           <NavigationBar searchData={this.handleSearchChange} />
-          <div>
-            {this.state.data2 &&
-              this.state.data2.map((obj) => {
-                return (
-                  <div>
-                    <h1>
-                      {obj.name}, {obj.assetType}
-                    </h1>
-                  </div>
-                );
-              })}
-          </div>
-        </Route>
-      </Router>
+          <Route path="/login" component={LoginScreen} />
+          <Route path="/inventory" component={InventoryScreen} />
+          <Route exact path="/">
+            <div>
+              <button onClick={this.getsqldata}>Get table</button>
+            </div>
+          </Route>
+          <Route path="/search">
+            <SearchScreen data={this.state.data2} activeDefault={0} />
+          </Route>
+          <Route path="/item/:assetId" component={ItemScreen} />
+        </Router>
+      </div>
     );
   }
 }

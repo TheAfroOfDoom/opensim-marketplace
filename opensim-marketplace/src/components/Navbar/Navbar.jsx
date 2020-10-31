@@ -9,25 +9,23 @@ import {
   Route,
   Link,
   withRouter,
+  Redirect,
 } from "react-router-dom";
 
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { search: "" };
+    this.state = { search: "", redirect: false };
   }
 
-  onClick = () => {
-    axios
-      .get("/search", {
-        params: {
-          searchString: this.state.search,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        this.props.searchData(response.data);
-      });
+  onClick = async () => {
+    const response = await axios.get("/search", {
+      params: {
+        searchString: this.state.search,
+      },
+    });
+    this.props.searchData(response.data);
+    this.setState({ redirect: true });
   };
 
   handleChange(event) {
@@ -35,55 +33,43 @@ class NavigationBar extends React.Component {
     this.setState({ search: fleldVal });
   }
 
-  handleKeyPress(target) {
-    if (target.charCode == 13) {
-      this.onClick();
-    }
-  }
-
   render() {
-    console.log(this.props);
     return (
       <header>
-        <Navbar bg="light" expand="lg">
+        <Navbar variant="dark" expand="lg" className="nav">
           <Link to="/">
-            <Navbar.Brand>React-Bootstrap</Navbar.Brand>
+            <Navbar.Brand>OpenSim Marketplace</Navbar.Brand>
           </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link">Link</Nav.Link>
-              <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
+            <Nav className="mr-auto"></Nav>
+            <Link to="/inventory">
+              <Navbar.Brand>Inventory</Navbar.Brand>
+            </Link>
+            <Link to="/upload">
+              <Navbar.Brand>Upload</Navbar.Brand>
+            </Link>
+            <Link to="/login">
+              <Navbar.Brand>Login</Navbar.Brand>
+            </Link>
             <Form inline>
-              <FormControl
+              <Form.Control
                 type="text"
                 placeholder="Search"
                 className="mr-sm-2"
                 onChange={this.handleChange.bind(this)}
+                onSubmit={this.onClick}
               />
 
               <Link to="/search">
-                <Button onClick={this.onClick} variant="outline-success">
+                <Button onClick={this.onClick} variant="success">
                   <span>Search</span>
                 </Button>
               </Link>
             </Form>
           </Navbar.Collapse>
         </Navbar>
+        {this.state.redirect ? <Redirect to="/search" /> : <div />}
       </header>
     );
   }

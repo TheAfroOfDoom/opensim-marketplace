@@ -4,4 +4,7 @@
 }
 
 .App {
+  height: 100vh;
+  background: #02394a;
+  overflow: auto;
 }
