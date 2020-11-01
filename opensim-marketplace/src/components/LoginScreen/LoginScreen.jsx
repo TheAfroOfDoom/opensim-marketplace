@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, FormGroup, Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 
@@ -28,7 +28,8 @@ export default class LoginScreen extends React.Component {
     this.setState({ password: event.target.value });
   };
 
-  submitHandler = async () => {
+  submitHandler = async (event) => {
+    event.preventDefault();
     axios
       .get("/login", {
         params: {
@@ -38,7 +39,7 @@ export default class LoginScreen extends React.Component {
         },
       })
       .then((response) => {
-        if (response.status == 201) {
+        if (response.status === 201) {
           console.log("Password worked");
           this.setState({ loginSuccess: true });
         }
@@ -51,8 +52,8 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <div>
-        <Form>
-          <Form>
+        <form onSubmit={this.submitHandler}>
+          <FormGroup role="form">
             <Row>
               <Col>
                 <Form.Control
@@ -67,20 +68,22 @@ export default class LoginScreen extends React.Component {
                 />
               </Col>
             </Row>
-          </Form>
 
-          <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
               placeholder="Password"
               onChange={this.handlePassword.bind(this)}
             />
-          </Form.Group>
-          <Button variant="primary" onClick={this.submitHandler}>
-            Submit
-          </Button>
-        </Form>
+            <Button
+              type="submit"
+              variant="primary"
+              onClick={this.submitHandler}
+            >
+              Submit
+            </Button>
+          </FormGroup>
+        </form>
         {this.state.loginSuccess ? <Redirect to="/" /> : <div />}
       </div>
     );
