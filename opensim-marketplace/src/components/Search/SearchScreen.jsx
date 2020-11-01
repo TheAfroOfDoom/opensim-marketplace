@@ -46,23 +46,17 @@ export default class SearchScreen extends React.Component {
       );
 
     return (
-      <div>
+      <div className="searchContainer">
         <div className="grid-container">
           {this.props.data &&
             this.props.data &&
             temparray.map((obj, index) => {
               return (
-                <div style={{ margin: "1rem" }}>
-                  <Card
-                    bg={"Info".toLowerCase()}
-                    style={{ width: "18rem", height: "9rem" }}
-                    className="grid-item"
-                  >
+                <div>
+                  <Card bg={"Info".toLowerCase()} className="grid-item">
                     <Card.Body>
                       <Link to={`/item/${obj.id}`}>
-                        <Card.Title className="grid-item">
-                          {obj.name}
-                        </Card.Title>
+                        <Card.Title>{obj.name}</Card.Title>
                       </Link>
                     </Card.Body>
                   </Card>
