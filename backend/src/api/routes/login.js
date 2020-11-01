@@ -51,12 +51,15 @@ router.get("/", async (req, res) => {
         console.log(user.dataValues.UUID.toString());
         responseSent = true;
         return res
-          .sendStatus(201)
-          .cookie("uuid", user.dataValues.UUID.toString(), { overwrite: true });
+          .status(201)
+          .cookie("uuid", user.dataValues.UUID.toString(), { overwrite: true })
+          .send("Success");
         break;
       }
     }
-    if (!responseSent) return res.status(400).send("Failure");
+    if (!responseSent) {
+      return res.status(400).send("Failure");
+    }
   } catch (error) {
     console.log("error");
     return res.status(400).send("Failure");

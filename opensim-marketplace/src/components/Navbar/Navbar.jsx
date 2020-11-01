@@ -36,7 +36,7 @@ class NavigationBar extends React.Component {
   render() {
     return (
       <header>
-        <Navbar variant="dark" expand="lg" className="nav">
+        <Navbar variant="light" expand="lg" bg="light">
           <Link to="/">
             <Navbar.Brand>OpenSim Marketplace</Navbar.Brand>
           </Link>
@@ -52,7 +52,7 @@ class NavigationBar extends React.Component {
             <Link to="/login">
               <Navbar.Brand>Login</Navbar.Brand>
             </Link>
-            <Form inline>
+            <Form inline onSubmit={this.onClick}>
               <Form.Control
                 type="text"
                 placeholder="Search"
@@ -62,7 +62,7 @@ class NavigationBar extends React.Component {
               />
 
               <Link to="/search">
-                <Button onClick={this.onClick} variant="success">
+                <Button type="submit" onClick={this.onClick} variant="success">
                   <span>Search</span>
                 </Button>
               </Link>

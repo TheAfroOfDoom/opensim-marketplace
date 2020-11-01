@@ -5,20 +5,26 @@
 
 .grid-item {
   background-color: rgba(255, 255, 255, 0.8);
-  border: solid rgba(0, 0, 0, 0.8);
   padding: 10px;
   font-size: 30px;
   text-align: center;
+  width: 18rem;
+  height: 9rem;
 }
 
 .text-item {
   color: black;
 }
 
-.Pager{
+.Pager {
   border: solid rgba(0, 0, 0, 0.8);
 }
 
-.bitch{
+.bitch {
   border: solid rgba(0, 0, 0, 0.8);
+}
+
+.searchContainer {
+  display: block;
+  place-items: auto center;
 }
