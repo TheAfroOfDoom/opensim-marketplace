@@ -1,5 +1,13 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
+import {
+  Nav,
+  Form,
+  FormControl,
+  NavDropdown,
+  Button,
+  Pagination,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./SearchScreen.css";
 import Pagination from "react-bootstrap/Pagination";
