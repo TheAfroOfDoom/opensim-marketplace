@@ -10,7 +10,6 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./SearchScreen.css";
-import Pagination from "react-bootstrap/Pagination";
 
 export default class SearchScreen extends React.Component {
   constructor(props) {
