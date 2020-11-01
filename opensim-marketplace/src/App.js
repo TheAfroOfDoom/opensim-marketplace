@@ -8,12 +8,14 @@ import "./App.css";
 import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+
 //Import Custom Components
 import NavigationBar from "./components/Navbar/Navbar";
 import ItemScreen from "./components/ItemScreen/ItemScreen";
 import SearchScreen from "./components/Search/SearchScreen";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
+
 
 class App extends React.Component {
   constructor() {
@@ -46,6 +48,7 @@ class App extends React.Component {
           <Route path="/search">
             <SearchScreen data={this.state.data2} activeDefault={0} />
           </Route>
+
           <Route path="/item/:assetId" component={ItemScreen} />
         </Router>
       </div>

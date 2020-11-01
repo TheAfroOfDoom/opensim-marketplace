@@ -44,52 +44,107 @@ export default class ItemScreen extends React.Component {
   };
 
   getAssetType = (assetType) => {
-    let result = "";
+    let stuff = {
+      type: "",
+      pic: "",
+    };
     switch (assetType) {
       case -2:
-        result = "Material";
+        stuff.type = "Material";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/c/c2/Peter_Griffin.png";
         break;
       case 0:
-        result = "Texture in JPEG2000 J2C stream format";
+        stuff.type = "Texture in JPEG2000 J2C stream format";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 1:
-        result = "Sound";
+        //result = "Sound";
+        //pic = "https://upload.wikimedia.org/wikipedia/en/0/02/Stewie_Griffin.png";
+        stuff.type = "Sound";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 2:
-        result = "Calling Card";
+        //result = "Calling Card";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Calling Card";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 3:
-        result = "Landmark";
+        //result = "Landmark";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Landmark";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 5:
-        result = "Clothing";
+        //result = "Clothing";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Clothing";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 6:
-        result = "Object";
+        //result = "Object";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Object";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 7:
-        result = "Notecard";
+        //result = "Notecard";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Notecard";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/0/02/Stewie_Griffin.png";
         break;
       case 10:
-        result = "LSLText (aka a script)";
+        //result = "LSLText (aka a script)";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "LSLText (aka a script)";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 13:
-        result = "Body Part";
+        //result = "Body Part";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Body Part";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 20:
-        result = "Animation";
+        //result = "Animation";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Animation";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 21:
-        result = "Gesture";
+        //result = "Gesture";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Gesture";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       case 49:
-        result = "Mesh";
+        //result = "Mesh";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Mesh";
+        stuff.pic =
+          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
         break;
       default:
-        result = "Invalid Type";
+        //result = "Invalid Type";
+        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        stuff.type = "Invalid Type";
+        stuff.pic =
+          "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
         break;
     }
-    return result;
+    return stuff;
   };
 
   render() {
@@ -107,11 +162,11 @@ export default class ItemScreen extends React.Component {
 
                     <Image
                       className="image"
-                      src="https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg"
+                      src={this.getAssetType(obj.assetType).pic}
                     />
                     <div className="infoBox">
                       <h3>Description</h3>
-                      <p>{this.getAssetType(obj.assetType)}</p>
+                      <p>{this.getAssetType(obj.assetType).type}</p>
                     </div>
                     <div className="infoBox">
                       <h3>User Details</h3>
