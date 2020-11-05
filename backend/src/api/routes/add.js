@@ -8,11 +8,12 @@ router.get("/", async (req, res) => {
     let { assetID } = req.query;
     let error = 0;
     const info = await sequelize.query(
-      `CALL marketplaceDownloadAsset(:userID, :assetID, @error)`,
+      `CALL marketplaceDownloadAsset(:userID, :assetID, @:error)`,
       {
-        replacements: { userID: uuid, assetID: assetID },
+        replacements: { userID: uuid, assetID: assetID, error: error },
       }
     );
+    console.log(error);
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);

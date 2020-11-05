@@ -12,10 +12,29 @@ export default class LoginScreen extends React.Component {
     this.state = { data: null };
   }
 
-  componentDidMount() {
-    axios.get("/inventory").then((response) => {
+  getInventory = async () => {
+    try {
+      const response = await axios.get("/inventory");
       this.setState({ data: response.data });
-    });
+    } catch (error) {
+      alert("Get Inventory: " + error);
+    }
+  };
+  removeItem = async (assetID) => {
+    try {
+      const response = await axios.get("/remove", {
+        params: {
+          assetID: assetID,
+        },
+      });
+      this.getInventory();
+    } catch (error) {
+      alert("Remove: " + error);
+    }
+  };
+
+  componentDidMount() {
+    this.getInventory();
   }
 
   render() {
@@ -37,9 +56,15 @@ export default class LoginScreen extends React.Component {
                     <Card.Text>Inventory Type: {obj.InvType}</Card.Text>
                     <Card.Text>Asset Type: {obj.assetType}</Card.Text>
                     <Link to={`/item/${obj.assetID}`}>
-                      <Button variant="primary">Go somewhere</Button>
+                      <Button variant="primary">Inspect Item</Button>
                     </Link>
                   </Card.Body>
+                  <Button
+                    variant="danger"
+                    onClick={this.removeItem.bind(this, obj.assetID)}
+                  >
+                    Remove
+                  </Button>
                 </Card>
               </div>
             );
