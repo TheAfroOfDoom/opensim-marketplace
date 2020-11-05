@@ -34,4 +34,6 @@ app.use("/add", require("./api/routes/add"));
 
 app.use("/remove", require("./api/routes/remove"));
 
+app.use("/upload", require("./api/routes/upload"));
+
 module.exports = app;

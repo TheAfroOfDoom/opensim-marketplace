@@ -5,6 +5,8 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
+  const { uuid } = req.cookies;
+  if (uuid == undefined) throw new Error();
   let { searchString, assetType } = req.query;
   if (searchString == undefined) {
     searchString = "";
@@ -29,6 +31,7 @@ router.get("/", async (req, res) => {
         attributes: ["name", "description", "assetType", "id", "create_time"],
       });
     }
+    console.log(searchInfo);
     return res.send(searchInfo);
   } catch (error) {
     console.log(error);
@@ -37,11 +40,13 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/public", async (req, res) => {
-  let { searchString, assetType } = req.query;
-  if (searchString == undefined) {
-    searchString = "";
-  }
   try {
+    const { uuid } = req.cookies;
+    if (uuid == undefined) throw new Error();
+    let { searchString, assetType } = req.query;
+    if (searchString == undefined) {
+      searchString = "";
+    }
     let searchInfo;
     if (assetType == undefined) {
       searchInfo = await Assets.findAll({
@@ -71,6 +76,8 @@ router.get("/public", async (req, res) => {
 
 router.get("/builtin", async (req, res) => {
   try {
+    const { uuid } = req.cookies;
+    if (uuid == undefined) throw new Error();
     let { searchString, assetType } = req.query;
     if (searchString == undefined) {
       searchString = "";

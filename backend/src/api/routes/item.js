@@ -4,6 +4,8 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
+  const { uuid } = req.cookies;
+  if (uuid == undefined) throw new Error();
   const { id } = req.query;
 
   try {
