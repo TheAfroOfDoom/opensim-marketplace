@@ -11,7 +11,10 @@ router.get("/", async (req, res) => {
   }
   try {
     const searchInfo = await Assets.findAll({
-      where: { name: { [Op.like]: `%${searchString}%` } },
+      where: {
+        name: { [Op.like]: `%${searchString}%` },
+        [Op.or]: [{ public: 1 }, { builtin: 1 }],
+      },
       attributes: ["name", "description", "assetType", "id"],
     });
     return res.send(searchInfo);
@@ -21,7 +24,45 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/");
+router.get("/public", async (req, res) => {
+  let { searchString, assetType } = req.query;
+  if (searchString == undefined) {
+    searchString = "";
+  }
+  try {
+    const searchInfo = await Assets.findAll({
+      where: {
+        name: { [Op.like]: `%${searchString}%` },
+        public: 1,
+      },
+      attributes: ["name", "description", "assetType", "id"],
+    });
+    return res.send(searchInfo);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
+
+router.get("/builtin", async (req, res) => {
+  let { searchString, assetType } = req.query;
+  if (searchString == undefined) {
+    searchString = "";
+  }
+  try {
+    const searchInfo = await Assets.findAll({
+      where: {
+        name: { [Op.like]: `%${searchString}%` },
+        builtin: 1,
+      },
+      attributes: ["name", "description", "assetType", "id"],
+    });
+    return res.send(searchInfo);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 
 module.exports = router;
 

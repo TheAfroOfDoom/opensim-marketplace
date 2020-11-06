@@ -18,6 +18,9 @@ const Assets = db.define(
     access_time: { type: Sequelize.INTEGER },
     asset_flags: { type: Sequelize.INTEGER, allowNull: false },
     CreatorID: { type: Sequelize.UUID, allowNull: false },
+    builtin: { type: Sequelize.BOOLEAN },
+    public: { type: Sequelize.BOOLEAN },
+    marketplace_icon: { type: Sequelize.BLOB },
   },
   { timestamps: false, freezeTableName: true }
 );
