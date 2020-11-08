@@ -1,21 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const sequelize = require("../../config/database");
+const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
   try {
     const { uuid } = req.cookies;
     if (uuid == undefined) throw new Error();
     let { assetID } = req.query;
-    let error = 0;
-    const info = await sequelize.query(
-      `CALL marketplaceDownloadAsset(:userID, :assetID, @:error)`,
-      {
-        replacements: { userID: uuid, assetID: assetID, error: error },
-      }
-    );
-    console.log(error);
-    return res.sendStatus(200);
+
+    const info = await Assets.update({ public: 1 }, { where: { id: assetID } });
+    return res.status(200).send(info);
   } catch (error) {
     console.log(error);
     res.sendStatus(400);

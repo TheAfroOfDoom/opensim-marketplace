@@ -16,6 +16,8 @@ router.get("/", async (req, res) => {
 
 router.get("/inventory", async (req, res) => {
   try {
+    const { uuid } = req.cookies;
+    if (uuid == undefined) throw new Error();
     const searchInfo = await InventoryItems.findAll();
     return res.send(searchInfo);
   } catch (error) {
@@ -26,6 +28,7 @@ router.get("/inventory", async (req, res) => {
 router.get("/add", async (req, res) => {
   try {
     const { uuid } = req.cookies;
+    if (uuid == undefined) throw new Error();
     let asset = "2e349029-118a-995e-a7bf-d4fa32c1e9aa";
     let error = 0;
     const info = await sequelize

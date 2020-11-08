@@ -5,18 +5,33 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
+  const { uuid } = req.cookies;
+  if (uuid == undefined) throw new Error();
   let { searchString, assetType } = req.query;
   if (searchString == undefined) {
     searchString = "";
   }
   try {
-    const searchInfo = await Assets.findAll({
-      where: {
-        name: { [Op.like]: `%${searchString}%` },
-        [Op.or]: [{ public: 1 }, { builtin: 1 }],
-      },
-      attributes: ["name", "description", "assetType", "id"],
-    });
+    let searchInfo;
+    if (assetType == undefined) {
+      searchInfo = await Assets.findAll({
+        where: {
+          name: { [Op.like]: `%${searchString}%` },
+          [Op.or]: [{ public: 1 }, { builtin: 1 }],
+        },
+        attributes: ["name", "description", "assetType", "id", "create_time"],
+      });
+    } else {
+      searchInfo = await Assets.findAll({
+        where: {
+          name: { [Op.like]: `%${searchString}%` },
+          [Op.or]: [{ public: 1 }, { builtin: 1 }],
+          assetType: assetType,
+        },
+        attributes: ["name", "description", "assetType", "id", "create_time"],
+      });
+    }
+    console.log(searchInfo);
     return res.send(searchInfo);
   } catch (error) {
     console.log(error);
@@ -25,18 +40,33 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/public", async (req, res) => {
-  let { searchString, assetType } = req.query;
-  if (searchString == undefined) {
-    searchString = "";
-  }
   try {
-    const searchInfo = await Assets.findAll({
-      where: {
-        name: { [Op.like]: `%${searchString}%` },
-        public: 1,
-      },
-      attributes: ["name", "description", "assetType", "id"],
-    });
+    const { uuid } = req.cookies;
+    if (uuid == undefined) throw new Error();
+    let { searchString, assetType } = req.query;
+    if (searchString == undefined) {
+      searchString = "";
+    }
+    let searchInfo;
+    if (assetType == undefined) {
+      searchInfo = await Assets.findAll({
+        where: {
+          name: { [Op.like]: `%${searchString}%` },
+          public: 1,
+        },
+        attributes: ["name", "description", "assetType", "id", "create_time"],
+      });
+    } else {
+      searchInfo = await Assets.findAll({
+        where: {
+          name: { [Op.like]: `%${searchString}%` },
+          public: 1,
+          assetType: assetType,
+        },
+        attributes: ["name", "description", "assetType", "id", "create_time"],
+      });
+    }
+
     return res.send(searchInfo);
   } catch (error) {
     console.log(error);
@@ -45,18 +75,32 @@ router.get("/public", async (req, res) => {
 });
 
 router.get("/builtin", async (req, res) => {
-  let { searchString, assetType } = req.query;
-  if (searchString == undefined) {
-    searchString = "";
-  }
   try {
-    const searchInfo = await Assets.findAll({
-      where: {
-        name: { [Op.like]: `%${searchString}%` },
-        builtin: 1,
-      },
-      attributes: ["name", "description", "assetType", "id"],
-    });
+    const { uuid } = req.cookies;
+    if (uuid == undefined) throw new Error();
+    let { searchString, assetType } = req.query;
+    if (searchString == undefined) {
+      searchString = "";
+    }
+    let searchInfo;
+    if (assetType == undefined) {
+      searchInfo = await Assets.findAll({
+        where: {
+          name: { [Op.like]: `%${searchString}%` },
+          builtin: 1,
+        },
+        attributes: ["name", "description", "assetType", "id", "create_time"],
+      });
+    } else {
+      searchInfo = await Assets.findAll({
+        where: {
+          name: { [Op.like]: `%${searchString}%` },
+          builtin: 1,
+          assetType: assetType,
+        },
+        attributes: ["name", "description", "assetType", "id", "create_time"],
+      });
+    }
     return res.send(searchInfo);
   } catch (error) {
     console.log(error);

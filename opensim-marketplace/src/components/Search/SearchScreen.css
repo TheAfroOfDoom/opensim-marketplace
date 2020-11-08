@@ -25,3 +25,8 @@
   border: 4px solid #fff;
   text-align: center;
 }
+
+.searchContainer {
+  display: block;
+  place-items: auto center;
+}

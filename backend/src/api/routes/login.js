@@ -9,8 +9,6 @@ const uuid = require("uuid");
 router.get("/", async (req, res) => {
   try {
     const { firstName, lastName, password } = req.query;
-    if (firstName == "" || lastName == "" || password == "") {
-    }
 
     Auth.hasMany(UserAccounts);
     UserAccounts.belongsTo(Auth);
@@ -57,7 +55,9 @@ router.get("/", async (req, res) => {
         break;
       }
     }
-    if (!responseSent) return res.status(400).send("Failure");
+    if (!responseSent) {
+      return res.status(400).send("Failure");
+    }
   } catch (error) {
     console.log("error");
     return res.status(400).send("Failure");
