@@ -1,9 +1,9 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import { Nav, Form, FormControl, NavDropdown, Button, Pagination } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import "./SearchScreen.css";
-import Pagination from "react-bootstrap/Pagination";
+
 
 export default class SearchScreen extends React.Component {
   constructor(props) {
@@ -47,16 +47,21 @@ export default class SearchScreen extends React.Component {
             temparray.map((obj, index) => {
               return (
                 <div style={{ margin: "1rem" }}>
+
                   <Card
-                    bg={"Info".toLowerCase()}
-                    style={{ width: "18rem", height: "9rem" }}
-                    className="grid-item"
+                    bsPrefix="new-custom"
                   >
-                    <Card.Body>
+
+                    <Card.Header>
                       <Link to={`/item/${obj.id}`}>
-                        <Card.Title className="grid-item">
+                        <Card.Title border="dark" className="text-item">
                           {obj.name}
                         </Card.Title>
+                      </Link>
+                    </Card.Header>
+                    <Card.Body className="body">
+                      <Link to={`/item/${obj.id}`}>
+                        <Button>More Info</Button>
                       </Link>
                     </Card.Body>
                   </Card>
@@ -64,10 +69,12 @@ export default class SearchScreen extends React.Component {
               );
             })}
         </div>
-        <Pagination>{items}</Pagination>
+        <div className="pager">
+          <Pagination>{items}</Pagination>
+        </div>
       </div>
     );
   }
 }
-
-//<Card.Header>Card #{index}</Card.Header>
+//bg={"Info".toLowerCase()}
+//style={{ width: "18rem", height: "9rem" }}

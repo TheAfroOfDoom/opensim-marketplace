@@ -36,7 +36,7 @@ class NavigationBar extends React.Component {
   render() {
     return (
       <header>
-        <Navbar variant="dark" expand="lg" className="nav">
+        <Navbar variant="dark" bg="dark" expand="lg">
           <Link to="/">
             <Navbar.Brand>OpenSim Marketplace</Navbar.Brand>
           </Link>
@@ -50,7 +50,7 @@ class NavigationBar extends React.Component {
               <Navbar.Brand>Upload</Navbar.Brand>
             </Link>
             <Link to="/login">
-              <Navbar.Brand>Login</Navbar.Brand>
+              <Navbar.Brand>Logout</Navbar.Brand>
             </Link>
             <Form inline>
               <Form.Control
