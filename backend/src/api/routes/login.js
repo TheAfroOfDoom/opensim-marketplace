@@ -51,8 +51,9 @@ router.get("/", async (req, res) => {
         console.log(user.dataValues.UUID.toString());
         responseSent = true;
         return res
-          .sendStatus(201)
-          .cookie("uuid", user.dataValues.UUID.toString(), { overwrite: true });
+          .status(201)
+          .cookie("uuid", user.dataValues.UUID.toString(), { overwrite: true })
+          .send("Success");
         break;
       }
     }

@@ -7,6 +7,8 @@ import "./App.css";
 //Import NPM Packages
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Cookies from "js-cookie";
+import Jumbotron from "react-bootstrap/Jumbotron";
+import axios from "axios";
 
 //Import Custom Components
 import NavigationBar from "./components/Navbar/Navbar";
@@ -14,7 +16,7 @@ import ItemScreen from "./components/ItemScreen/ItemScreen";
 import SearchScreen from "./components/Search/SearchScreen";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
-import Home from "./components/Home/Home";
+import HomeScreen from "./components/HomeScreen/HomeScreen";
 
 class App extends React.Component {
   constructor() {
@@ -46,15 +48,13 @@ class App extends React.Component {
       <div className="App">
         <Router>
           <NavigationBar searchData={this.handleSearchChange} />
-          <Switch>
-            <Route path="/login" component={LoginScreen} />
-            <Route path="/inventory" component={InventoryScreen} />
-            <Route path="/search">
-              <SearchScreen data={this.state.data2} activeDefault={0} />
-            </Route>
-            <Route path="/item/:assetId" component={ItemScreen} />
-            <Route exact path="/" component={Home} />
-          </Switch>
+          <Route path="/login" component={LoginScreen} />
+          <Route path="/inventory" component={InventoryScreen} />
+          <Route path="/search">
+            <SearchScreen data={this.state.data2} activeDefault={0} />
+          </Route>
+          <Route path="/item/:assetId" component={ItemScreen} />
+          <Route exact path="/" component={HomeScreen}></Route>
         </Router>
 
 
