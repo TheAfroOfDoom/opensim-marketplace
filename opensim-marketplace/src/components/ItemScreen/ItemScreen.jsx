@@ -11,7 +11,7 @@ import {
   Image,
 } from "react-bootstrap";
 import "./ItemScreen.css";
-import hey from './Default.jpg';
+import hey from "./Default.jpg";
 
 import { HashLink as Link } from "react-router-hash-link";
 
@@ -44,13 +44,14 @@ export default class ItemScreen extends React.Component {
 
   getAssetType = (assetType) => {
     let info = {
-      type:"",
-      pic:""
+      type: "",
+      pic: "",
     };
     switch (assetType) {
       case -2:
         info.type = "Material";
-        info.pic = "https://upload.wikimedia.org/wikipedia/en/c/c2/Peter_Griffin.png";
+        info.pic =
+          "https://upload.wikimedia.org/wikipedia/en/c/c2/Peter_Griffin.png";
         break;
       case 0:
         info.type = "Texture in JPEG2000 J2C stream format";
@@ -119,13 +120,8 @@ export default class ItemScreen extends React.Component {
               this.state.data.map((obj) => {
                 return (
                   <div className="container">
-
                     <div className="left-column">
-                      <Image
-
-                        src={this.getAssetType(obj.assetType).pic}
-                        fluid
-                      />
+                      <Image src={this.getAssetType(obj.assetType).pic} fluid />
                     </div>
 
                     <div className="right-column">

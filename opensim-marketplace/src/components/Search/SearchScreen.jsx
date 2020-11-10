@@ -46,7 +46,7 @@ export default class SearchScreen extends React.Component {
       );
 
     return (
-      <div>
+      <div className="searchContainer">
         <div className="grid-container">
           {this.props.data &&
             temparray.map((obj, index) => {

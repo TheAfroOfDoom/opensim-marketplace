@@ -8,20 +8,14 @@ router.get("/", async (req, res) => {
   try {
     const { uuid } = req.cookies;
     if (uuid == undefined) throw new Error();
+    let { assetID } = req.query;
+
     InventoryItems.hasMany(Assets);
     Assets.belongsTo(InventoryItems);
 
-    const inventoryInfo = await InventoryItems.findAll({
-      where: { avatarID: uuid },
-      attributes: [
-        "assetID",
-        "assetType",
-        "InventoryName",
-        "InvType",
-        "creatorID",
-        "creationDate",
-        "InventoryID",
-      ],
+    let error = 0;
+    const info = await InventoryItems.destroy({
+      where: { assetID: assetID, avatarID: uuid },
       include: [
         {
           model: Assets,
@@ -37,9 +31,10 @@ router.get("/", async (req, res) => {
         },
       ],
     });
-    return res.send(inventoryInfo);
+    return res.sendStatus(200);
   } catch (error) {
-    return res.sendStatus(400);
+    console.log(error);
+    res.sendStatus(400);
   }
 });
 
