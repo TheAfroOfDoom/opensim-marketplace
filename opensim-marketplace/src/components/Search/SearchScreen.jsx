@@ -1,9 +1,15 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
-import { Nav, Form, FormControl, NavDropdown, Button, Pagination } from "react-bootstrap";
+import {
+  Nav,
+  Form,
+  FormControl,
+  NavDropdown,
+  Button,
+  Pagination,
+} from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
 import "./SearchScreen.css";
-
 
 export default class SearchScreen extends React.Component {
   constructor(props) {
@@ -43,15 +49,10 @@ export default class SearchScreen extends React.Component {
       <div>
         <div className="grid-container">
           {this.props.data &&
-            this.props.data &&
             temparray.map((obj, index) => {
               return (
                 <div style={{ margin: "1rem" }}>
-
-                  <Card
-                    bsPrefix="new-custom"
-                  >
-
+                  <Card bsPrefix="new-custom">
                     <Card.Header>
                       <Link to={`/item/${obj.id}`}>
                         <Card.Title border="dark" className="text-item">

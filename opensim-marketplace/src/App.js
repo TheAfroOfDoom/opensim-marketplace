@@ -5,7 +5,7 @@ import React from "react";
 import "./App.css";
 
 //Import NPM Packages
-import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Cookies from "js-cookie";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import axios from "axios";
@@ -21,7 +21,7 @@ import HomeScreen from "./components/HomeScreen/HomeScreen";
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { data: null, data2: null, loginStatus: null};
+    this.state = { data: null, data2: null, loginStatus: null };
   }
 
   handleSearchChange = (data) => {
@@ -29,20 +29,19 @@ class App extends React.Component {
     console.log(Cookies.get());
   };
 
-  checkStatus = () =>{
-    console.log(Cookies.get('uuid'));
-    if(Cookies.get('uuid') == undefined){
-      return(undefined)
-    }else{
-      return(Cookies.get('uuid'))
+  checkStatus = () => {
+    console.log(Cookies.get("uuid"));
+    if (Cookies.get("uuid") == undefined) {
+      return undefined;
+    } else {
+      return Cookies.get("uuid");
     }
   };
 
   setStatus = () => {
-    this.setState({ loginStatus: Cookies.get('uuid')});
+    this.setState({ loginStatus: Cookies.get("uuid") });
   };
   render() {
-
     this.checkStatus();
     return (
       <div className="App">
@@ -54,10 +53,10 @@ class App extends React.Component {
             <SearchScreen data={this.state.data2} activeDefault={0} />
           </Route>
           <Route path="/item/:assetId" component={ItemScreen} />
-          <Route exact path="/" component={HomeScreen}></Route>
+          <Route exact path="/">
+            <HomeScreen searchData={this.handleSearchChange} />
+          </Route>
         </Router>
-
-
       </div>
     );
   }
