@@ -21,7 +21,7 @@ h1 {
 }
 .side {
   height: 400; /* Full-height: remove this if you want "auto" height */
-  width: 200px; /* Set the width of the sidebar */
+  width: 220px; /* Set the width of the sidebar */
   position: relative; /* Fixed Sidebar (stay in place on scroll) */
   z-index: 1; /* Stay on top */ /* Stay at the top */
   left: 0;
@@ -31,7 +31,7 @@ h1 {
   border-color: white;
   background-color: #343a40; /* Black */
   overflow-x: hidden;
-  margin: 10px 0px 0px 10px; /* Disable horizontal scroll */
+  margin: 20px 0px 0px 10px; /* Disable horizontal scroll */
 }
 
 .sideButton {
@@ -45,12 +45,15 @@ h1 {
 }
 
 .title {
-  padding: 6px 8px 6px 16px;
+  padding: 6px 16px 6px 16px;
   text-decoration: none;
 
   font-size: 30px;
   color: #ff8e32;
   display: block;
   background: none;
-  border-bottom: 2px solid #fff;
+  border-bottom: 1px solid rgb(225, 232, 238);
+
+  margin-left: 15px;
+  margin-right: 15px;
 }

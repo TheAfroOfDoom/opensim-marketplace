@@ -36,11 +36,15 @@ class NavigationBar extends React.Component {
   render() {
     return (
       <header>
-        <Navbar variant="dark" bg="dark" expand="lg">
+        <Navbar variant="dark" bg="dark" expand="lg" style={{ paddingLeft: "0px" }}>
           <Link to="/">
             <Navbar.Brand>
               <img src="minilogo.png" style={{ height: 30, width: 30 }} />
-              OpenSim Marketplace
+            </Navbar.Brand>
+          </Link>
+          <Link to="/">
+            <Navbar.Brand>
+              <div style={{ fontSize: "1.5rem" }}>OpenSim Marketplace</div>
             </Navbar.Brand>
           </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
