@@ -22,7 +22,7 @@ export default class ItemScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await axios.get("/item", {
+    const response = await axios.get("/api/item", {
       params: {
         id: this.props.match.params.assetId,
         color: "green",
@@ -35,7 +35,7 @@ export default class ItemScreen extends React.Component {
   }
 
   handleAdd = async () => {
-    const response = await axios.get("/add", {
+    const response = await axios.get("/api/inventory/add", {
       params: {
         assetID: this.props.match.params.assetId,
       },

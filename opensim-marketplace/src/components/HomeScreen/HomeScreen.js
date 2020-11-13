@@ -29,7 +29,7 @@ export default class HomeScreen extends React.Component {
   }
 
   searchRedirect = async (assetType) => {
-    const response = await axios.get("/search", {
+    const response = await axios.get("/api/search", {
       params: { assetType: assetType },
     });
     console.log(response);
@@ -38,7 +38,7 @@ export default class HomeScreen extends React.Component {
   };
 
   async componentDidMount() {
-    const response = await axios.get("/search/public");
+    const response = await axios.get("/api/search/public");
     console.log(response);
     this.setState({
       data: response.data,

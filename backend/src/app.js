@@ -20,20 +20,14 @@ app.get("/", (req, res) => {
   return res.status(200).send("Hello, World!");
 });
 
-app.use("/test", require("./api/routes/test"));
+app.use("/api/test", require("./api/routes/test"));
 
-app.use("/login", require("./api/routes/login"));
+app.use("/api/login", require("./api/routes/login"));
 
-app.use("/item", require("./api/routes/item"));
+app.use("/api/item", require("./api/routes/item"));
 
-app.use("/search", require("./api/routes/search"));
+app.use("/api/search", require("./api/routes/search"));
 
-app.use("/inventory", require("./api/routes/inventory"));
-
-app.use("/add", require("./api/routes/add"));
-
-app.use("/remove", require("./api/routes/remove"));
-
-app.use("/upload", require("./api/routes/upload"));
+app.use("/api/inventory", require("./api/routes/inventory"));
 
 module.exports = app;

@@ -50,7 +50,7 @@ class App extends React.Component {
 
   checkStatus = () => {
     console.log(Cookies.get("uuid"));
-    if (Cookies.get("uuid") == undefined) {
+    if (Cookies.get("uuid") === undefined) {
       return undefined;
     } else {
       return Cookies.get("uuid");

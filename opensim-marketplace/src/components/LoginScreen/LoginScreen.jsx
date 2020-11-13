@@ -34,7 +34,7 @@ export default class LoginScreen extends React.Component {
   submitHandler = async (event) => {
     event.preventDefault();
     axios
-      .get("/login", {
+      .get("/api/login", {
         params: {
           firstName: this.state.firstName,
           lastName: this.state.lastName,

@@ -19,7 +19,7 @@ class NavigationBar extends React.Component {
   }
 
   onClick = async () => {
-    const response = await axios.get("/search", {
+    const response = await axios.get("/api/search", {
       params: {
         searchString: this.state.search,
       },

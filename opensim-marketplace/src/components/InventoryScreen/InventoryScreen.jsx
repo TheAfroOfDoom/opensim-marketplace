@@ -14,7 +14,7 @@ export default class LoginScreen extends React.Component {
 
   getInventory = async () => {
     try {
-      const response = await axios.get("/inventory");
+      const response = await axios.get("/api/inventory");
       this.setState({ data: response.data });
     } catch (error) {
       alert("Get Inventory: " + error);
@@ -22,7 +22,7 @@ export default class LoginScreen extends React.Component {
   };
   removeItem = async (assetID) => {
     try {
-      const response = await axios.get("/remove", {
+      const response = await axios.get("/api/inventory/remove", {
         params: {
           assetID: assetID,
         },
