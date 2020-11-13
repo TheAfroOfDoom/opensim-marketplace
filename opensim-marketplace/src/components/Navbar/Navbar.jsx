@@ -65,6 +65,7 @@ class NavigationBar extends React.Component {
             <Link to="/inventory">
               <Navbar.Brand>Inventory</Navbar.Brand>
             </Link>
+            //might remove
             <Link to="/upload">
               <Navbar.Brand>Upload</Navbar.Brand>
             </Link>

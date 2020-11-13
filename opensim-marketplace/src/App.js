@@ -5,7 +5,12 @@ import React from "react";
 import "./App.css";
 
 //Import NPM Packages
-import { BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import Cookies from "js-cookie";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import axios from "axios";
@@ -21,7 +26,21 @@ import HomeScreen from "./components/HomeScreen/HomeScreen";
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { data: null, data2: null, loginStatus: null };
+    this.state = {
+      data: null,
+      data2: null,
+      loginStatus: null,
+      loggedIn: false,
+    };
+  }
+
+  componentDidMount() {
+    let cookies = Cookies.get();
+    if (cookies.hasOwnProperty("uuid")) {
+      this.setState({ loggedIn: true });
+    } else {
+      this.setState({ loggedIn: false });
+    }
   }
 
   handleSearchChange = (data) => {
@@ -37,6 +56,10 @@ class App extends React.Component {
     }
   };
 
+  handleLogin = (newValue) => {
+    this.setState({ loggedIn: newValue });
+  };
+
   setStatus = () => {
     this.setState({ loginStatus: Cookies.get("uuid") });
   };
@@ -46,16 +69,29 @@ class App extends React.Component {
     return (
       <div className="App">
         <Router>
-          <NavigationBar searchData={this.handleSearchChange} />
-          <Route path="/login" component={LoginScreen} />
-          <Route path="/inventory" component={InventoryScreen} />
-          <Route path="/search">
-            <SearchScreen data={this.state.data2} activeDefault={0} />
-          </Route>
-          <Route path="/item/:assetId" component={ItemScreen} />
-          <Route exact path="/">
-            <HomeScreen searchData={this.handleSearchChange} />
-          </Route>
+          {!this.state.loggedIn ? (
+            <div>
+              <Route path="/login">
+                <LoginScreen handleLogin={this.handleLogin} />
+              </Route>
+              <Redirect to="/login" />
+            </div>
+          ) : (
+            <div>
+              <NavigationBar searchData={this.handleSearchChange} />
+              <Route path="/login">
+                <Redirect to="/" />
+              </Route>
+              <Route path="/inventory" component={InventoryScreen} />
+              <Route path="/search">
+                <SearchScreen data={this.state.data2} activeDefault={0} />
+              </Route>
+              <Route path="/item/:assetId" component={ItemScreen} />
+              <Route exact path="/">
+                <HomeScreen searchData={this.handleSearchChange} />
+              </Route>
+            </div>
+          )}
         </Router>
       </div>
     );

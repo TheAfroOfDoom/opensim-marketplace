@@ -5,13 +5,13 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
-  const { uuid } = req.cookies;
-  if (uuid == undefined) throw new Error();
-  let { searchString, assetType } = req.query;
-  if (searchString == undefined) {
-    searchString = "";
-  }
   try {
+    const { uuid } = req.cookies;
+    if (uuid == undefined) throw new Error();
+    let { searchString, assetType } = req.query;
+    if (searchString == undefined) {
+      searchString = "";
+    }
     let searchInfo;
     if (assetType == undefined) {
       searchInfo = await Assets.findAll({
