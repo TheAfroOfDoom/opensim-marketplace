@@ -46,12 +46,6 @@ class NavigationBar extends React.Component {
             <Link to="/inventory">
               <Navbar.Brand>Inventory</Navbar.Brand>
             </Link>
-            <Link to="/upload">
-              <Navbar.Brand>Upload</Navbar.Brand>
-            </Link>
-            <Link to="/login">
-              <Navbar.Brand>Logout</Navbar.Brand>
-            </Link>
             <Form inline onSubmit={this.onClick}>
               <Form.Control
                 type="text"

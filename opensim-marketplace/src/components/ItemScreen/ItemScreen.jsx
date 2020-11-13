@@ -74,7 +74,7 @@ export default class ItemScreen extends React.Component {
         info.pic = hey;
         break;
       case 6:
-        info.type = "Object";
+        info.type = "itemInfoect";
         info.pic = hey;
         break;
       case 7:
@@ -113,46 +113,39 @@ export default class ItemScreen extends React.Component {
     if (this.state.data == null) {
       return <div />;
     } else {
+      const { itemInfo } = this.state.data;
       return (
         <body className="page">
           <div>
-            {this.state.data &&
-              this.state.data.map((obj) => {
-                return (
-                  <div className="container">
-                    <div className="left-column">
-                      <Image src={this.getAssetType(obj.assetType).pic} fluid />
-                    </div>
+            <div className="container">
+              <div className="left-column">
+                <Image src={this.getAssetType(itemInfo.assetType).pic} fluid />
+              </div>
 
-                    <div className="right-column">
-                      <div className="asset-description">
-                        <h1>{obj.name}</h1>
-                        <p>{this.getAssetType(obj.assetType).type}</p>
-                      </div>
-                      <div className="user-description">
-                        <h3>User info maybe</h3>
-                        <p>User Name{this.state.dataString.substring(0, 10)}</p>
-                        <p>About User</p>
-                      </div>
-                      <div className="asset-download">
-                        <h3>Download & Details</h3>
-                        <p>
-                          Create Time: {<Moment unix>{obj.create_time}</Moment>}
-                        </p>
-                        <Link to={`/inventory#${obj.name}`}>
-                          <Button onClick={this.handleAdd}>
-                            Add To Inventory
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              <div className="right-column">
+                <div className="asset-description">
+                  <h1>{itemInfo.name}</h1>
+                  <p>{this.getAssetType(itemInfo.assetType).type}</p>
+                </div>
+                <div className="user-description">
+                  <h3>User info maybe</h3>
+                  <p>User Name{this.state.dataString.substring(0, 10)}</p>
+                  <p>About User</p>
+                </div>
+                <div className="asset-download">
+                  <h3>Download & Details</h3>
+                  <p>
+                    Create Time: {<Moment unix>{itemInfo.create_time}</Moment>}
+                  </p>
+                  <Link to={`/inventory#${itemInfo.name}`}>
+                    <Button onClick={this.handleAdd}>Add To Inventory</Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </body>
       );
     }
   }
 }
-//<img className="image" src={`data:image/png;base64,${this.state.dataString}`} />

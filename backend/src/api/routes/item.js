@@ -2,6 +2,12 @@ const express = require("express");
 const router = express.Router();
 const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
+const UserAccounts = require("../../models/UserAccounts");
+const InventoryItems = require("../../models/InventoryItems");
+const _ = require("lodash");
+
+let builtinUUID = "11111111-1111-0000-0000-000100bba000";
+let nilUUID = "00000000-0000-0000-0000-000000000000";
 
 router.get("/", async (req, res) => {
   const { uuid } = req.cookies;
@@ -9,7 +15,13 @@ router.get("/", async (req, res) => {
   const { id } = req.query;
 
   try {
-    const itemInfo = await Assets.findAll({
+    let itemInfo,
+      userInfo,
+      creator = false,
+      invInfo;
+
+    // Get Assets Table
+    itemInfo = await Assets.findAll({
       attributes: [
         "name",
         "description",
@@ -17,18 +29,56 @@ router.get("/", async (req, res) => {
         "id",
         "create_time",
         "access_time",
-        "builtin",
         "public",
+        "CreatorID",
       ],
       where: { id: id },
     });
-    return res.send(itemInfo);
+    console.log();
+    //If there is an asset
+    if (!_.isEmpty(itemInfo)) {
+      if (
+        itemInfo[0].CreatorID === builtinUUID ||
+        itemInfo[0].CreatorID === nilUUID
+      ) {
+        //Creator is System
+        creator = false;
+      } else {
+        // Get user based on Creator of asset
+        userInfo = await UserAccounts.findAll({
+          attributes: ["PrincipalID", "FirstName", "LastName"],
+          where: { PrincipalID: itemInfo[0].CreatorID },
+        });
+
+        // If User exists and id equals current uuid
+        if (!_.isEmpty(userInfo) && userInfo[0].PrincipalID === uuid) {
+          creator = true;
+        }
+        invInfo = await InventoryItems.findAll({
+          where: { avatarID: uuid, assetID: id },
+        });
+      }
+      return res.status(200).send({
+        itemInfo: itemInfo[0],
+        userInfo: !_.isEmpty(userInfo) ? userInfo[0] : {},
+        creator: creator,
+        invInfo: !_.isEmpty(invInfo)
+          ? { ...invInfo[0], inInventory: true }
+          : { inInventory: false },
+      });
+    } else {
+      return res.send({
+        itemInfo: {},
+        userInfo: {},
+        creator: false,
+        invInfo: { inInventory: false },
+      });
+    }
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
   }
 });
-
 module.exports = router;
 
 /*
