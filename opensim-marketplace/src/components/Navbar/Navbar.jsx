@@ -1,6 +1,7 @@
 import React from "react";
 import "./Navbar.css";
 import Navbar from "react-bootstrap/Navbar";
+import Cookies from "js-cookie";
 import { Nav, Form, FormControl, NavDropdown, Button } from "react-bootstrap";
 import axios from "axios";
 import {
@@ -33,6 +34,17 @@ class NavigationBar extends React.Component {
     this.setState({ search: fleldVal });
   }
 
+
+  checkStatus(){
+    if(Cookies.get('uuid') == undefined){
+      console.log('How did you do that, you actaully should be logged in, wtf', Cookies.get('uuid'));
+    }else{
+      //Cookies.remove('uuid');
+      console.log('hey');
+    }
+  };
+
+
   render() {
     return (
       <header>
@@ -49,8 +61,8 @@ class NavigationBar extends React.Component {
             <Link to="/upload">
               <Navbar.Brand>Upload</Navbar.Brand>
             </Link>
-            <Link to="/login">
-              <Navbar.Brand>Logout</Navbar.Brand>
+            <Link to="/login" >
+              <Navbar.Brand onClick={this.checkStatus()}>Logout</Navbar.Brand>
             </Link>
             <Form inline onSubmit={this.onClick}>
               <Form.Control

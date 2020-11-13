@@ -5,7 +5,7 @@ import React from "react";
 import "./App.css";
 
 //Import NPM Packages
-import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
 import Cookies from "js-cookie";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import axios from "axios";
@@ -26,15 +26,14 @@ class App extends React.Component {
 
   handleSearchChange = (data) => {
     this.setState({ data2: data });
-    console.log(Cookies.get());
+
   };
 
   checkStatus = () =>{
-    console.log(Cookies.get('uuid'));
     if(Cookies.get('uuid') == undefined){
-      return(undefined)
+      return(<Redirect to="/login"></Redirect>);
     }else{
-      return(Cookies.get('uuid'))
+      console.log(Cookies.get('uuid'));
     }
   };
 
@@ -43,18 +42,23 @@ class App extends React.Component {
   };
   render() {
 
-    this.checkStatus();
+
     return (
       <div className="App">
         <Router>
           <NavigationBar searchData={this.handleSearchChange} />
-          <Route path="/login" component={LoginScreen} />
-          <Route path="/inventory" component={InventoryScreen} />
-          <Route path="/search">
-            <SearchScreen data={this.state.data2} activeDefault={0} />
-          </Route>
-          <Route path="/item/:assetId" component={ItemScreen} />
-          <Route exact path="/" component={HomeScreen}></Route>
+          {
+            this.checkStatus()
+          }
+          <Switch>
+            <Route path="/login" component={LoginScreen} />
+            <Route path="/inventory" component={InventoryScreen} />
+            <Route path="/search">
+              <SearchScreen data={this.state.data2} activeDefault={0} />
+            </Route>
+            <Route exact path="/item/:assetId" component={ItemScreen} />
+            <Route exact path="/" component={HomeScreen}></Route>
+          </Switch>
         </Router>
 
 

@@ -47,11 +47,7 @@ export default class SearchScreen extends React.Component {
             temparray.map((obj, index) => {
               return (
                 <div style={{ margin: "1rem" }}>
-
-                  <Card
-                    bsPrefix="new-custom"
-                  >
-
+                  <Card bsPrefix="new-custom">
                     <Card.Header>
                       <Link to={`/item/${obj.id}`}>
                         <Card.Title border="dark" className="text-item">

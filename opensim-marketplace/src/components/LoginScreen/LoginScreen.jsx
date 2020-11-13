@@ -105,19 +105,7 @@ export default class LoginScreen extends React.Component {
             </FormGroup>
           </Form>
 
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              onChange={this.handlePassword.bind(this)}
-            />
-          </Form.Group>
-          <Button variant="primary" onClick={this.submitHandler}>
-            Submit
-          </Button>
-        </Form>
-
+        </div>
         {this.state.loginSuccess ? <Redirect to="/" /> : <div />}
 
       </div>
