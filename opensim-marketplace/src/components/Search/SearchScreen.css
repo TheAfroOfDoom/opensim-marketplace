@@ -1,10 +1,9 @@
 .grid-container {
   display: grid;
-  /*grid-template-columns: auto auto auto;*/
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 }
 
-.new-custom{
+.new-custom {
   background: #02394a;
   border: 4px solid #fff;
   border-radius: 20px;
@@ -16,14 +15,14 @@
   color: #84fff2;
 }
 
-.body{
+.body {
   color: #2ec4b6;
   text-align: center;
 }
 
-.pager{
+.pager {
   margin-left: 25%;
-  border: 4px solid #fff;
+  margin-right: 25%;
   text-align: center;
 }
 

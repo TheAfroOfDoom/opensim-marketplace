@@ -52,13 +52,9 @@ export default class LoginScreen extends React.Component {
       .catch((error) => {
         this.setState({ loginFail: true });
       });
-
   };
 
-
-
   render() {
-
     return (
       <div className="outer">
         {this.state.loginFail ? (
@@ -104,10 +100,8 @@ export default class LoginScreen extends React.Component {
               </Button>
             </FormGroup>
           </Form>
-
         </div>
         {this.state.loginSuccess ? <Redirect to="/" /> : <div />}
-
       </div>
     );
   }

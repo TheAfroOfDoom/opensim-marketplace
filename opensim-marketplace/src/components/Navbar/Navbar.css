@@ -1,10 +1,13 @@
 .nav {
   height: 60px;
   width: 100%;
-  
 }
 
 .logo {
   justify-content: center;
   align-self: center;
+}
+
+header {
+  border-bottom: 3px solid white;
 }

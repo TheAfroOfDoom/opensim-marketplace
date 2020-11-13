@@ -21,7 +21,7 @@ import HomeScreen from "./components/HomeScreen/HomeScreen";
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { data: null, data2: null, loginStatus: null};
+    this.state = { data: null, data2: null, loginStatus: null };
   }
 
   handleSearchChange = (data) => {
@@ -38,7 +38,7 @@ class App extends React.Component {
   };
 
   setStatus = () => {
-    this.setState({ loginStatus: Cookies.get('uuid')});
+    this.setState({ loginStatus: Cookies.get("uuid") });
   };
   render() {
 
@@ -47,21 +47,16 @@ class App extends React.Component {
       <div className="App">
         <Router>
           <NavigationBar searchData={this.handleSearchChange} />
-          {
-            this.checkStatus()
-          }
-          <Switch>
-            <Route path="/login" component={LoginScreen} />
-            <Route path="/inventory" component={InventoryScreen} />
-            <Route path="/search">
-              <SearchScreen data={this.state.data2} activeDefault={0} />
-            </Route>
-            <Route exact path="/item/:assetId" component={ItemScreen} />
-            <Route exact path="/" component={HomeScreen}></Route>
-          </Switch>
+          <Route path="/login" component={LoginScreen} />
+          <Route path="/inventory" component={InventoryScreen} />
+          <Route path="/search">
+            <SearchScreen data={this.state.data2} activeDefault={0} />
+          </Route>
+          <Route path="/item/:assetId" component={ItemScreen} />
+          <Route exact path="/">
+            <HomeScreen searchData={this.handleSearchChange} />
+          </Route>
         </Router>
-
-
       </div>
     );
   }
