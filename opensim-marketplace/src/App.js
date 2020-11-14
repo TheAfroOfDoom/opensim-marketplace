@@ -68,7 +68,7 @@ class App extends React.Component {
     this.checkStatus();
     return (
       <div className="App">
-        <Router basename="/marketplace">
+        <Router>
           {!this.state.loggedIn ? (
             <div>
               <Route path="/login">
