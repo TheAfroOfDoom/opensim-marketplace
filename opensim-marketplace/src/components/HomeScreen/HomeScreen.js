@@ -48,26 +48,8 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <div>
-        <div>
-          <Carousel>
-            {this.state.data &&
-              this.state.data.map((obj) => {
-                return (
-                  <Carousel.Item
-                    className="Carousel"
-                    style={{ backgroundImage: `url(${defaultImage})` }}
-                  >
-                    <Carousel.Caption>
-                      <h1>{obj.name}</h1>
-                      <p>{obj.description}</p>
-                    </Carousel.Caption>
-                  </Carousel.Item>
-                );
-              })}
-          </Carousel>
-        </div>
         <div class="side">
-          <a>Search Categories</a>
+          <h1 className="title">Categories</h1>
           {categories.map((obj) => {
             return (
               <button
