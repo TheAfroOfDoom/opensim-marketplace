@@ -36,10 +36,19 @@ class NavigationBar extends React.Component {
   render() {
     return (
       <header>
-        <Navbar variant="dark" bg="dark" expand="lg" style={{ paddingLeft: "0px" }}>
+        <Navbar
+          variant="dark"
+          bg="dark"
+          expand="lg"
+          style={{ paddingLeft: "0px" }}
+        >
           <Link to="/">
             <Navbar.Brand>
-              <img src="minilogo.png" style={{ height: 30, width: 30 }} />
+              <img
+                src={window.location.origin + "/minilogo.png"}
+                style={{ height: 30, width: 30 }}
+                alt=""
+              />
             </Navbar.Brand>
           </Link>
           <Link to="/">
