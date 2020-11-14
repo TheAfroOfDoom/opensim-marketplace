@@ -6,7 +6,7 @@ import "./App.css";
 
 //Import NPM Packages
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   Switch,
   Redirect,
@@ -45,6 +45,7 @@ class App extends React.Component {
 
   handleSearchChange = (data) => {
     this.setState({ data2: data });
+    console.log("DATA: " + data);
     console.log(Cookies.get());
   };
 
@@ -68,7 +69,7 @@ class App extends React.Component {
     this.checkStatus();
     return (
       <div className="App">
-        <Router basename="marketplace">
+        <Router>
           {!this.state.loggedIn ? (
             <div>
               <Route path="/login">

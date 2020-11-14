@@ -8,6 +8,13 @@ const cookieParser = require("cookie-parser");
 // Compression reduces file sizes of transactions making them faster
 const compression = require("compression");
 
+const path = require("path");
+
+// Set static folder
+app.use(
+  express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
+);
+
 // Middleware
 app.use(compression());
 app.use(cookieParser());
@@ -16,11 +23,13 @@ app.use(cookieParser());
 const sequelize = require("./config/database");
 
 /* Endpoints */
-
-app.get("/api/", (req, res) => {
-  console.log(req.cookies);
-  return res.status(200).send("Hello, World!");
+/*
+app.get("/", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "../../opensim-marketplace/build/index.html")
+  );
 });
+*/
 
 app.use("/api/test", require("./api/routes/test"));
 

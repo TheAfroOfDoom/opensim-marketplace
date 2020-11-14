@@ -19,15 +19,12 @@ export default class LoginScreen extends React.Component {
   }
 
   handleFirstName = (event) => {
-    console.log("First Name:", event.target.value);
     this.setState({ firstName: event.target.value });
   };
   handleLastName = (event) => {
-    console.log("Last Name:", event.target.value);
     this.setState({ lastName: event.target.value });
   };
   handlePassword = (event) => {
-    console.log("Password:", event.target.value);
     this.setState({ password: event.target.value });
   };
 
@@ -50,6 +47,7 @@ export default class LoginScreen extends React.Component {
         }
       })
       .catch((error) => {
+        console.log("Password Did not work: " + error);
         this.setState({ loginFail: true });
       });
   };

@@ -1,6 +1,7 @@
 {
   "name": "opensim-marketplace",
   "version": "0.1.0",
+  "homepage": ".",
   "proxy": "http://localhost:5000/",
   "private": true,
   "dependencies": {
