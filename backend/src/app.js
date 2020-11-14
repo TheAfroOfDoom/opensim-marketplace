@@ -1,6 +1,8 @@
 // Install Express
 const express = require("express");
 const app = express();
+
+// Ability to parse cookies
 const cookieParser = require("cookie-parser");
 
 // Compression reduces file sizes of transactions making them faster
@@ -15,7 +17,7 @@ const sequelize = require("./config/database");
 
 /* Endpoints */
 
-app.get("/", (req, res) => {
+app.get("/api/", (req, res) => {
   console.log(req.cookies);
   return res.status(200).send("Hello, World!");
 });
