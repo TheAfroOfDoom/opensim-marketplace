@@ -135,7 +135,12 @@ export default class ItemScreen extends React.Component {
                 <div className="asset-download">
                   <h3>Download & Details</h3>
                   <p>
-                    Create Time: {<Moment unix>{itemInfo.create_time}</Moment>}
+                    Create Time:{" "}
+                    {
+                      <Moment format="MM/DD/YYYY HH:mm" unix>
+                        {itemInfo.create_time}
+                      </Moment>
+                    }
                   </p>
                   <Link to={`/inventory#${itemInfo.name}`}>
                     <Button onClick={this.handleAdd}>Add To Inventory</Button>

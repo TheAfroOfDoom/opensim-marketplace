@@ -41,4 +41,11 @@ app.use("/api/search", require("./api/routes/search"));
 
 app.use("/api/inventory", require("./api/routes/inventory"));
 
+app.get("/", (req, res) => {
+  console.log("Request: " + req);
+  res.sendFile(
+    path.resolve(__dirname, "../../opensim-marketplace/build", "index.html")
+  );
+});
+
 module.exports = app;
