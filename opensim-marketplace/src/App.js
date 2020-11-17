@@ -45,24 +45,14 @@ class App extends React.Component {
 
   handleSearchChange = (data) => {
     this.setState({ data2: data });
-
   };
 
-  checkStatus = () =>{
-    if(Cookies.get('uuid') == undefined){
-      return(<Redirect to="/login"></Redirect>);
-    }else{
-      console.log(Cookies.get('uuid'));
-    }
-  };
 
   handleLogin = (newValue) => {
     this.setState({ loggedIn: newValue });
   };
 
-  setStatus = () => {
-    this.setState({ loginStatus: Cookies.get("uuid") });
-  };
+
   render() {
 
 
@@ -78,7 +68,7 @@ class App extends React.Component {
             </div>
           ) : (
             <div>
-              <NavigationBar searchData={this.handleSearchChange} />
+              <NavigationBar searchData={this.handleSearchChange} data={this.state.loggedIn} handleLogin={this.handleLogin}/>
               <Route path="/login">
                 <Redirect to="/" />
               </Route>

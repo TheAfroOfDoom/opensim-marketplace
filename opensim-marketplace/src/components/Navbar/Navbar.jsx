@@ -35,12 +35,13 @@ class NavigationBar extends React.Component {
   }
 
 
-  checkStatus(){
-    if(Cookies.get('uuid') == undefined){
-      console.log('How did you do that, you actaully should be logged in, wtf', Cookies.get('uuid'));
+  checkStatus = () => {
+    if(this.props.data){
+      console.log('Logging Out');
+      Cookies.remove('uuid');
+      this.props.handleLogin(false);
     }else{
-      //Cookies.remove('uuid');
-      console.log('hey');
+      console.log("Not Logged In");
     }
   };
 
@@ -49,12 +50,12 @@ class NavigationBar extends React.Component {
     return (
       <header>
         <Navbar variant="dark" bg="dark" expand="lg" style={{ paddingLeft: "0px" }}>
-          <Link to="/">
+          <Link exact to="/">
             <Navbar.Brand>
               <img src="minilogo.png" style={{ height: 30, width: 30 }} />
             </Navbar.Brand>
           </Link>
-          <Link to="/">
+          <Link exact to="/">
             <Navbar.Brand>
               <div style={{ fontSize: "1.5rem" }}>OpenSim Marketplace</div>
             </Navbar.Brand>
@@ -65,12 +66,8 @@ class NavigationBar extends React.Component {
             <Link to="/inventory">
               <Navbar.Brand>Inventory</Navbar.Brand>
             </Link>
-            //might remove
-            <Link to="/upload">
-              <Navbar.Brand>Upload</Navbar.Brand>
-            </Link>
-            <Link to="/login" >
-              <Navbar.Brand onClick={this.checkStatus()}>Logout</Navbar.Brand>
+            <Link to="/login" onClick={this.checkStatus}>
+              <Navbar.Brand>Logout</Navbar.Brand>
             </Link>
             <Form inline onSubmit={this.onClick}>
               <Form.Control
@@ -80,7 +77,7 @@ class NavigationBar extends React.Component {
                 onChange={this.handleChange.bind(this)}
                 onSubmit={this.onClick}
               />
-
+                
               <Link to="/search">
                 <Button type="submit" onClick={this.onClick} variant="success">
                   <span>Search</span>
@@ -90,6 +87,7 @@ class NavigationBar extends React.Component {
           </Navbar.Collapse>
         </Navbar>
         {this.state.redirect ? <Redirect to="/search" /> : <div />}
+
       </header>
     );
   }
