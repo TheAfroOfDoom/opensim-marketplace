@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error();
+    if (uuid === undefined) throw new Error("Unauthorized");
 
     // Give relations
     UserAccounts.hasMany(Assets);
@@ -33,9 +33,13 @@ router.get("/", async (req, res) => {
     }
 
     return res.send(await getAssets(whereParams));
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else {
+      return res.sendStatus(400);
+    }
   }
 });
 
@@ -43,7 +47,7 @@ router.get("/public", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error();
+    if (uuid === undefined) throw new Error("Unauthorized");
 
     // Give relations
     UserAccounts.hasMany(Assets);
@@ -58,7 +62,7 @@ router.get("/public", async (req, res) => {
     //Assign query params
     let whereParams = {
       name: { [Op.like]: `%${searchString}%` },
-      [Op.or]: [{ public: 1 }],
+      public: 1,
     };
 
     if (assetType !== undefined) {
@@ -66,9 +70,13 @@ router.get("/public", async (req, res) => {
     }
 
     return res.send(await getAssets(whereParams));
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else {
+      return res.sendStatus(400);
+    }
   }
 });
 
