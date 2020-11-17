@@ -8,6 +8,7 @@ import {
   Button,
   Pagination,
 } from "react-bootstrap";
+import axios from "axios";
 import { Redirect, Link } from "react-router-dom";
 import "./SearchScreen.css";
 
@@ -70,7 +71,7 @@ export default class SearchScreen extends React.Component {
               );
             })}
         </div>
-        <div className="pager">
+        <div className="pager" class="d-flex justify-content-center">
           <Pagination>{items}</Pagination>
         </div>
       </div>
