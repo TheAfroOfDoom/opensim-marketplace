@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
     Assets.belongsTo(UserAccounts);
 
     // Check if there is a valid search string
-    let { searchString, assetType } = req.query;
+    let { searchString, assetType, limit, offset, order } = req.query;
     if (searchString === undefined) {
       searchString = "";
     }
@@ -42,7 +42,20 @@ router.get("/", async (req, res) => {
       whereParams.assetType = assetType;
     }
 
-    return res.send(await getAssets(whereParams));
+    let orderParam = { order: getSort(order) };
+
+    let limitParam = limit !== undefined ? { limit: parseInt(limit) } : {};
+
+    let offsetParam = offset !== undefined ? { offset: parseInt(offset) } : {};
+
+    let params = {
+      where: { ...whereParams },
+      ...limitParam,
+      ...offsetParam,
+      ...orderParam,
+    };
+
+    return res.send(await getAssets(params));
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
@@ -64,7 +77,7 @@ router.get("/public", async (req, res) => {
     Assets.belongsTo(UserAccounts);
 
     // Check if there is a valid search string
-    let { searchString, assetType } = req.query;
+    let { searchString, assetType, limit, offset, order } = req.query;
     if (searchString === undefined) {
       searchString = "";
     }
@@ -79,7 +92,20 @@ router.get("/public", async (req, res) => {
       whereParams.assetType = assetType;
     }
 
-    return res.send(await getAssets(whereParams));
+    let orderParam = { order: getSort(order) };
+
+    let limitParam = limit !== undefined ? { limit: parseInt(limit) } : {};
+
+    let offsetParam = offset !== undefined ? { offset: parseInt(offset) } : {};
+
+    let params = {
+      where: { ...whereParams },
+      ...limitParam,
+      ...offsetParam,
+      ...orderParam,
+    };
+
+    return res.send(await getAssets(params));
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
@@ -90,11 +116,9 @@ router.get("/public", async (req, res) => {
   }
 });
 
-function getAssets(whereParams) {
+function getAssets(params) {
   return Assets.findAll({
-    where: {
-      ...whereParams,
-    },
+    ...params,
     attributes: [
       "name",
       "description",
@@ -119,6 +143,31 @@ function getAssets(whereParams) {
       },
     ],
   });
+}
+
+function getSort(order) {
+  switch (order) {
+    case "CREATE_ASC":
+      return [["create_time", "ASC"]];
+      break;
+    case "CREATE_DESC":
+      return [["create_time", "DESC"]];
+      break;
+    case "NAME_ASC":
+      return [["name", "ASC"]];
+      break;
+    case "NAME_DESC":
+      return [["name", "DESC"]];
+      break;
+    case "ACCESS_ASC":
+      return [["access_time", "ASC"]];
+      break;
+    case "ACCESS_DESC":
+      return [["access_time", "DESC"]];
+      break;
+    default:
+      return [["name", "ASC"]];
+  }
 }
 
 module.exports = router;
