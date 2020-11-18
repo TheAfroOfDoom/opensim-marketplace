@@ -85,7 +85,7 @@ router.get("/", async (req, res) => {
       });
     }
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     } else {

@@ -1,12 +1,8 @@
 import React from "react";
 import axios from "axios";
 import Moment from "react-moment";
-import ReactDOM from "react-dom";
+
 import {
-  Nav,
-  Form,
-  FormControl,
-  NavDropdown,
   Button,
   Image,
 } from "react-bootstrap";
@@ -22,17 +18,31 @@ export default class ItemScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await axios.get("/api/item", {
-      params: {
-        id: this.props.match.params.assetId,
-        color: "green",
-      },
-    });
+    let error
+    try{
+      const response = await axios.get("/api/item", {
+          params: {
+            id: this.props.match.params.assetId
+          },
+      }).catch(err => {
+        if (err.response.status === 401) {
+          throw new Error(`${err.config.url} Unauthorized`);
+        }
+        if (err.response.status === 400) {
+          throw new Error(`${err.config.url} not found:2`);
+        }
+        throw err;
+      });
+      this.setState({
+        data: response.data,
+      });
 
-    this.setState({
-      data: response.data,
-    });
-  }
+    }catch (err) {
+      error = err;
+      console.log(error.message);
+    }
+
+}
 
   handleAdd = async () => {
     const response = await axios.post("/api/inventory/add", {

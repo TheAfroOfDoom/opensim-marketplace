@@ -1,13 +1,11 @@
 import React from "react";
 import axios from "axios";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import { Jumbotron, Card, Button, Carousel } from "react-bootstrap";
+import { Jumbotron, Card } from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
 import Moment from "react-moment";
 
 import "./HomeScreen.css";
 
-let defaultImage = "/Default.jpg";
 let categories = [
   { name: "Material", assetType: -2 },
   { name: "Texture", assetType: 0 },
@@ -56,6 +54,7 @@ export default class HomeScreen extends React.Component {
         else return 0;
       });
     }
+    console.log("LETs See ",sorted);
     return (
       <div>
         <div>
@@ -84,8 +83,8 @@ export default class HomeScreen extends React.Component {
                       </Card.Header>
                       <Card.Body className="body">
                         <h3>
-                          Creator: {obj.useraccount.FirstName}{" "}
-                          {obj.useraccount.LastName}
+                          Creator: {obj.useraccount ? obj.useraccount.FirstName : "None"}{" "}
+                          {obj.useraccount ? obj.useraccount.LastName : "None"}
                         </h3>
                         <p>
                           Asset Type:{" "}
@@ -112,7 +111,7 @@ export default class HomeScreen extends React.Component {
               })}
           </div>
         </div>
-        <div class="side">
+        <div className="side">
           <h1 className="title">Search Categories</h1>
           <div className="c">
             {categories.map((obj) => {

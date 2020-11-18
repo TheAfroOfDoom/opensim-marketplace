@@ -2,14 +2,10 @@ import React from "react";
 import "./Navbar.css";
 import Navbar from "react-bootstrap/Navbar";
 import Cookies from "js-cookie";
-import { Nav, Form, FormControl, NavDropdown, Button } from "react-bootstrap";
+import { Nav, Form, Button } from "react-bootstrap";
 import axios from "axios";
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
   Link,
-  withRouter,
   Redirect,
 } from "react-router-dom";
 
@@ -77,7 +73,7 @@ class NavigationBar extends React.Component {
                 onChange={this.handleChange.bind(this)}
                 onSubmit={this.onClick}
               />
-                
+
               <Link to="/search">
                 <Button type="submit" onClick={this.onClick} variant="success">
                   <span>Search</span>

@@ -1,15 +1,10 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import {
-  Nav,
-  Form,
-  FormControl,
-  NavDropdown,
   Button,
   Pagination,
 } from "react-bootstrap";
-import axios from "axios";
-import { Redirect, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./SearchScreen.css";
 
 export default class SearchScreen extends React.Component {
