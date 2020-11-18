@@ -52,14 +52,16 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/add", async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
     if (uuid === undefined) throw new Error("Unauthorized");
 
     //Get item id
-    let { assetID } = req.query;
+    let { assetID } = req.body;
+
+    console.log(req.body);
 
     //Run SP
     const info = await sequelize.query(
@@ -77,7 +79,7 @@ router.get("/add", async (req, res) => {
     console.log("Add Error: " + sel[0].error);
     return res.status(200).send({ error: sel[0].error === 1 ? true : false });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     } else {
@@ -86,14 +88,14 @@ router.get("/add", async (req, res) => {
   }
 });
 
-router.get("/remove", async (req, res) => {
+router.post("/remove", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
     if (uuid === undefined) throw new Error("Unauthorized");
 
     //Get item id
-    let { assetID } = req.query;
+    let { assetID } = req.body;
 
     // Give relations
     // TODO: Update
@@ -129,7 +131,7 @@ router.get("/remove", async (req, res) => {
   }
 });
 
-router.get("/upload", async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
@@ -154,4 +156,3 @@ router.get("/upload", async (req, res) => {
 });
 
 module.exports = router;
-4;

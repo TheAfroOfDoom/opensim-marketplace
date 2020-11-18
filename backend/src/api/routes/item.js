@@ -20,6 +20,8 @@ router.get("/", async (req, res) => {
       creator = false,
       invInfo;
 
+    let x = { id: id };
+
     // Get Assets Table
     itemInfo = await Assets.findAll({
       attributes: [
@@ -83,6 +85,7 @@ router.get("/", async (req, res) => {
     }
   }
 });
+
 module.exports = router;
 
 /*

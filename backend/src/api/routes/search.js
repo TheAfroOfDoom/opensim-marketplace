@@ -23,9 +23,19 @@ router.get("/", async (req, res) => {
     }
 
     //Assign query params
+    let opensimCreatorIDs = [
+      "11111111-1111-0000-0000-000100bba000",
+      "00000000-0000-0000-0000-000000000000",
+    ];
+
     let whereParams = {
       name: { [Op.like]: `%${searchString}%` },
-      [Op.or]: [{ public: 1 }, { builtin: 1 }],
+      [Op.or]: [
+        { public: 1 },
+        ...opensimCreatorIDs.map((id) => {
+          return { CreatorID: id };
+        }),
+      ],
     };
 
     if (assetType !== undefined) {
@@ -98,7 +108,7 @@ function getAssets(whereParams) {
       {
         model: UserAccounts,
         attributes: ["FirstName", "LastName"],
-        required: true,
+        //required: true,
         on: {
           col1: sequelize.where(
             sequelize.col("assets.CreatorID"),
