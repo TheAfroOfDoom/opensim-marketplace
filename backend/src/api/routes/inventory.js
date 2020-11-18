@@ -3,12 +3,13 @@ const router = express.Router();
 const sequelize = require("../../config/database");
 const InventoryItems = require("../../models/InventoryItems");
 const Assets = require("../../models/Assets");
+const { validate } = require("uuid");
 
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -45,7 +46,9 @@ router.get("/", async (req, res) => {
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
+      return res.send(401);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
     } else {
       return res.sendStatus(400);
     }
@@ -56,10 +59,11 @@ router.post("/add", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     //Get item id
     let { assetID } = req.body;
+    if (!validate(assetID)) throw new Error("Invalid ID");
 
     console.log(req.body);
 
@@ -78,9 +82,11 @@ router.post("/add", async (req, res) => {
     console.log("Add Error: " + sel.error);
     return res.status(200).send({ error: sel.error === 1 ? true : false });
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
+      return res.send(401);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
     } else {
       return res.sendStatus(400);
     }
@@ -91,10 +97,11 @@ router.post("/remove", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     //Get item id
     let { assetID } = req.body;
+    if (!validate(assetID)) throw new Error("Invalid ID");
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -133,7 +140,7 @@ router.post("/upload", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     //Get item id
     let { assetID } = req.query;

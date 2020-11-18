@@ -47,12 +47,21 @@ describe("Test the login path", () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test("Test GET with correct user but incorrect password", async () => {
+  test("Test GET with correct user and password", async () => {
     const response = await request(app).get("/api/login").query({
       firstName: "Ryan",
       lastName: "Strongman",
       password: "2EvXhxnn",
     });
     expect(response.statusCode).toBe(201);
+  });
+
+  test("Test GET with correct user and incorrect password", async () => {
+    const response = await request(app).get("/api/login").query({
+      firstName: "Ryan",
+      lastName: "Strongman",
+      password: "password",
+    });
+    expect(response.statusCode).toBe(400);
   });
 });

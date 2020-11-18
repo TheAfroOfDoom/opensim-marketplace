@@ -5,12 +5,13 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
+const { validate } = require("uuid");
 
 router.get("/", async (req, res) => {
   try {
-    //Check if user is authenticated
+    ///Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     // Give relations
     UserAccounts.hasMany(Assets);
@@ -70,7 +71,7 @@ router.get("/public", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     // Give relations
     UserAccounts.hasMany(Assets);
