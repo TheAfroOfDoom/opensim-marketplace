@@ -6,24 +6,27 @@ const UserAccounts = require("../../models/UserAccounts");
 const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
 
-let builtinUUID = "11111111-1111-0000-0000-000100bba000";
-let nilUUID = "00000000-0000-0000-0000-000000000000";
-
 router.get("/", async (req, res) => {
   try {
+    //Check if user is authenticated
     const { uuid } = req.cookies;
     if (uuid == undefined) throw new Error("Unauthorized");
+
+    // Get assetID param
     const { id } = req.query;
 
-    let itemInfo,
-      userInfo,
+    let userInfo,
       creator = false,
       invInfo;
 
-    let x = { id: id };
+    // List of OpenSims builtin IDs
+    let opensimCreatorIDs = [
+      "11111111-1111-0000-0000-000100bba000",
+      "00000000-0000-0000-0000-000000000000",
+    ];
 
-    // Get Assets Table
-    itemInfo = await Assets.findAll({
+    // Get Asset from Assets table
+    const [itemInfo] = await Assets.findAll({
       attributes: [
         "name",
         "description",
@@ -36,39 +39,41 @@ router.get("/", async (req, res) => {
       ],
       where: { id: id },
     });
-    console.log();
+
     //If there is an asset
     if (!_.isEmpty(itemInfo)) {
-      if (
-        itemInfo[0].CreatorID === builtinUUID ||
-        itemInfo[0].CreatorID === nilUUID
-      ) {
+      if (opensimCreatorIDs.includes(itemInfo.CreatorID)) {
         //Creator is System
         creator = false;
       } else {
         // Get user based on Creator of asset
-        userInfo = await UserAccounts.findAll({
+        [userInfo] = await UserAccounts.findAll({
           attributes: ["PrincipalID", "FirstName", "LastName"],
-          where: { PrincipalID: itemInfo[0].CreatorID },
+          where: { PrincipalID: itemInfo.CreatorID },
         });
 
         // If User exists and id equals current uuid
-        if (!_.isEmpty(userInfo) && userInfo[0].PrincipalID === uuid) {
+        if (!_.isEmpty(userInfo) && userInfo.PrincipalID === uuid) {
           creator = true;
         }
-        invInfo = await InventoryItems.findAll({
+
+        //Get info on item in inventory
+        [invInfo] = await InventoryItems.findAll({
           where: { avatarID: uuid, assetID: id },
         });
       }
+
+      //Construct response object
       return res.status(200).send({
-        itemInfo: itemInfo[0],
-        userInfo: !_.isEmpty(userInfo) ? userInfo[0] : {},
+        itemInfo: itemInfo,
+        userInfo: !_.isEmpty(userInfo) ? userInfo : {},
         creator: creator,
         invInfo: !_.isEmpty(invInfo)
-          ? { ...invInfo[0], inInventory: true }
+          ? { ...invInfo.dataValues, inInventory: true }
           : { inInventory: false },
       });
     } else {
+      //No asset. Return all empty objects
       return res.send({
         itemInfo: {},
         userInfo: {},

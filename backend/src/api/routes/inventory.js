@@ -68,7 +68,6 @@ router.post("/add", async (req, res) => {
       `CALL marketplaceDownloadAsset(:userID, :assetID, @error);`,
       {
         replacements: { userID: uuid, assetID: assetID },
-        type: sequelize.QueryTypes.SELECT,
       }
     );
 
