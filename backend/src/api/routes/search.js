@@ -10,113 +10,59 @@ router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error();
+    if (uuid === undefined) throw new Error("Unauthorized");
+
+    // Give relations
+    UserAccounts.hasMany(Assets);
+    Assets.belongsTo(UserAccounts);
 
     // Check if there is a valid search string
-    let { searchString, assetType } = req.query;
+    let { searchString, assetType, limit, offset, order } = req.query;
     if (searchString === undefined) {
       searchString = "";
     }
 
-    UserAccounts.hasMany(Assets);
-    Assets.belongsTo(UserAccounts);
+    //Assign query params
+    let opensimCreatorIDs = [
+      "11111111-1111-0000-0000-000100bba000",
+      "00000000-0000-0000-0000-000000000000",
+    ];
 
-    let searchInfo;
-    if (assetType == undefined) {
-      // Search for all assets
-      searchInfo = await Assets.findAll({
-        where: {
-          name: { [Op.like]: `%${searchString}%` },
-          [Op.or]: [{ public: 1 }, { builtin: 1 }],
-        },
-        attributes: [
-          "name",
-          "description",
-          "assetType",
-          "id",
-          "create_time",
-          "CreatorID",
-          "access_time",
-        ],
-        include: [
-          {
-            model: UserAccounts,
-            attributes: ["FirstName", "LastName"],
-            required: true,
-            on: {
-              col1: sequelize.where(
-                sequelize.col("assets.CreatorID"),
-                "=",
-                sequelize.col("useraccount.PrincipalID")
-              ),
-            },
-          },
-        ],
-      });
-    } else {
-      // Search for all assets of type
-      searchInfo = await Assets.findAll({
-        where: {
-          name: { [Op.like]: `%${searchString}%` },
-          [Op.or]: [{ public: 1 }, { builtin: 1 }],
-          assetType: assetType,
-        },
-        attributes: [
-          "name",
-          "description",
-          "assetType",
-          "id",
-          "create_time",
-          "CreatorID",
-          "access_time",
-        ],
-        include: [
-          {
-            model: UserAccounts,
-            attributes: ["FirstName", "LastName"],
-            required: true,
-            on: {
-              col1: sequelize.where(
-                sequelize.col("assets.CreatorID"),
-                "=",
-                sequelize.col("useraccount.PrincipalID")
-              ),
-            },
-          },
-        ],
-      });
+    let whereParams = {
+      name: { [Op.like]: `%${searchString}%` },
+      [Op.or]: [
+        { public: 1 },
+        ...opensimCreatorIDs.map((id) => {
+          return { CreatorID: id };
+        }),
+      ],
+    };
+
+    if (assetType !== undefined) {
+      whereParams.assetType = assetType;
     }
 
-    let invInfo = await Assets.findAll({
-      attributes: [
-        "name",
-        "description",
-        "assetType",
-        "id",
-        "create_time",
-        "CreatorID",
-        "access_time",
-      ],
-      include: [
-        {
-          model: UserAccounts,
-          attributes: ["FirstName", "LastName"],
-          required: true,
-          on: {
-            col1: sequelize.where(
-              sequelize.col("assets.CreatorID"),
-              "=",
-              sequelize.col("useraccount.PrincipalID")
-            ),
-          },
-        },
-      ],
-    });
+    let orderParam = { order: getSort(order) };
 
-    return res.send(searchInfo);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
+    let limitParam = limit !== undefined ? { limit: parseInt(limit) } : {};
+
+    let offsetParam = offset !== undefined ? { offset: parseInt(offset) } : {};
+
+    let params = {
+      where: { ...whereParams },
+      ...limitParam,
+      ...offsetParam,
+      ...orderParam,
+    };
+
+    return res.send(await getAssets(params));
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else {
+      return res.sendStatus(400);
+    }
   }
 });
 
@@ -124,14 +70,14 @@ router.get("/public", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error();
+    if (uuid === undefined) throw new Error("Unauthorized");
 
     // Give relations
     UserAccounts.hasMany(Assets);
     Assets.belongsTo(UserAccounts);
 
     // Check if there is a valid search string
-    let { searchString, assetType } = req.query;
+    let { searchString, assetType, limit, offset, order } = req.query;
     if (searchString === undefined) {
       searchString = "";
     }
@@ -139,162 +85,89 @@ router.get("/public", async (req, res) => {
     //Assign query params
     let whereParams = {
       name: { [Op.like]: `%${searchString}%` },
-      [Op.or]: [{ public: 1 }, { builtin: 1 }],
+      public: 1,
     };
 
     if (assetType !== undefined) {
       whereParams.assetType = assetType;
     }
 
-    // Search for all assets
-    const searchInfo = await Assets.findAll({
-      where: {
-        ...whereParams,
-      },
-      attributes: [
-        "name",
-        "description",
-        "assetType",
-        "id",
-        "create_time",
-        "CreatorID",
-        "access_time",
-      ],
-      include: [
-        {
-          model: UserAccounts,
-          attributes: ["FirstName", "LastName"],
-          required: true,
-          on: {
-            col1: sequelize.where(
-              sequelize.col("assets.CreatorID"),
-              "=",
-              sequelize.col("useraccount.PrincipalID")
-            ),
-          },
-        },
-      ],
-    });
+    let orderParam = { order: getSort(order) };
 
-    return res.send(searchInfo);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
-  }
-});
+    let limitParam = limit !== undefined ? { limit: parseInt(limit) } : {};
 
-router.get("/builtin", async (req, res) => {
-  try {
-    //Check if user is authenticated
-    const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error();
+    let offsetParam = offset !== undefined ? { offset: parseInt(offset) } : {};
 
-    // Check if there is a valid search string
-    let { searchString, assetType } = req.query;
-    if (searchString === undefined) {
-      searchString = "";
-    }
+    let params = {
+      where: { ...whereParams },
+      ...limitParam,
+      ...offsetParam,
+      ...orderParam,
+    };
 
-    UserAccounts.hasMany(Assets);
-    Assets.belongsTo(UserAccounts);
-
-    let searchInfo;
-    if (assetType == undefined) {
-      // Search for all assets
-      searchInfo = await Assets.findAll({
-        where: {
-          name: { [Op.like]: `%${searchString}%` },
-          builtin: 1,
-        },
-        attributes: [
-          "name",
-          "description",
-          "assetType",
-          "id",
-          "create_time",
-          "CreatorID",
-          "access_time",
-        ],
-        include: [
-          {
-            model: UserAccounts,
-            attributes: ["FirstName", "LastName"],
-            required: true,
-            on: {
-              col1: sequelize.where(
-                sequelize.col("assets.CreatorID"),
-                "=",
-                sequelize.col("useraccount.PrincipalID")
-              ),
-            },
-          },
-        ],
-      });
+    return res.send(await getAssets(params));
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
     } else {
-      // Search for all assets of type
-      searchInfo = await Assets.findAll({
-        where: {
-          name: { [Op.like]: `%${searchString}%` },
-          [Op.or]: [{ public: 1 }, { builtin: 1 }],
-          assetType: assetType,
-        },
-        attributes: [
-          "name",
-          "description",
-          "assetType",
-          "id",
-          "create_time",
-          "CreatorID",
-          "access_time",
-        ],
-        include: [
-          {
-            model: UserAccounts,
-            attributes: ["FirstName", "LastName"],
-            required: true,
-            on: {
-              col1: sequelize.where(
-                sequelize.col("assets.CreatorID"),
-                "=",
-                sequelize.col("useraccount.PrincipalID")
-              ),
-            },
-          },
-        ],
-      });
+      return res.sendStatus(400);
     }
-
-    let invInfo = await Assets.findAll({
-      attributes: [
-        "name",
-        "description",
-        "assetType",
-        "id",
-        "create_time",
-        "CreatorID",
-        "access_time",
-      ],
-      include: [
-        {
-          model: UserAccounts,
-          attributes: ["FirstName", "LastName"],
-          required: true,
-          on: {
-            col1: sequelize.where(
-              sequelize.col("assets.CreatorID"),
-              "=",
-              sequelize.col("useraccount.PrincipalID")
-            ),
-          },
-        },
-      ],
-    });
-
-    return res.send(searchInfo);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
   }
 });
+
+function getAssets(params) {
+  return Assets.findAll({
+    ...params,
+    attributes: [
+      "name",
+      "description",
+      "assetType",
+      "id",
+      "create_time",
+      "CreatorID",
+      "access_time",
+    ],
+    include: [
+      {
+        model: UserAccounts,
+        attributes: ["FirstName", "LastName"],
+        //required: true,
+        on: {
+          col1: sequelize.where(
+            sequelize.col("assets.CreatorID"),
+            "=",
+            sequelize.col("useraccount.PrincipalID")
+          ),
+        },
+      },
+    ],
+  });
+}
+
+function getSort(order) {
+  switch (order) {
+    case "CREATE_ASC":
+      return [["create_time", "ASC"]];
+      break;
+    case "CREATE_DESC":
+      return [["create_time", "DESC"]];
+      break;
+    case "NAME_ASC":
+      return [["name", "ASC"]];
+      break;
+    case "NAME_DESC":
+      return [["name", "DESC"]];
+      break;
+    case "ACCESS_ASC":
+      return [["access_time", "ASC"]];
+      break;
+    case "ACCESS_DESC":
+      return [["access_time", "DESC"]];
+      break;
+    default:
+      return [["name", "ASC"]];
+  }
+}
 
 module.exports = router;

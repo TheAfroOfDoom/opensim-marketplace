@@ -22,10 +22,8 @@ export default class LoginScreen extends React.Component {
   };
   removeItem = async (assetID) => {
     try {
-      const response = await axios.get("/api/inventory/remove", {
-        params: {
-          assetID: assetID,
-        },
+      const response = await axios.post("/api/inventory/remove", {
+        assetID: assetID,
       });
       this.getInventory();
     } catch (error) {

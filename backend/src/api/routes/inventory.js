@@ -6,11 +6,15 @@ const Assets = require("../../models/Assets");
 
 router.get("/", async (req, res) => {
   try {
+    //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid == undefined) throw new Error();
+    if (uuid === undefined) throw new Error("Unauthorized");
+
+    // Give relations
     InventoryItems.hasMany(Assets);
     Assets.belongsTo(InventoryItems);
 
+    //Query inventory
     const inventoryInfo = await InventoryItems.findAll({
       where: { avatarID: uuid },
       attributes: [
@@ -38,41 +42,65 @@ router.get("/", async (req, res) => {
       ],
     });
     return res.send(inventoryInfo);
-  } catch (error) {
-    return res.sendStatus(400);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else {
+      return res.sendStatus(400);
+    }
   }
 });
 
-router.get("/add", async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
+    //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid == undefined) throw new Error();
-    let { assetID } = req.query;
-    let error = 0;
+    if (uuid === undefined) throw new Error("Unauthorized");
+
+    //Get item id
+    let { assetID } = req.body;
+
+    console.log(req.body);
+
+    //Run SP
     const info = await sequelize.query(
-      `CALL marketplaceDownloadAsset(:userID, :assetID, @:error)`,
+      `CALL marketplaceDownloadAsset(:userID, :assetID, @error);`,
       {
-        replacements: { userID: uuid, assetID: assetID, error: error },
+        replacements: { userID: uuid, assetID: assetID },
       }
     );
-    console.log(error);
-    return res.sendStatus(200);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
+
+    //Querry error code
+    const [sel] = await sequelize.query("SELECT @error AS error;", {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    console.log("Add Error: " + sel.error);
+    return res.status(200).send({ error: sel.error === 1 ? true : false });
+  } catch (e) {
+    console.error(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else {
+      return res.sendStatus(400);
+    }
   }
 });
 
-router.get("/remove", async (req, res) => {
+router.post("/remove", async (req, res) => {
   try {
+    //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid == undefined) throw new Error();
-    let { assetID } = req.query;
+    if (uuid === undefined) throw new Error("Unauthorized");
 
+    //Get item id
+    let { assetID } = req.body;
+
+    // Give relations
     InventoryItems.hasMany(Assets);
     Assets.belongsTo(InventoryItems);
 
-    let error = 0;
+    //Destroy item
     const info = await InventoryItems.destroy({
       where: { assetID: assetID, avatarID: uuid },
       include: [
@@ -90,24 +118,48 @@ router.get("/remove", async (req, res) => {
         },
       ],
     });
-    return res.sendStatus(200);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
+    return res.sendStatus(204);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else {
+      return res.sendStatus(400);
+    }
   }
 });
 
-router.get("/upload", async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
+    //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid == undefined) throw new Error();
+    if (uuid === undefined) throw new Error("Unauthorized");
+
+    //Get item id
     let { assetID } = req.query;
 
+    //Check user is creator
+    const [creatorID] = await Assets.findAll({
+      where: { id: assetID },
+      attributes: ["CreatorID"],
+    });
+
+    if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
+
+    //Update database
     const info = await Assets.update({ public: 1 }, { where: { id: assetID } });
+
+    //Returns rows updated
     return res.status(200).send(info);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else if (e.message === "Forbidden") {
+      return res.sendStatus(403);
+    } else {
+      return res.sendStatus(400);
+    }
   }
 });
 
