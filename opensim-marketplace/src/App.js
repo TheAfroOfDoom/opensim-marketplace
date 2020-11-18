@@ -62,11 +62,7 @@ class App extends React.Component {
     this.setState({ loggedIn: newValue });
   };
 
-  setStatus = () => {
-    this.setState({ loginStatus: Cookies.get("uuid") });
-  };
   render() {
-    this.checkStatus();
     return (
       <div className="App">
         <Router basename="marketplace">
@@ -79,7 +75,11 @@ class App extends React.Component {
             </div>
           ) : (
             <div>
-              <NavigationBar searchData={this.handleSearchChange} />
+              <NavigationBar
+                searchData={this.handleSearchChange}
+                data={this.state.loggedIn}
+                handleLogin={this.handleLogin}
+              />
               <Route path="/login">
                 <Redirect to="/" />
               </Route>

@@ -50,8 +50,7 @@ export default class ItemScreen extends React.Component {
     switch (assetType) {
       case -2:
         info.type = "Material";
-        info.pic =
-          "https://upload.wikimedia.org/wikipedia/en/c/c2/Peter_Griffin.png";
+        info.pic = hey;
         break;
       case 0:
         info.type = "Texture in JPEG2000 J2C stream format";
@@ -114,6 +113,9 @@ export default class ItemScreen extends React.Component {
       return <div />;
     } else {
       const { itemInfo } = this.state.data;
+      const { userInfo } = this.state.data;
+      const { invInfo } = this.state.data;
+      console.log(invInfo.inInventory);
       return (
         <body className="page">
           <div>
@@ -128,9 +130,11 @@ export default class ItemScreen extends React.Component {
                   <p>{this.getAssetType(itemInfo.assetType).type}</p>
                 </div>
                 <div className="user-description">
-                  <h3>User info maybe</h3>
-                  <p>User Name{this.state.dataString.substring(0, 10)}</p>
-                  <p>About User</p>
+                  <h3>Creator Information</h3>
+                  <p>Creator ID: {itemInfo.CreatorID}</p>
+                  <p>Creator Name: {userInfo.FirstName} {userInfo.LastName}</p>
+                  <p>Creator PrincipalID: {userInfo.PrincipalID}</p>
+                  {this.state.dataString.substring(0, 10)}
                 </div>
                 <div className="asset-download">
                   <h3>Download & Details</h3>
@@ -142,9 +146,16 @@ export default class ItemScreen extends React.Component {
                       </Moment>
                     }
                   </p>
+                  {console.log(invInfo.inInventory)}
+                {!invInfo.inInventory ? (
                   <Link to={`/inventory#${itemInfo.name}`}>
                     <Button onClick={this.handleAdd}>Add To Inventory</Button>
                   </Link>
+                ) : (
+                  <Link to={`/inventory#${itemInfo.name}`}>
+                    <Button onClick={this.handleAdd}>View In Inventory</Button>
+                  </Link>
+                )}
                 </div>
               </div>
             </div>

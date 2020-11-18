@@ -78,5 +78,3 @@ export default class SearchScreen extends React.Component {
     );
   }
 }
-//bg={"Info".toLowerCase()}
-//style={{ width: "18rem", height: "9rem" }}

@@ -1,6 +1,7 @@
 import React from "react";
 import "./Navbar.css";
 import Navbar from "react-bootstrap/Navbar";
+import Cookies from "js-cookie";
 import { Nav, Form, FormControl, NavDropdown, Button } from "react-bootstrap";
 import axios from "axios";
 import {
@@ -33,16 +34,28 @@ class NavigationBar extends React.Component {
     this.setState({ search: fleldVal });
   }
 
+
+  checkStatus = () => {
+    if(this.props.data){
+      console.log('Logging Out');
+      Cookies.remove('uuid');
+      this.props.handleLogin(false);
+    }else{
+      console.log("Not Logged In");
+    }
+  };
+
+
   render() {
     return (
       <header>
         <Navbar variant="dark" bg="dark" expand="lg" style={{ paddingLeft: "0px" }}>
-          <Link to="/">
+          <Link exact to="/">
             <Navbar.Brand>
               <img src="minilogo.png" style={{ height: 30, width: 30 }} />
             </Navbar.Brand>
           </Link>
-          <Link to="/">
+          <Link exact to="/">
             <Navbar.Brand>
               <div style={{ fontSize: "1.5rem" }}>OpenSim Marketplace</div>
             </Navbar.Brand>
@@ -53,6 +66,9 @@ class NavigationBar extends React.Component {
             <Link to="/inventory">
               <Navbar.Brand>Inventory</Navbar.Brand>
             </Link>
+            <Link to="/login" onClick={this.checkStatus}>
+              <Navbar.Brand>Logout</Navbar.Brand>
+            </Link>
             <Form inline onSubmit={this.onClick}>
               <Form.Control
                 type="text"
@@ -61,7 +77,7 @@ class NavigationBar extends React.Component {
                 onChange={this.handleChange.bind(this)}
                 onSubmit={this.onClick}
               />
-
+                
               <Link to="/search">
                 <Button type="submit" onClick={this.onClick} variant="success">
                   <span>Search</span>
@@ -71,6 +87,7 @@ class NavigationBar extends React.Component {
           </Navbar.Collapse>
         </Navbar>
         {this.state.redirect ? <Redirect to="/search" /> : <div />}
+
       </header>
     );
   }
