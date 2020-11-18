@@ -14,6 +14,7 @@
   margin-left: 5%;
   margin-right: 5%;
   margin-top: 20px; /* Set the width of the sidebar */
+  margin-bottom: 10px;
   /*position: relative;*/ /* Fixed Sidebar (stay in place on scroll) */
   /*z-index: 1; /* Stay on top */ /* Stay at the top */
   /*left: 0;*/
@@ -52,6 +53,7 @@
 .jumbo {
   text-align: center;
   height: 50vh;
+  background-color: #02394a;
   margin-left: 5%;
   margin-right: 5%;
   margin-top: 20px;
@@ -88,10 +90,26 @@
   border-left: none;
   border-right: none;
   border-top: none;
-  color: #84fff2;
+  color: #ff8e32;
   border-bottom: 1px solid rgb(225, 232, 238);
 }
 .c {
   display: flex;
   justify-content: space-around;
+}
+
+.cards {
+  width: 400px;
+  height: auto;
+  background-color: #02394a;
+  border-color: white;
+  margin-bottom: 10px;
+  border-style: solid;
+}
+.body {
+  horizontal-align: left;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }

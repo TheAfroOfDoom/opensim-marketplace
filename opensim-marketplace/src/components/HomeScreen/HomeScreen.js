@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { Jumbotron } from "react-bootstrap";
+import { Jumbotron, Card, Button } from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
 
 import "./HomeScreen.css";
@@ -46,23 +46,43 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
+    let dataarr = this.state.data;
     return (
       <div>
         <div>
           <Jumbotron className="jumbo">
             <div>
-              <h1 className="jumbotext">Fluid jumbotron</h1>
-              <p>
-                This is a modified jumbotron that occupies the entire horizontal
-                space of its parent.
-              </p>
+              <h1>Welcome</h1>
+              <h3>To the Naval UnderSea Warfare Center's Asset Marketplace</h3>
             </div>
           </Jumbotron>
         </div>
         {this.state.redirect ? <Redirect to="/search" /> : <div />}
         <div className="item">
           <h1 className="itemTitle">Recently Updated Items</h1>
-          <div></div>
+          <div className="grid-container">
+            {this.state.data &&
+              dataarr.map((obj, index) => {
+                return (
+                  <div style={{ margin: "1rem" }}>
+                    <Card bsPrefix="cards">
+                      <Card.Header>
+                        <Link to={`/item/${obj.id}`}>
+                          <Card.Title border="dark" className="text-item">
+                            {obj.name}
+                          </Card.Title>
+                        </Link>
+                      </Card.Header>
+                      <Card.Body className="body">
+                        <h3>Creator: </h3>
+                        <p>Asset Type: </p>
+                        <p>Item Description: {obj.description}</p>
+                      </Card.Body>
+                    </Card>
+                  </div>
+                );
+              })}
+          </div>
         </div>
         <div class="side">
           <h1 className="title">Search Categories</h1>
