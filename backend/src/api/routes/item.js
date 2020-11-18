@@ -5,6 +5,7 @@ const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
+const uuid = require("uuid");
 
 router.get("/", async (req, res) => {
   try {
@@ -14,6 +15,8 @@ router.get("/", async (req, res) => {
 
     // Get assetID param
     const { id } = req.query;
+
+    if (!uuid.validate(id)) throw new Error();
 
     let userInfo,
       creator = false,
@@ -82,7 +85,7 @@ router.get("/", async (req, res) => {
       });
     }
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     } else {

@@ -72,11 +72,11 @@ router.post("/add", async (req, res) => {
     );
 
     //Querry error code
-    const sel = await sequelize.query("SELECT @error AS error;", {
+    const [sel] = await sequelize.query("SELECT @error AS error;", {
       type: sequelize.QueryTypes.SELECT,
     });
-    console.log("Add Error: " + sel[0].error);
-    return res.status(200).send({ error: sel[0].error === 1 ? true : false });
+    console.log("Add Error: " + sel.error);
+    return res.status(200).send({ error: sel.error === 1 ? true : false });
   } catch (e) {
     console.error(e);
     if (e.message === "Unauthorized") {
@@ -97,7 +97,6 @@ router.post("/remove", async (req, res) => {
     let { assetID } = req.body;
 
     // Give relations
-    // TODO: Update
     InventoryItems.hasMany(Assets);
     Assets.belongsTo(InventoryItems);
 

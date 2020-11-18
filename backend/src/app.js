@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 });
 */
 
-app.use("/api/test", require("./api/routes/test"));
+app.use("/api/connection", require("./api/routes/connection"));
 
 app.use("/api/login", require("./api/routes/login"));
 
