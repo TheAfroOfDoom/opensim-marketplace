@@ -140,6 +140,14 @@ router.post("/upload", async (req, res) => {
     //Get item id
     let { assetID } = req.query;
 
+    //Check user is creator
+    const [creatorID] = await Assets.findAll({
+      where: { id: assetID },
+      attributes: ["CreatorID"],
+    });
+
+    if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
+
     //Update database
     const info = await Assets.update({ public: 1 }, { where: { id: assetID } });
 
@@ -149,6 +157,8 @@ router.post("/upload", async (req, res) => {
     console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
+    } else if (e.message === "Forbidden") {
+      return res.sendStatus(403);
     } else {
       return res.sendStatus(400);
     }
