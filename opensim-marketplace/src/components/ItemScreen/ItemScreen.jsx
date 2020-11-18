@@ -35,10 +35,8 @@ export default class ItemScreen extends React.Component {
   }
 
   handleAdd = async () => {
-    const response = await axios.get("/api/inventory/add", {
-      params: {
-        assetID: this.props.match.params.assetId,
-      },
+    const response = await axios.post("/api/inventory/add", {
+      assetID: this.props.match.params.assetId,
     });
   };
 
@@ -117,6 +115,7 @@ export default class ItemScreen extends React.Component {
       return (
         <body className="page">
           <div>
+            <img />
             <div className="container">
               <div className="left-column">
                 <Image src={this.getAssetType(itemInfo.assetType).pic} fluid />
