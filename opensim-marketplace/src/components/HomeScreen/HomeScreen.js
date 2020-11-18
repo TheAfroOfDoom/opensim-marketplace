@@ -1,8 +1,9 @@
 import React from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { Jumbotron, Card, Button } from "react-bootstrap";
+import { Jumbotron, Card, Button, Carousel } from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
+import Moment from "react-moment";
 
 import "./HomeScreen.css";
 
@@ -47,6 +48,14 @@ export default class HomeScreen extends React.Component {
 
   render() {
     let dataarr = this.state.data;
+    let sorted = null;
+    if (dataarr != null) {
+      sorted = dataarr.sort((first, second) => {
+        if (first.create_time < second.create_time) return 1;
+        if (first.create_time > second.create_time) return -1;
+        else return 0;
+      });
+    }
     return (
       <div>
         <div>
@@ -61,8 +70,8 @@ export default class HomeScreen extends React.Component {
         <div className="item">
           <h1 className="itemTitle">Recently Updated Items</h1>
           <div className="grid-container">
-            {this.state.data &&
-              dataarr.map((obj, index) => {
+            {sorted &&
+              sorted.map((obj, index) => {
                 return (
                   <div style={{ margin: "1rem" }}>
                     <Card bsPrefix="cards">
@@ -74,9 +83,28 @@ export default class HomeScreen extends React.Component {
                         </Link>
                       </Card.Header>
                       <Card.Body className="body">
-                        <h3>Creator: </h3>
-                        <p>Asset Type: </p>
-                        <p>Item Description: {obj.description}</p>
+                        <h3>
+                          Creator: {obj.useraccount.FirstName}{" "}
+                          {obj.useraccount.LastName}
+                        </h3>
+                        <p>
+                          Asset Type:{" "}
+                          {
+                            categories.find(
+                              (element) => element.assetType === obj.assetType
+                            ).name
+                          }
+                        </p>
+                        <p>
+                          {obj.description !== ""
+                            ? obj.description
+                            : "No Description"}{" "}
+                        </p>
+                        <p>
+                          <Moment format="MM/DD/YYYY HH:mm" unix>
+                            {obj.create_time}
+                          </Moment>
+                        </p>
                       </Card.Body>
                     </Card>
                   </div>
