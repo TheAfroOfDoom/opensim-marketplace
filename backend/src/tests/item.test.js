@@ -12,7 +12,7 @@ describe("Test the item path", () => {
     const response = await request(app)
       .get("/api/item")
       .set("Cookie", [`uuid=${uuid}`]);
-    expect(response.statusCode).toBe(400);
+    expect(response.text).toBe("Invalid ID");
   });
 
   test("Test GET with authorization and invalid itemid (String)", async () => {
@@ -20,7 +20,7 @@ describe("Test the item path", () => {
       .get("/api/item")
       .query({ id: "0" })
       .set("Cookie", [`uuid=${uuid}`]);
-    expect(response.statusCode).toBe(400);
+    expect(response.text).toBe("Invalid ID");
   });
 
   test("Test GET with authorization and invalid itemid (Number)", async () => {
@@ -28,7 +28,7 @@ describe("Test the item path", () => {
       .get("/api/item")
       .query({ id: 1 })
       .set("Cookie", [`uuid=${uuid}`]);
-    expect(response.statusCode).toBe(400);
+    expect(response.text).toBe("Invalid ID");
   });
 
   test("Test GET with authorization and invalid itemid (Object)", async () => {
@@ -36,7 +36,7 @@ describe("Test the item path", () => {
       .get("/api/item")
       .query({ id: { id: "00000000-0000-0000-0000-000000000000" } })
       .set("Cookie", [`uuid=${uuid}`]);
-    expect(response.statusCode).toBe(400);
+    expect(response.text).toBe("Invalid ID");
   });
 
   test("Test GET with authorization and valid itemid", async () => {
@@ -44,7 +44,7 @@ describe("Test the item path", () => {
       .get("/api/item")
       .query({ id: "00000000-0000-0000-0000-000000000000" })
       .set("Cookie", [`uuid=${uuid}`]);
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(200);
   });
 
   test("Test GET with authorization and valid itemid but wrong param name", async () => {
@@ -52,7 +52,7 @@ describe("Test the item path", () => {
       .get("/api/item")
       .query({ assetID: "00000000-0000-0000-0000-000000000000" })
       .set("Cookie", [`uuid=${uuid}`]);
-    expect(response.statusCode).toBe(400);
+    expect(response.text).toBe("Invalid ID");
   });
 
   test("Test GET without authorization and invalid itemid", async () => {
