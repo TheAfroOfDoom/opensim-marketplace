@@ -1,12 +1,8 @@
 import React from "react";
 import axios from "axios";
 import Moment from "react-moment";
-import ReactDOM from "react-dom";
+
 import {
-  Nav,
-  Form,
-  FormControl,
-  NavDropdown,
   Button,
   Image,
 } from "react-bootstrap";
@@ -22,17 +18,31 @@ export default class ItemScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await axios.get("/api/item", {
-      params: {
-        id: this.props.match.params.assetId,
-        color: "green",
-      },
-    });
+    let error
+    try{
+      const response = await axios.get("/api/item", {
+          params: {
+            id: this.props.match.params.assetId
+          },
+      }).catch(err => {
+        if (err.response.status === 401) {
+          throw new Error(`${err.config.url} Unauthorized`);
+        }
+        if (err.response.status === 400) {
+          throw new Error(`${err.config.url} not found:2`);
+        }
+        throw err;
+      });
+      this.setState({
+        data: response.data,
+      });
 
-    this.setState({
-      data: response.data,
-    });
-  }
+    }catch (err) {
+      error = err;
+      console.log(error.message);
+    }
+
+}
 
   handleAdd = async () => {
     const response = await axios.post("/api/inventory/add", {
@@ -48,8 +58,7 @@ export default class ItemScreen extends React.Component {
     switch (assetType) {
       case -2:
         info.type = "Material";
-        info.pic =
-          "https://upload.wikimedia.org/wikipedia/en/c/c2/Peter_Griffin.png";
+        info.pic = hey;
         break;
       case 0:
         info.type = "Texture in JPEG2000 J2C stream format";
@@ -112,6 +121,9 @@ export default class ItemScreen extends React.Component {
       return <div />;
     } else {
       const { itemInfo } = this.state.data;
+      const { userInfo } = this.state.data;
+      const { invInfo } = this.state.data;
+      console.log(invInfo.inInventory);
       return (
         <body className="page">
           <div>
@@ -127,9 +139,11 @@ export default class ItemScreen extends React.Component {
                   <p>{this.getAssetType(itemInfo.assetType).type}</p>
                 </div>
                 <div className="user-description">
-                  <h3>User info maybe</h3>
-                  <p>User Name{this.state.dataString.substring(0, 10)}</p>
-                  <p>About User</p>
+                  <h3>Creator Information</h3>
+                  <p>Creator ID: {itemInfo.CreatorID}</p>
+                  <p>Creator Name: {userInfo.FirstName} {userInfo.LastName}</p>
+                  <p>Creator PrincipalID: {userInfo.PrincipalID}</p>
+                  {this.state.dataString.substring(0, 10)}
                 </div>
                 <div className="asset-download">
                   <h3>Download & Details</h3>
@@ -141,9 +155,16 @@ export default class ItemScreen extends React.Component {
                       </Moment>
                     }
                   </p>
+                  {console.log(invInfo.inInventory)}
+                {!invInfo.inInventory ? (
                   <Link to={`/inventory#${itemInfo.name}`}>
                     <Button onClick={this.handleAdd}>Add To Inventory</Button>
                   </Link>
+                ) : (
+                  <Link to={`/inventory#${itemInfo.name}`}>
+                    <Button onClick={this.handleAdd}>View In Inventory</Button>
+                  </Link>
+                )}
                 </div>
               </div>
             </div>

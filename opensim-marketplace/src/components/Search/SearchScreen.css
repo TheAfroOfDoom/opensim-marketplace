@@ -1,6 +1,6 @@
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }
 
 .new-custom {
@@ -23,6 +23,8 @@
 .pager {
   margin-left: 25%;
   margin-right: 25%;
+  justifycontent: "center";
+  alignitems: "center";
   text-align: center;
 }
 

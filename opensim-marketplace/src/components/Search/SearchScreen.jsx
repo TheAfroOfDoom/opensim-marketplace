@@ -1,14 +1,10 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import {
-  Nav,
-  Form,
-  FormControl,
-  NavDropdown,
   Button,
   Pagination,
 } from "react-bootstrap";
-import { Redirect, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./SearchScreen.css";
 
 export default class SearchScreen extends React.Component {
@@ -70,12 +66,10 @@ export default class SearchScreen extends React.Component {
               );
             })}
         </div>
-        <div className="pager">
+        <div className="pager" class="d-flex justify-content-center">
           <Pagination>{items}</Pagination>
         </div>
       </div>
     );
   }
 }
-//bg={"Info".toLowerCase()}
-//style={{ width: "18rem", height: "9rem" }}
