@@ -7,7 +7,21 @@ import {
   Image,
 } from "react-bootstrap";
 import "./ItemScreen.css";
-import hey from "./Default.jpg";
+import texture_default from "./Images/Texture_Default.png";
+import animation_default from "./Images/Animation_Default.png";
+import attachment_default from "./Images/Attachment_Default.png";
+import bodyparts_default from "./Images/BodyParts_Default.png";
+import callingcard_default from "./Images/CallingCard_Default.png";
+import cloths_default from "./Images/Cloths_Default.png";
+import gesture_default from "./Images/Gesture_Default.png";
+import landmark_default from "./Images/Landmark_Default.png";
+import material_default from "./Images/Material_Default.png";
+import mesh_default from "./Images/Mesh_Default.png";
+import notecard_default from "./Images/NoteCard_Default.png";
+import object_default from "./Images/Object_Default.png";
+import script_default from "./Images/Script_Default.png";
+import sound_default from "./Images/Sound_Default.png";
+
 
 import { HashLink as Link } from "react-router-hash-link";
 
@@ -58,59 +72,59 @@ export default class ItemScreen extends React.Component {
     switch (assetType) {
       case -2:
         info.type = "Material";
-        info.pic = hey;
+        info.pic = material_default;
         break;
       case 0:
         info.type = "Texture in JPEG2000 J2C stream format";
-        info.pic = hey;
+        info.pic = texture_default;
         break;
       case 1:
         info.type = "Sound";
-        info.pic = hey;
+        info.pic = sound_default;
         break;
       case 2:
         info.type = "Calling Card";
-        info.pic = hey;
+        info.pic = callingcard_default;
         break;
       case 3:
         info.type = "Landmark";
-        info.pic = hey;
+        info.pic = landmark_default;
         break;
       case 5:
         info.type = "Clothing";
-        info.pic = hey;
+        info.pic = cloths_default;
         break;
       case 6:
-        info.type = "itemInfoect";
-        info.pic = hey;
+        info.type = "Object";
+        info.pic = object_default;
         break;
       case 7:
         info.type = "Notecard";
-        info.pic = hey;
+        info.pic = notecard_default;
         break;
       case 10:
         info.type = "LSLText (aka a script)";
-        info.pic = hey;
+        info.pic = script_default;
         break;
       case 13:
         info.type = "Body Part";
-        info.pic = hey;
+        info.pic = bodyparts_default;
         break;
       case 20:
         info.type = "Animation";
-        info.pic = hey;
+        info.pic = animation_default;
         break;
       case 21:
         info.type = "Gesture";
-        info.pic = hey;
+        info.pic = gesture_default;
         break;
       case 49:
         info.type = "Mesh";
-        info.pic = hey;
+        info.pic = mesh_default;
         break;
       default:
         info.type = "Invalid Type";
-        info.pic = hey;
+        info.pic = attachment_default;
         break;
     }
     return info;
@@ -140,9 +154,8 @@ export default class ItemScreen extends React.Component {
                 </div>
                 <div className="user-description">
                   <h3>Creator Information</h3>
-                  <p>Creator ID: {itemInfo.CreatorID}</p>
-                  <p>Creator Name: {userInfo.FirstName} {userInfo.LastName}</p>
-                  <p>Creator PrincipalID: {userInfo.PrincipalID}</p>
+                  <p>First Name: {userInfo.FirstName}</p>
+                  <p>Last Name: {userInfo.LastName}</p>
                   {this.state.dataString.substring(0, 10)}
                 </div>
                 <div className="asset-download">

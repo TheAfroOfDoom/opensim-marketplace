@@ -50,64 +50,65 @@ export default class LoginScreen extends React.Component {
 
   getAssetType = (assetType) => {
     let info = {
-      type: "",
+      assettype: "",
       //pic: "",
     };
     switch (assetType) {
       case -2:
-        info.type = "Material";
+        info.assettype = "Material";
         //info.pic = hey;
+        //info.invtype =
         break;
       case 0:
-        info.type = "Texture in JPEG2000 J2C stream format";
+        info.assettype = "Texture in JPEG2000 J2C stream format";
         //info.pic = hey;
         break;
       case 1:
-        info.type = "Sound";
+        info.assettype = "Sound";
         //info.pic = hey;
         break;
       case 2:
-        info.type = "Calling Card";
+        info.assettype = "Calling Card";
         //info.pic = hey;
         break;
       case 3:
-        info.type = "Landmark";
+        info.assettype = "Landmark";
         //info.pic = hey;
         break;
       case 5:
-        info.type = "Clothing";
+        info.assettype = "Clothing";
         //info.pic = hey;
         break;
       case 6:
-        info.type = "itemInfoect";
+        info.assettype = "Object";
         //info.pic = hey;
         break;
       case 7:
-        info.type = "Notecard";
+        info.assettype = "Notecard";
         //info.pic = hey;
         break;
       case 10:
-        info.type = "LSLText (aka a script)";
+        info.assettype = "LSLText (aka a script)";
         //info.pic = hey;
         break;
       case 13:
-        info.type = "Body Part";
+        info.assettype = "Body Part";
         //info.pic = hey;
         break;
       case 20:
-        info.type = "Animation";
+        info.assettype = "Animation";
         //info.pic = hey;
         break;
       case 21:
-        info.type = "Gesture";
+        info.assettype = "Gesture";
         //info.pic = hey;
         break;
       case 49:
-        info.type = "Mesh";
+        info.assettype = "Mesh";
         //info.pic = hey;
         break;
       default:
-        info.type = "Invalid Type";
+        info.assettype = "Invalid Type";
         //info.pic = hey;
         break;
       }
@@ -141,7 +142,7 @@ export default class LoginScreen extends React.Component {
                   <Card.Header as="h5">{obj.InventoryName}</Card.Header>
                   <Card.Body>
                     <Card.Text>Inventory Type: {obj.InvType}</Card.Text>
-                    <Card.Text>Asset Type: {this.getAssetType(obj.assetType).type}</Card.Text>
+                    <Card.Text>Asset Type: {this.getAssetType(obj.assetType).assettype}</Card.Text>
                     <Card.Text>Create Time:{" "}
                     {
                       <Moment format="MM/DD/YYYY HH:mm" unix>
