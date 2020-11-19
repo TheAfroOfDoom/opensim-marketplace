@@ -7,4 +7,8 @@ describe("Test the root path", () => {
     const response = await request(app).get("/");
     expect(response.statusCode).toBe(200);
   });
+  test("Test GET on root", async () => {
+    const response = await request(app).get("/api/connection");
+    expect(response.text).toBe("Connection has been established successfully.");
+  });
 });

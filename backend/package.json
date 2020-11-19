@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon ./src/server.js",
-    "test": "jest --verbose"
+    "test": " node -e console.clear() && jest --verbose"
   },
   "author": "",
   "license": "ISC",
@@ -21,7 +21,8 @@
     "mysql2": "^2.2.5",
     "performance-now": "^2.1.0",
     "sequelize": "^6.3.5",
-    "uuid": "^8.3.1"
+    "uuid": "^8.3.1",
+    "uuid-validate": "^0.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
