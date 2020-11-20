@@ -62,9 +62,24 @@ export default class HomeScreen extends React.Component {
           <Jumbotron className="jumbo">
             <div>
               <h1>Welcome</h1>
-              <h3>To the Naval UnderSea Warfare Center's Asset Marketplace</h3>
+              <h3>To the Naval Undersea Warfare Center's Asset Marketplace</h3>
             </div>
           </Jumbotron>
+        </div>
+        <div class="side">
+          <h1 className="title">Search Categories</h1>
+          <div className="c">
+            {categories.map((obj) => {
+              return (
+                <button
+                  className="sideButton"
+                  onClick={this.searchRedirect.bind(this, obj.assetType)}
+                >
+                  {obj.name}
+                </button>
+              );
+            })}
+          </div>
         </div>
         {this.state.redirect ? <Redirect to="/search" /> : <div />}
         <div className="item">
@@ -110,21 +125,6 @@ export default class HomeScreen extends React.Component {
                   </div>
                 );
               })}
-          </div>
-        </div>
-        <div class="side">
-          <h1 className="title">Search Categories</h1>
-          <div className="c">
-            {categories.map((obj) => {
-              return (
-                <button
-                  className="sideButton"
-                  onClick={this.searchRedirect.bind(this, obj.assetType)}
-                >
-                  {obj.name}
-                </button>
-              );
-            })}
           </div>
         </div>
       </div>
