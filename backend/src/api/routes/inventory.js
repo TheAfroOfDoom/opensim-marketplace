@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
     //Query inventory
     const inventoryInfo = await InventoryItems.findAll({
       where: { avatarID: uuid },
+      order: [["InventoryName", "ASC"]],
       attributes: [
         "assetID",
         "assetType",
