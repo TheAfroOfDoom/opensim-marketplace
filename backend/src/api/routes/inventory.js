@@ -3,7 +3,7 @@ const router = express.Router();
 const sequelize = require("../../config/database");
 const InventoryItems = require("../../models/InventoryItems");
 const Assets = require("../../models/Assets");
-const { validate } = require("uuid");
+const validate = require("uuid-validate");
 
 router.get("/", async (req, res) => {
   try {

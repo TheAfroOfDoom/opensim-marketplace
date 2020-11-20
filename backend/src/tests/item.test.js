@@ -42,7 +42,7 @@ describe("Test the item path", () => {
   test("Test GET with authorization and valid itemid", async () => {
     const response = await request(app)
       .get("/api/item")
-      .query({ id: "00000000-0000-0000-0000-000000000000" })
+      .query({ id: "00000000-0000-2222-3333-000000000099" })
       .set("Cookie", [`uuid=${uuid}`]);
     expect(response.statusCode).toBe(200);
   });

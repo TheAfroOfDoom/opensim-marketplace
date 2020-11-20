@@ -5,7 +5,7 @@ const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
-const { validate } = require("uuid");
+const validate = require("uuid-validate");
 
 router.get("/", async (req, res) => {
   try {
