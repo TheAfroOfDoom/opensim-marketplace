@@ -58,7 +58,7 @@ router.get("/", async (req, res) => {
 
     return res.send(await getAssets(params));
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     } else {
@@ -108,7 +108,7 @@ router.get("/public", async (req, res) => {
 
     return res.send(await getAssets(params));
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     } else {
