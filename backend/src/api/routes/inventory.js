@@ -3,13 +3,14 @@ const router = express.Router();
 const sequelize = require("../../config/database");
 const InventoryItems = require("../../models/InventoryItems");
 const Assets = require("../../models/Assets");
-const validate = require("uuid-validate");
+const validateUUID = require("uuid-validate");
+const { validate } = require("uuid");
 
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (!validate(uuid)) throw new Error("Unauthorized");
+    if (!validate(uuid) && !validateUUID(uuid)) throw new Error("Unauthorized");
 
     // Give relations
     InventoryItems.hasMany(Assets);

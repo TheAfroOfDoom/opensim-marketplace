@@ -1,8 +1,13 @@
+/*
+import request from "supertest";
+import app from "../app.js";
+import { uuid } from "../config/index.js";
+*/
 const request = require("supertest");
-const app = require("../app");
-const { uuid } = require("../config/index");
+const app = require("../app.js");
+const { uuid } = require("../config/index.js");
 
-describe("Test the login path", () => {
+describe("Test the /api/login path", () => {
   test("Test GET without authorization", async () => {
     const response = await request(app).get("/api/login");
     expect(response.statusCode).toBe(400);
