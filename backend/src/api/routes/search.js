@@ -23,6 +23,10 @@ router.get("/", async (req, res) => {
       searchString = "";
     }
 
+    if (!(typeof searchString === "string" || searchString instanceof String)) {
+      throw new Error("Search String must be string");
+    }
+
     //Assign query params
     let opensimCreatorIDs = [
       "11111111-1111-0000-0000-000100bba000",
@@ -61,6 +65,9 @@ router.get("/", async (req, res) => {
     //console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
+    }
+    if (e.message === "Search String must be string") {
+      return res.status(400).send("Search String must be string");
     } else {
       return res.sendStatus(400);
     }
@@ -81,6 +88,10 @@ router.get("/public", async (req, res) => {
     let { searchString, assetType, limit, offset, order } = req.query;
     if (searchString === undefined) {
       searchString = "";
+    }
+
+    if (!(typeof searchString === "string" || searchString instanceof String)) {
+      throw new Error("Search String must be string");
     }
 
     //Assign query params
@@ -111,6 +122,9 @@ router.get("/public", async (req, res) => {
     //console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
+    }
+    if (e.message === "Search String must be string") {
+      return res.status(400).send("Search String must be string");
     } else {
       return res.sendStatus(400);
     }
