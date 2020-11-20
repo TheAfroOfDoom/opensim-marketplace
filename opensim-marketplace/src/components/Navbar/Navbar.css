@@ -3,11 +3,12 @@
   width: 100%;
 }
 
-.logo {
+/*Brand {
   justify-content: center;
   align-self: center;
+    border: 3px solid white;
 }
-
+*/
 header {
   border-bottom: 3px solid white;
 }

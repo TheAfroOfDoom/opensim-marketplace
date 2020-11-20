@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Jumbotron, Card } from "react-bootstrap";
+import { Jumbotron, Card, Carousel } from "react-bootstrap";
 import { Redirect, Link } from "react-router-dom";
 import Moment from "react-moment";
 
@@ -48,13 +48,13 @@ export default class HomeScreen extends React.Component {
     let dataarr = this.state.data;
     let sorted = null;
     if (dataarr != null) {
-      sorted = dataarr.sort((first, second) => {
+      sorted = dataarr.splice(0, 8).sort((first, second) => {
         if (first.create_time < second.create_time) return 1;
         if (first.create_time > second.create_time) return -1;
         else return 0;
       });
     }
-    console.log("LETs See ", sorted);
+
     return (
       <div>
         <div>
@@ -83,49 +83,108 @@ export default class HomeScreen extends React.Component {
         {this.state.redirect ? <Redirect to="/search" /> : <div />}
         <div className="item">
           <h1 className="itemTitle">Recently Updated Items</h1>
-          <div className="grid-container">
-            {sorted &&
-              sorted.map((obj, index) => {
-                return (
-                  <div style={{ margin: "1rem" }}>
-                    <Card bsPrefix="cards">
-                      <Card.Header>
-                        <Link to={`/item/${obj.id}`}>
-                          <Card.Title border="dark" className="text-item">
-                            {obj.name}
-                          </Card.Title>
-                        </Link>
-                      </Card.Header>
-                      <Card.Body className="body">
-                        <h3>
-                          Creator:{" "}
-                          {obj.useraccount ? obj.useraccount.FirstName : "None"}{" "}
-                          {obj.useraccount ? obj.useraccount.LastName : "None"}
-                        </h3>
-                        <p>
-                          Asset Type:{" "}
-                          {
-                            categories.find(
-                              (element) => element.assetType === obj.assetType
-                            ).name
-                          }
-                        </p>
-                        <p>
-                          {obj.description !== ""
-                            ? obj.description
-                            : "No Description"}{" "}
-                        </p>
-                        <p>
-                          <Moment format="MM/DD/YYYY HH:mm" unix>
-                            {obj.create_time}
-                          </Moment>
-                        </p>
-                      </Card.Body>
-                    </Card>
-                  </div>
-                );
-              })}
-          </div>
+          <Carousel>
+            <Carousel.Item>
+              <div className="grid-container">
+                {sorted &&
+                  sorted.slice(0, 8).map((obj, index) => {
+                    return (
+                      <div style={{ margin: "1rem" }}>
+                        <Card bsPrefix="cards">
+                          <Card.Header>
+                            <Link to={`/item/${obj.id}`}>
+                              <Card.Title border="dark" className="text-item">
+                                {obj.name}
+                              </Card.Title>
+                            </Link>
+                          </Card.Header>
+                          <Card.Body className="body">
+                            <h3>
+                              Creator:{" "}
+                              {obj.useraccount
+                                ? obj.useraccount.FirstName
+                                : "None"}{" "}
+                              {obj.useraccount
+                                ? obj.useraccount.LastName
+                                : "None"}
+                            </h3>
+                            <p>
+                              Asset Type:{" "}
+                              {
+                                categories.find(
+                                  (element) =>
+                                    element.assetType === obj.assetType
+                                ).name
+                              }
+                            </p>
+                            <p>
+                              {obj.description !== ""
+                                ? obj.description
+                                : "No Description"}{" "}
+                            </p>
+                            <p>
+                              <Moment format="MM/DD/YYYY HH:mm" unix>
+                                {obj.create_time}
+                              </Moment>
+                            </p>
+                          </Card.Body>
+                        </Card>
+                      </div>
+                    );
+                  })}
+              </div>
+            </Carousel.Item>
+            <Carousel.Item>
+              <div className="grid-container">
+                {sorted &&
+                  sorted.slice(6, 11).map((obj, index) => {
+                    return (
+                      <div style={{ margin: "1rem" }}>
+                        <Card bsPrefix="cards">
+                          <Card.Header>
+                            <Link to={`/item/${obj.id}`}>
+                              <Card.Title border="dark" className="text-item">
+                                {obj.name}
+                              </Card.Title>
+                            </Link>
+                          </Card.Header>
+                          <Card.Body className="body">
+                            <h3>
+                              Creator:{" "}
+                              {obj.useraccount
+                                ? obj.useraccount.FirstName
+                                : "None"}{" "}
+                              {obj.useraccount
+                                ? obj.useraccount.LastName
+                                : "None"}
+                            </h3>
+                            <p>
+                              Asset Type:{" "}
+                              {
+                                categories.find(
+                                  (element) =>
+                                    element.assetType === obj.assetType
+                                ).name
+                              }
+                            </p>
+                            <p>
+                              {obj.description !== ""
+                                ? obj.description
+                                : "No Description"}{" "}
+                            </p>
+                            <p>
+                              <Moment format="MM/DD/YYYY HH:mm" unix>
+                                {obj.create_time}
+                              </Moment>
+                            </p>
+                          </Card.Body>
+                        </Card>
+                      </div>
+                    );
+                  })}
+              </div>
+            </Carousel.Item>
+          </Carousel>
         </div>
       </div>
     );
