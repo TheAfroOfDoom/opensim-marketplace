@@ -3,12 +3,13 @@ const router = express.Router();
 const sequelize = require("../../config/database");
 const InventoryItems = require("../../models/InventoryItems");
 const Assets = require("../../models/Assets");
+const validate = require("uuid-validate");
 
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -45,58 +46,64 @@ router.get("/", async (req, res) => {
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
+      return res.send(401);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
     } else {
       return res.sendStatus(400);
     }
   }
 });
 
-router.get("/add", async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     //Get item id
-    let { assetID } = req.query;
+    let { assetID } = req.body;
+    if (!validate(assetID)) throw new Error("Invalid ID");
+
+    console.log(req.body);
 
     //Run SP
     const info = await sequelize.query(
       `CALL marketplaceDownloadAsset(:userID, :assetID, @error);`,
       {
         replacements: { userID: uuid, assetID: assetID },
-        type: sequelize.QueryTypes.SELECT,
       }
     );
 
     //Querry error code
-    const sel = await sequelize.query("SELECT @error AS error;", {
+    const [sel] = await sequelize.query("SELECT @error AS error;", {
       type: sequelize.QueryTypes.SELECT,
     });
-    console.log("Add Error: " + sel[0].error);
-    return res.status(200).send({ error: sel[0].error === 1 ? true : false });
+    console.log("Add Error: " + sel.error);
+    return res.status(200).send({ error: sel.error === 1 ? true : false });
   } catch (e) {
-    console.log(e);
+    //console.error(e);
     if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
+      return res.send(401);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
     } else {
       return res.sendStatus(400);
     }
   }
 });
 
-router.get("/remove", async (req, res) => {
+router.post("/remove", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     //Get item id
-    let { assetID } = req.query;
+    let { assetID } = req.body;
+    if (!validate(assetID)) throw new Error("Invalid ID");
 
     // Give relations
-    // TODO: Update
     InventoryItems.hasMany(Assets);
     Assets.belongsTo(InventoryItems);
 
@@ -129,14 +136,22 @@ router.get("/remove", async (req, res) => {
   }
 });
 
-router.get("/upload", async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (uuid === undefined) throw new Error("Unauthorized");
+    if (!validate(uuid)) throw new Error("Unauthorized");
 
     //Get item id
     let { assetID } = req.query;
+
+    //Check user is creator
+    const [creatorID] = await Assets.findAll({
+      where: { id: assetID },
+      attributes: ["CreatorID"],
+    });
+
+    if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
 
     //Update database
     const info = await Assets.update({ public: 1 }, { where: { id: assetID } });
@@ -147,6 +162,8 @@ router.get("/upload", async (req, res) => {
     console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
+    } else if (e.message === "Forbidden") {
+      return res.sendStatus(403);
     } else {
       return res.sendStatus(400);
     }
@@ -154,4 +171,3 @@ router.get("/upload", async (req, res) => {
 });
 
 module.exports = router;
-4;

@@ -3,8 +3,6 @@ import React from "react";
 import { Form, FormGroup, Button, Alert } from "react-bootstrap";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
-import SearchScreen from "../../components/Search/SearchScreen";
-import Cookies from "js-cookie";
 import "./LoginScreen.css";
 export default class LoginScreen extends React.Component {
   constructor(props) {
@@ -42,11 +40,7 @@ export default class LoginScreen extends React.Component {
         if (response.status === 201) {
           console.log("Password worked");
           this.setState({ loginSuccess: true });
-          //} else {
-            //this.setState({ loginFail: true });
-
           this.props.handleLogin(true);
-          console.log(Cookies.get());
         }
       })
       .catch((error) => {

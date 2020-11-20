@@ -5,6 +5,9 @@ const app = express();
 // Ability to parse cookies
 const cookieParser = require("cookie-parser");
 
+// Ability to parse body for POST requests
+var bodyParser = require("body-parser");
+
 // Compression reduces file sizes of transactions making them faster
 const compression = require("compression");
 
@@ -18,6 +21,7 @@ app.use(
 // Middleware
 app.use(compression());
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 //Database
 const sequelize = require("./config/database");
@@ -31,7 +35,7 @@ app.get("/", (req, res) => {
 });
 */
 
-app.use("/api/test", require("./api/routes/test"));
+app.use("/api/connection", require("./api/routes/connection"));
 
 app.use("/api/login", require("./api/routes/login"));
 
