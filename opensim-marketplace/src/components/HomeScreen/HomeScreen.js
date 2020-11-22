@@ -37,15 +37,15 @@ export default class HomeScreen extends React.Component {
   };
 
   async componentDidMount() {
-      try{
-        const response = await axios.get("/api/search/public");
-        console.log(response);
-        this.setState({
-          data: response.data,
-        });
-      }catch(err){
-        console.log(err.message);
-      }
+    try {
+      const response = await axios.get("/api/search/public");
+      console.log(response);
+      this.setState({
+        data: response.data,
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 
   render() {
@@ -87,13 +87,13 @@ export default class HomeScreen extends React.Component {
         {this.state.redirect ? <Redirect to="/search" /> : <div />}
         <div className="item">
           <h1 className="itemTitle">Recently Updated Items</h1>
-          <Carousel>
+          <Carousel className="carousel-slide">
             <Carousel.Item>
               <div className="grid-container">
                 {sorted &&
                   sorted.slice(0, 6).map((obj, index) => {
                     return (
-                      <div style={{ margin: "1rem" }}>
+                      <div style={{ margin: "auto" }}>
                         <Card bsPrefix="cards">
                           <Card.Header>
                             <Link to={`/item/${obj.id}`}>
@@ -143,7 +143,7 @@ export default class HomeScreen extends React.Component {
                 {sorted &&
                   sorted.slice(6, 11).map((obj, index) => {
                     return (
-                      <div style={{ margin: "1rem" }}>
+                      <div style={{ margin: "auto" }}>
                         <Card bsPrefix="cards">
                           <Card.Header>
                             <Link to={`/item/${obj.id}`}>
