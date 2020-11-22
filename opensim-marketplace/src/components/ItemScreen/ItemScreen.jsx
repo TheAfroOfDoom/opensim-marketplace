@@ -2,10 +2,7 @@ import React from "react";
 import axios from "axios";
 import Moment from "react-moment";
 
-import {
-  Button,
-  Image,
-} from "react-bootstrap";
+import { Button, Image } from "react-bootstrap";
 import "./ItemScreen.css";
 import texture_default from "./Images/Texture_Default.png";
 import animation_default from "./Images/Animation_Default.png";
@@ -22,8 +19,7 @@ import object_default from "./Images/Object_Default.png";
 import script_default from "./Images/Script_Default.png";
 import sound_default from "./Images/Sound_Default.png";
 
-
-import { HashLink as Link } from "react-router-hash-link";
+import { Link } from "react-router-dom";
 
 export default class ItemScreen extends React.Component {
   constructor(props) {
@@ -32,33 +28,33 @@ export default class ItemScreen extends React.Component {
   }
 
   async componentDidMount() {
-    console.log("Hey::")
-    let error
-    try{
-      const response = await axios.get("/api/item", {
+    console.log("Hey::");
+    let error;
+    try {
+      const response = await axios
+        .get("/api/item", {
           params: {
-            id: this.props.match.params.assetId
+            id: this.props.match.params.assetId,
           },
-      }).catch(err => {
-        if (err.response.status === 401) {
-          throw new Error(`${err.config.url} Unauthorized`);
-        }
-        if (err.response.status === 400) {
-          throw new Error(`${err.config.url} not found:2`);
-        }
-        throw err;
-      });
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            throw new Error(`${err.config.url} Unauthorized`);
+          }
+          if (err.response.status === 400) {
+            throw new Error(`${err.config.url} not found:2`);
+          }
+          throw err;
+        });
 
       this.setState({
         data: response.data,
       });
-
-    }catch (err) {
+    } catch (err) {
       error = err;
       console.log(error.message);
     }
-
-}
+  }
 
   handleAdd = async () => {
     const response = await axios.post("/api/inventory/add", {
@@ -146,7 +142,11 @@ export default class ItemScreen extends React.Component {
             <img />
             <div className="container">
               <div className="left-column">
-                <Image data-testid="itemss" src={this.getAssetType(itemInfo.assetType).pic} fluid />
+                <Image
+                  data-testid="itemss"
+                  src={this.getAssetType(itemInfo.assetType).pic}
+                  fluid
+                />
               </div>
 
               <div className="right-column">
@@ -171,15 +171,17 @@ export default class ItemScreen extends React.Component {
                     }
                   </p>
                   {console.log(invInfo.inInventory)}
-                {!invInfo.inInventory ? (
-                  <Link to={`/inventory#${itemInfo.name}`}>
-                    <Button onClick={this.handleAdd}>Add To Inventory</Button>
-                  </Link>
-                ) : (
-                  <Link to={`/inventory#${itemInfo.name}`}>
-                    <Button onClick={this.handleAdd}>View In Inventory</Button>
-                  </Link>
-                )}
+                  {!invInfo.inInventory ? (
+                    <Link to={`/inventory#${itemInfo.name}`}>
+                      <Button onClick={this.handleAdd}>Add To Inventory</Button>
+                    </Link>
+                  ) : (
+                    <Link to={`/inventory#${itemInfo.name}`}>
+                      <Button onClick={this.handleAdd}>
+                        View In Inventory
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
