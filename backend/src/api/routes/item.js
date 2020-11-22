@@ -5,17 +5,18 @@ const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
-const validate = require("uuid-validate");
+const validateUUID = require("uuid-validate");
+const { validate } = require("uuid");
 
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (!validate(uuid)) throw new Error("Unauthorized");
+    if (!validate(uuid) && !validateUUID(uuid)) throw new Error("Unauthorized");
 
     // Get assetID param
     const { id } = req.query;
-    if (!validate(id)) throw new Error("Invalid ID");
+    if (!validate(id) && !validateUUID(id)) throw new Error("Invalid ID");
 
     let userInfo,
       creator = false,

@@ -5,7 +5,8 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
-const validate = require("uuid-validate");
+const validateUUID = require("uuid-validate");
+const { validate } = require("uuid");
 
 router.get("/", async (req, res) => {
   try {

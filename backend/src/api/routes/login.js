@@ -4,7 +4,6 @@ const sequelize = require("../../config/database");
 const Auth = require("../../models/Auth");
 const UserAccounts = require("../../models/UserAccounts");
 const md5 = require("md5");
-const uuid = require("uuid");
 
 router.get("/", async (req, res) => {
   try {
