@@ -129,7 +129,7 @@ export default class LoginScreen extends React.Component {
     if (this.state.data == null) {
       return (
         <div>
-          <Spinner />
+          <Spinner data-testid="spin" id="spin" />
         </div>
       );
     } else {
@@ -160,7 +160,7 @@ export default class LoginScreen extends React.Component {
                   >
                     Remove
                   </Button>
-                  {this.isCreator(obj) ? <Button onClick={this.uploadItem.bind(this, obj.assetID)}>Upload</Button> : <div />}
+                  {this.isCreator(obj) ? <Button onClick={this.uploadItem.bind(this, obj.assetID).bind(this, obj.creatorID)}>Upload</Button> : <div />}
                 </Card>
               </div>
             );

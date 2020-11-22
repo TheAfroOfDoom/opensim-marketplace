@@ -28,6 +28,7 @@ export default class LoginScreen extends React.Component {
 
   submitHandler = async (event) => {
     event.preventDefault();
+    try{
     axios
       .get("/api/login", {
         params: {
@@ -47,6 +48,9 @@ export default class LoginScreen extends React.Component {
         console.log("Password Did not work: " + error);
         this.setState({ loginFail: true });
       });
+    }catch(err){
+      console.log(err.message);
+    }
   };
 
   render() {

@@ -37,18 +37,22 @@ export default class HomeScreen extends React.Component {
   };
 
   async componentDidMount() {
-    const response = await axios.get("/api/search/public");
-    console.log(response);
-    this.setState({
-      data: response.data,
-    });
+      try{
+        const response = await axios.get("/api/search/public");
+        console.log(response);
+        this.setState({
+          data: response.data,
+        });
+      }catch(err){
+        console.log(err.message);
+      }
   }
 
   render() {
     let dataarr = this.state.data;
     let sorted = null;
     if (dataarr != null) {
-      sorted = dataarr.splice(0, 8).sort((first, second) => {
+      sorted = dataarr.splice(0, 12).sort((first, second) => {
         if (first.create_time < second.create_time) return 1;
         if (first.create_time > second.create_time) return -1;
         else return 0;
