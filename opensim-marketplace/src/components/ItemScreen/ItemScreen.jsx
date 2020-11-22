@@ -32,6 +32,7 @@ export default class ItemScreen extends React.Component {
   }
 
   async componentDidMount() {
+    console.log("Hey::")
     let error
     try{
       const response = await axios.get("/api/item", {
@@ -47,6 +48,7 @@ export default class ItemScreen extends React.Component {
         }
         throw err;
       });
+
       this.setState({
         data: response.data,
       });
@@ -132,7 +134,7 @@ export default class ItemScreen extends React.Component {
 
   render() {
     if (this.state.data == null) {
-      return <div />;
+      return <div data-testid="items" />;
     } else {
       const { itemInfo } = this.state.data;
       const { userInfo } = this.state.data;
@@ -144,7 +146,7 @@ export default class ItemScreen extends React.Component {
             <img />
             <div className="container">
               <div className="left-column">
-                <Image src={this.getAssetType(itemInfo.assetType).pic} fluid />
+                <Image data-testid="itemss" src={this.getAssetType(itemInfo.assetType).pic} fluid />
               </div>
 
               <div className="right-column">
@@ -156,7 +158,7 @@ export default class ItemScreen extends React.Component {
                   <h3>Creator Information</h3>
                   <p>First Name: {userInfo.FirstName}</p>
                   <p>Last Name: {userInfo.LastName}</p>
-                  {this.state.dataString.substring(0, 10)}
+                  //{this.state.dataString.substring(0, 10)}
                 </div>
                 <div className="asset-download">
                   <h3>Download & Details</h3>

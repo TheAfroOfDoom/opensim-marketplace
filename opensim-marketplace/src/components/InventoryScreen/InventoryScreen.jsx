@@ -129,7 +129,7 @@ export default class LoginScreen extends React.Component {
     if (this.state.data == null) {
       return (
         <div>
-          <Spinner />
+          <Spinner data-testid="spin" id="spin" />
         </div>
       );
     } else {
