@@ -28,8 +28,8 @@ router.get("/", async (req, res) => {
           attributes: [],
           required: true,
           where: {
-            FirstName: firstName,
-            LastName: lastName,
+            FirstName: firstName.trim(),
+            LastName: lastName.trim(),
           },
           on: {
             col1: sequelize.where(
