@@ -87,7 +87,7 @@ export default class HomeScreen extends React.Component {
             <Carousel.Item>
               <div className="grid-container">
                 {sorted &&
-                  sorted.slice(0, 8).map((obj, index) => {
+                  sorted.slice(0, 6).map((obj, index) => {
                     return (
                       <div style={{ margin: "1rem" }}>
                         <Card bsPrefix="cards">
