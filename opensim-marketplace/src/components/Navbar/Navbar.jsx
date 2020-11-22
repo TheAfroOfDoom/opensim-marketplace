@@ -4,10 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Cookies from "js-cookie";
 import { Nav, Form, Button } from "react-bootstrap";
 import axios from "axios";
-import {
-  Link,
-  Redirect,
-} from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 class NavigationBar extends React.Component {
   constructor(props) {
@@ -16,7 +13,7 @@ class NavigationBar extends React.Component {
   }
 
   onClick = async () => {
-    const response = await axios.get("/api/search", {
+    const response = await axios.get("/api/search/public", {
       params: {
         searchString: this.state.search,
       },
@@ -30,25 +27,32 @@ class NavigationBar extends React.Component {
     this.setState({ search: fleldVal });
   }
 
-
   checkStatus = () => {
-    if(this.props.data){
-      console.log('Logging Out');
-      Cookies.remove('uuid');
+    if (this.props.data) {
+      console.log("Logging Out");
+      Cookies.remove("uuid");
       this.props.handleLogin(false);
-    }else{
+    } else {
       console.log("Not Logged In");
     }
   };
 
-
   render() {
     return (
       <header>
-        <Navbar variant="dark" bg="dark" expand="lg" style={{ paddingLeft: "10px" }}>
+        <Navbar
+          variant="dark"
+          bg="dark"
+          expand="lg"
+          style={{ paddingLeft: "10px" }}
+        >
           <Link exact to="/">
             <Navbar.Brand>
-              <img className="d-inline-block align-top" src="minilogo.png" style={{ height: 30, width: 30 }} />{' '}
+              <img
+                className="d-inline-block align-top"
+                src="minilogo.png"
+                style={{ height: 30, width: 30 }}
+              />{" "}
               OpenSim Marketplace
             </Navbar.Brand>
           </Link>
@@ -79,19 +83,12 @@ class NavigationBar extends React.Component {
           </Navbar.Collapse>
         </Navbar>
         {this.state.redirect ? <Redirect to="/search" /> : <div />}
-
       </header>
     );
   }
 }
 
-
-
-
-
 export default NavigationBar;
-
-
 
 /*
 <Link exact to="/">

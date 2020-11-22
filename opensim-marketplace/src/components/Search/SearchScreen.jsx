@@ -1,9 +1,6 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
-import {
-  Button,
-  Pagination,
-} from "react-bootstrap";
+import { Button, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./SearchScreen.css";
 import Moment from "react-moment";
@@ -11,25 +8,23 @@ import Moment from "react-moment";
 export default class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { active: this.props.activeDefault, start: 0 , end: 9  };
+    this.state = { active: this.props.activeDefault, start: 0, end: 9 };
   }
 
   handlePage = async (value) => {
     this.setState({ active: value });
   };
 
-
   getAssetType = (assetType) => {
     let info = {
       assettype: "",
-
     };
     switch (assetType) {
       case -2:
         info.assettype = "Material";
         break;
       case 0:
-        info.assettype = "Texture in JPEG2000 J2C stream format";
+        info.assettype = "Texture";
         //info.pic = hey;
         break;
       case 1:
@@ -80,27 +75,25 @@ export default class SearchScreen extends React.Component {
         info.assettype = "Invalid Type";
         //info.pic = hey;
         break;
-      }
-      return info;
-    };
+    }
+    return info;
+  };
 
-    nextSet = (length) => {
-      if(length > this.state.end){
-        this.setState({start: this.state.start + 1});
-        this.setState({end: this.state.end + 1});
-        this.handlePage(this.state.active + 1);
-      }
-    };
+  nextSet = (length) => {
+    if (length > this.state.end) {
+      this.setState({ start: this.state.start + 1 });
+      this.setState({ end: this.state.end + 1 });
+      this.handlePage(this.state.active + 1);
+    }
+  };
 
-    lastSet = () => {
-      if(0 < this.state.start){
-        this.setState({start: this.state.start - 1});
-        this.setState({end: this.state.end - 1});
-        this.handlePage(this.state.active - 1);
-      }
-    };
-
-
+  lastSet = () => {
+    if (0 < this.state.start) {
+      this.setState({ start: this.state.start - 1 });
+      this.setState({ end: this.state.end - 1 });
+      this.handlePage(this.state.active - 1);
+    }
+  };
 
   render() {
     let items = [];
@@ -142,13 +135,16 @@ export default class SearchScreen extends React.Component {
                       </Link>
                     </Card.Header>
                     <Card.Body className="body">
-                      <Card.Text>Asset Type: {this.getAssetType(obj.assetType).assettype}</Card.Text>
-                      <Card.Text>Create Time:{" "}
-                      {
-                        <Moment format="MM/DD/YYYY HH:mm" unix>
-                          {obj.create_time}
-                        </Moment>
-                      }
+                      <Card.Text>
+                        Asset Type: {this.getAssetType(obj.assetType).assettype}
+                      </Card.Text>
+                      <Card.Text>
+                        Create Time:{" "}
+                        {
+                          <Moment format="MM/DD/YYYY HH:mm" unix>
+                            {obj.create_time}
+                          </Moment>
+                        }
                       </Card.Text>
                       <Link to={`/item/${obj.id}`}>
                         <Button>More Info</Button>
@@ -159,20 +155,21 @@ export default class SearchScreen extends React.Component {
               );
             })}
         </div>
-          {this.props.data != null ? (
-            <div className="pager" class="d-flex justify-content-center">
-              <Pagination>
-                <Pagination.Prev onClick={() => this.handlePage(0)} />
-                <Pagination.Prev onClick={() => this.lastSet()} />
-                {items.slice(this.state.start, this.state.end)}
-                <Pagination.Next onClick={() => this.nextSet(items.length)} />
-                <Pagination.Next onClick={() => this.handlePage(items.length - 1)} />
-              </Pagination>
-            </div>
-            ) : (
-              <div />
-            )
-          }
+        {this.props.data != null ? (
+          <div className="pager" class="d-flex justify-content-center">
+            <Pagination>
+              <Pagination.First onClick={() => this.handlePage(0)} />
+              <Pagination.Prev onClick={() => this.lastSet()} />
+              {items.slice(this.state.start, this.state.end)}
+              <Pagination.Next onClick={() => this.nextSet(items.length)} />
+              <Pagination.Last
+                onClick={() => this.handlePage(items.length - 1)}
+              />
+            </Pagination>
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     );
   }

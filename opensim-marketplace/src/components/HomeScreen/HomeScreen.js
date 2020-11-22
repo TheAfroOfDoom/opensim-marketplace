@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
-import { Jumbotron, Card, Carousel } from "react-bootstrap";
-import { Redirect, Link } from "react-router-dom";
-import Moment from "react-moment";
+import { Jumbotron, Carousel } from "react-bootstrap";
+import { Redirect } from "react-router-dom";
+import CCard from "./CCard";
 
 import "./HomeScreen.css";
 
@@ -28,7 +28,7 @@ export default class HomeScreen extends React.Component {
   }
 
   searchRedirect = async (assetType) => {
-    const response = await axios.get("/api/search", {
+    const response = await axios.get("/api/search/public", {
       params: { assetType: assetType },
     });
     console.log(response);
@@ -62,7 +62,7 @@ export default class HomeScreen extends React.Component {
     return (
       <div>
         <div>
-          <Jumbotron className="jumbo">
+          <Jumbotron className="jumbo" style={{ backgroundColor: "#02394a" }}>
             <div>
               <h1>Welcome</h1>
               <h3>To the Naval Undersea Warfare Center's Asset Marketplace</h3>
@@ -92,49 +92,7 @@ export default class HomeScreen extends React.Component {
               <div className="grid-container">
                 {sorted &&
                   sorted.slice(0, 6).map((obj, index) => {
-                    return (
-                      <div style={{ margin: "auto" }}>
-                        <Card bsPrefix="cards">
-                          <Card.Header>
-                            <Link to={`/item/${obj.id}`}>
-                              <Card.Title border="dark" className="text-item">
-                                {obj.name}
-                              </Card.Title>
-                            </Link>
-                          </Card.Header>
-                          <Card.Body className="body">
-                            <h3>
-                              Creator:{" "}
-                              {obj.useraccount
-                                ? obj.useraccount.FirstName
-                                : "None"}{" "}
-                              {obj.useraccount
-                                ? obj.useraccount.LastName
-                                : "None"}
-                            </h3>
-                            <p>
-                              Asset Type:{" "}
-                              {
-                                categories.find(
-                                  (element) =>
-                                    element.assetType === obj.assetType
-                                ).name
-                              }
-                            </p>
-                            <p>
-                              {obj.description !== ""
-                                ? obj.description
-                                : "No Description"}{" "}
-                            </p>
-                            <p>
-                              <Moment format="MM/DD/YYYY HH:mm" unix>
-                                {obj.create_time}
-                              </Moment>
-                            </p>
-                          </Card.Body>
-                        </Card>
-                      </div>
-                    );
+                    return <CCard obj={obj} categories={categories} />;
                   })}
               </div>
             </Carousel.Item>
@@ -142,49 +100,7 @@ export default class HomeScreen extends React.Component {
               <div className="grid-container">
                 {sorted &&
                   sorted.slice(6, 11).map((obj, index) => {
-                    return (
-                      <div style={{ margin: "auto" }}>
-                        <Card bsPrefix="cards">
-                          <Card.Header>
-                            <Link to={`/item/${obj.id}`}>
-                              <Card.Title border="dark" className="text-item">
-                                {obj.name}
-                              </Card.Title>
-                            </Link>
-                          </Card.Header>
-                          <Card.Body className="body">
-                            <h3>
-                              Creator:{" "}
-                              {obj.useraccount
-                                ? obj.useraccount.FirstName
-                                : "None"}{" "}
-                              {obj.useraccount
-                                ? obj.useraccount.LastName
-                                : "None"}
-                            </h3>
-                            <p>
-                              Asset Type:{" "}
-                              {
-                                categories.find(
-                                  (element) =>
-                                    element.assetType === obj.assetType
-                                ).name
-                              }
-                            </p>
-                            <p>
-                              {obj.description !== ""
-                                ? obj.description
-                                : "No Description"}{" "}
-                            </p>
-                            <p>
-                              <Moment format="MM/DD/YYYY HH:mm" unix>
-                                {obj.create_time}
-                              </Moment>
-                            </p>
-                          </Card.Body>
-                        </Card>
-                      </div>
-                    );
+                    return <CCard obj={obj} categories={categories} />;
                   })}
               </div>
             </Carousel.Item>

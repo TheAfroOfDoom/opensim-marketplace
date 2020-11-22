@@ -11,7 +11,6 @@
 .side {
   /* height: auto; /* Full-height: remove this if you want "auto" height */
 
-  overflow-wrap: anywhere;
   margin-left: 5%;
   margin-right: 5%;
   margin-top: 20px; /* Set the width of the sidebar */
@@ -32,13 +31,14 @@
 .sideButton {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 1.5rem;
   color: #84fff2;
   display: row;
   background: none;
   border: none;
 }
 
+/*
 @media (max-width: 1500px) {
   .side {
     display: flex;
@@ -46,9 +46,10 @@
   .c {
     display: grid;
 
-    grid-template-columns: repeat(auto-fill, minmax(20px, 0.5fr));
+    grid-template-columns: repeat(auto-fill, minmax(20px, 1fr));
   }
 }
+*/
 
 .title {
   padding: 6px 16px 6px 16px;
@@ -66,7 +67,6 @@
 .jumbo {
   text-align: center;
   height: auto;
-  background-color: #02394a;
   color: #fff;
   margin-left: 5%;
   margin-right: 5%;
@@ -110,8 +110,14 @@
   border-bottom: 1px solid rgb(225, 232, 238);
 }
 .c {
+  /*
   display: flex;
   justify-content: space-around;
+  */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  border-spacing: 2rem 2rem;
+  white-space: nowrap;
 }
 
 .cards {
@@ -122,14 +128,18 @@
   margin-bottom: 10px;
   border-style: solid;
   box-shadow: 0px 14px 60px rgba(34, 35, 58, 0.7);
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 20px;
 }
 .body {
   horizontal-align: left;
 }
 .grid-container {
+  padding-top: 10px;
   display: grid;
   padding: auto;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(405px, 1fr));
 }
 .carousel-slide {
   padding: 0px;
