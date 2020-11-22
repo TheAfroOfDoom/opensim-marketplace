@@ -145,7 +145,7 @@ router.post("/upload", async (req, res) => {
     if (!validate(uuid)) throw new Error("Unauthorized");
 
     //Get item id
-    let { assetID } = req.query;
+    let { assetID } = req.body;
 
     //Check user is creator
     const [creatorID] = await Assets.findAll({
