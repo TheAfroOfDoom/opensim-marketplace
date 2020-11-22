@@ -93,7 +93,7 @@ class App extends React.Component {
             </div>
           )
        ) : (
-          <div>
+          <div data-testid="main">
             <NavigationBar
               searchData={this.handleSearchChange}
               data={this.state.loggedIn}
