@@ -11,6 +11,7 @@
 .side {
   /* height: auto; /* Full-height: remove this if you want "auto" height */
 
+  overflow-wrap: anywhere;
   margin-left: 5%;
   margin-right: 5%;
   margin-top: 20px; /* Set the width of the sidebar */
@@ -127,5 +128,9 @@
 }
 .grid-container {
   display: grid;
+  padding: auto;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+.carousel-slide {
+  padding: 0px;
 }
