@@ -44,6 +44,18 @@ export default class LoginScreen extends React.Component {
     }
   };
 
+  privateItem = async (assetID) => {
+    try {
+      const response = await axios.post("/api/inventory/private", {
+        assetID: assetID,
+      });
+      this.getInventory();
+    } catch (error) {
+      alert("Un-Upload: " + error);
+    }
+  }
+
+
   componentDidMount() {
     this.getInventory();
   };
@@ -123,6 +135,14 @@ export default class LoginScreen extends React.Component {
     }
   }
 
+  isPublic = (obj) => {
+    if(obj.assets[0].public && this.isCreator(obj)){
+      return(true);
+    }
+    if(!obj.assets[0].public && this.isCreator(obj)){
+      return(false);
+    }
+  };
 
 
   render() {
@@ -133,14 +153,15 @@ export default class LoginScreen extends React.Component {
         </div>
       );
     } else {
+
       return (
         <div className="InventoryContainer">
           {this.state.data.map((obj) => {
             return (
               <div id={`${obj.InventoryName.replace("Default ", "")}`}>
-                <Card className="card">
+                <Card bsPrefix="crunk">
                   <Card.Header as="h5">{obj.InventoryName}</Card.Header>
-                  <Card.Body>
+                  <Card.Body as="h6">
                     <Card.Text>Inventory Type: {obj.InvType}</Card.Text>
                     <Card.Text>Asset Type: {this.getAssetType(obj.assetType).assettype}</Card.Text>
                     <Card.Text>Create Time:{" "}
@@ -151,16 +172,17 @@ export default class LoginScreen extends React.Component {
                     }
                     </Card.Text>
                     <Link to={`/item/${obj.assetID}`}>
-                      <Button variant="primary">Inspect Item</Button>
+                      <Button variant="info">Inspect Item</Button>
                     </Link>
+                    <Button
+                      variant="danger"
+                      onClick={this.removeItem.bind(this, obj.assetID)}
+                    >
+                      Remove
+                    </Button>
+                    {this.isCreator(obj) ? (this.isPublic(obj) ? <Button onClick={this.privateItem.bind(this, obj.assetID).bind(this, obj.creatorID)}>un-Upload</Button> :
+                    <Button variant="success" onClick={this.uploadItem.bind(this, obj.assetID).bind(this, obj.creatorID)}>Upload</Button>) : <div />}
                   </Card.Body>
-                  <Button
-                    variant="danger"
-                    onClick={this.removeItem.bind(this, obj.assetID)}
-                  >
-                    Remove
-                  </Button>
-                  {this.isCreator(obj) ? <Button onClick={this.uploadItem.bind(this, obj.assetID).bind(this, obj.creatorID)}>Upload</Button> : <div />}
                 </Card>
               </div>
             );

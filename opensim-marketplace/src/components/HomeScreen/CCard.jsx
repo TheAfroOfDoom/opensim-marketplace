@@ -1,7 +1,7 @@
 import * as React from "react";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 
 export default function CCard(props) {
   return (

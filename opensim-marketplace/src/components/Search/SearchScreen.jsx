@@ -95,6 +95,21 @@ export default class SearchScreen extends React.Component {
     }
   };
 
+  endSet = (length) => {
+    if((this.state.end != (length) || this.state.active != (length - 1)) && ((this.state.end - this.state.start) === 9)){
+        this.setState({start: this.state.start + (length - this.state.end)});
+        this.setState({end: length});
+    }
+    this.handlePage(length - 1);
+  };
+
+  firstSet = () => {
+    if((this.state.start != 0 || this.state.active != 0) && ((this.state.end - this.state.start) === 9)){
+        this.setState({start: 0});
+        this.setState({end: 9});
+    }
+    this.handlePage(0);
+  }
   render() {
     let items = [];
     if (this.props.data) {
@@ -158,12 +173,12 @@ export default class SearchScreen extends React.Component {
         {this.props.data != null ? (
           <div className="pager" class="d-flex justify-content-center">
             <Pagination>
-              <Pagination.First onClick={() => this.handlePage(0)} />
+              <Pagination.First onClick={() => this.firstSet(0)} />
               <Pagination.Prev onClick={() => this.lastSet()} />
               {items.slice(this.state.start, this.state.end)}
               <Pagination.Next onClick={() => this.nextSet(items.length)} />
               <Pagination.Last
-                onClick={() => this.handlePage(items.length - 1)}
+                onClick={() => this.endSet(items.length)}
               />
             </Pagination>
           </div>

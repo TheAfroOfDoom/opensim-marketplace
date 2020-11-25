@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
       include: [
         {
           model: Assets,
-          attributes: [],
+          attributes: ["public"],
           required: true,
           on: {
             col1: sequelize.where(
@@ -157,6 +157,41 @@ router.post("/upload", async (req, res) => {
 
     //Update database
     const info = await Assets.update({ public: 1 }, { where: { id: assetID } });
+
+    //Returns rows updated
+    return res.status(200).send(info);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else if (e.message === "Forbidden") {
+      return res.sendStatus(403);
+    } else {
+      return res.sendStatus(400);
+    }
+  }
+});
+
+
+router.post("/private", async (req, res) => {
+  try {
+    //Check if user is authenticated
+    const { uuid } = req.cookies;
+    if (!validate(uuid)) throw new Error("Unauthorized");
+
+    //Get item id
+    let { assetID } = req.body;
+
+    //Check user is creator
+    const [creatorID] = await Assets.findAll({
+      where: { id: assetID },
+      attributes: ["CreatorID"],
+    });
+
+    if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
+
+    //Update database
+    const info = await Assets.update({ public: 0 }, { where: { id: assetID } });
 
     //Returns rows updated
     return res.status(200).send(info);

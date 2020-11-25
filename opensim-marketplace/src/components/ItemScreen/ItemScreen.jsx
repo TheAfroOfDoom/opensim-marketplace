@@ -158,7 +158,7 @@ export default class ItemScreen extends React.Component {
                   <h3>Creator Information</h3>
                   <p>First Name: {userInfo.FirstName}</p>
                   <p>Last Name: {userInfo.LastName}</p>
-                  //{this.state.dataString.substring(0, 10)}
+                
                 </div>
                 <div className="asset-download">
                   <h3>Download & Details</h3>
@@ -177,7 +177,7 @@ export default class ItemScreen extends React.Component {
                     </Link>
                   ) : (
                     <Link to={`/inventory#${itemInfo.name}`}>
-                      <Button onClick={this.handleAdd}>
+                      <Button>
                         View In Inventory
                       </Button>
                     </Link>
