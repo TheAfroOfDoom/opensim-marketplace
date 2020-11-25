@@ -153,6 +153,7 @@ router.post("/upload", async (req, res) => {
       attributes: ["CreatorID"],
     });
 
+    console.log(creatorID.CreatorID + "-----------" + uuid);
     if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
 
     //Update database
@@ -172,7 +173,6 @@ router.post("/upload", async (req, res) => {
   }
 });
 
-
 router.post("/private", async (req, res) => {
   try {
     //Check if user is authenticated
@@ -188,6 +188,7 @@ router.post("/private", async (req, res) => {
       attributes: ["CreatorID"],
     });
 
+    console.log(creatorID.CreatorID + "-----------" + uuid);
     if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
 
     //Update database

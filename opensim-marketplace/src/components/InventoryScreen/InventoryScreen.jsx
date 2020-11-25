@@ -53,12 +53,11 @@ export default class LoginScreen extends React.Component {
     } catch (error) {
       alert("Un-Upload: " + error);
     }
-  }
-
+  };
 
   componentDidMount() {
     this.getInventory();
-  };
+  }
 
   getAssetType = (assetType) => {
     let info = {
@@ -123,27 +122,26 @@ export default class LoginScreen extends React.Component {
         info.assettype = "Invalid Type";
         //info.pic = hey;
         break;
-      }
-      return info;
-    };
+    }
+    return info;
+  };
 
   isCreator = (obj) => {
-    if(obj.creatorID === Cookies.get("uuid")){
-      return(true);
-    }else{
-      return(false);
-    }
-  }
-
-  isPublic = (obj) => {
-    if(obj.assets[0].public && this.isCreator(obj)){
-      return(true);
-    }
-    if(!obj.assets[0].public && this.isCreator(obj)){
-      return(false);
+    if (obj.creatorID === Cookies.get("uuid")) {
+      return true;
+    } else {
+      return false;
     }
   };
 
+  isPublic = (obj) => {
+    if (obj.assets[0].public && this.isCreator(obj)) {
+      return true;
+    }
+    if (!obj.assets[0].public && this.isCreator(obj)) {
+      return false;
+    }
+  };
 
   render() {
     if (this.state.data == null) {
@@ -153,7 +151,6 @@ export default class LoginScreen extends React.Component {
         </div>
       );
     } else {
-
       return (
         <div className="InventoryContainer">
           {this.state.data.map((obj) => {
@@ -163,13 +160,16 @@ export default class LoginScreen extends React.Component {
                   <Card.Header as="h5">{obj.InventoryName}</Card.Header>
                   <Card.Body as="h6">
                     <Card.Text>Inventory Type: {obj.InvType}</Card.Text>
-                    <Card.Text>Asset Type: {this.getAssetType(obj.assetType).assettype}</Card.Text>
-                    <Card.Text>Create Time:{" "}
-                    {
-                      <Moment format="MM/DD/YYYY HH:mm" unix>
-                        {obj.creationDate}
-                      </Moment>
-                    }
+                    <Card.Text>
+                      Asset Type: {this.getAssetType(obj.assetType).assettype}
+                    </Card.Text>
+                    <Card.Text>
+                      Create Time:{" "}
+                      {
+                        <Moment format="MM/DD/YYYY HH:mm" unix>
+                          {obj.creationDate}
+                        </Moment>
+                      }
                     </Card.Text>
                     <Link to={`/item/${obj.assetID}`}>
                       <Button variant="info">Inspect Item</Button>
@@ -180,8 +180,28 @@ export default class LoginScreen extends React.Component {
                     >
                       Remove
                     </Button>
-                    {this.isCreator(obj) ? (this.isPublic(obj) ? <Button onClick={this.privateItem.bind(this, obj.assetID).bind(this, obj.creatorID)}>un-Upload</Button> :
-                    <Button variant="success" onClick={this.uploadItem.bind(this, obj.assetID).bind(this, obj.creatorID)}>Upload</Button>) : <div />}
+                    {this.isCreator(obj) ? (
+                      this.isPublic(obj) ? (
+                        <Button
+                          onClick={this.privateItem
+                            .bind(this, obj.assetID)
+                            .bind(this, obj.creatorID)}
+                        >
+                          un-Upload
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="success"
+                          onClick={this.uploadItem
+                            .bind(this, obj.assetID)
+                            .bind(this, obj.creatorID)}
+                        >
+                          Upload
+                        </Button>
+                      )
+                    ) : (
+                      <div />
+                    )}
                   </Card.Body>
                 </Card>
               </div>
