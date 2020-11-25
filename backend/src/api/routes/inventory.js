@@ -5,18 +5,16 @@ const InventoryItems = require("../../models/InventoryItems");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
+const { isUserLoggedIn } = require("../util.js");
 
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    let uuidInDatabase = await UserAccounts.findOne({
-      attributes: ["PrincipalID"],
-      where: { PrincipalID: uuid },
-    });
-
-    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -72,12 +70,9 @@ router.post("/add", async (req, res) => {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    let uuidInDatabase = await UserAccounts.findOne({
-      attributes: ["PrincipalID"],
-      where: { PrincipalID: uuid },
-    });
-
-    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
 
     // Get assetID param
     const { assetID } = req.query;
@@ -119,12 +114,9 @@ router.post("/remove", async (req, res) => {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    let uuidInDatabase = await UserAccounts.findOne({
-      attributes: ["PrincipalID"],
-      where: { PrincipalID: uuid },
-    });
-
-    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
 
     //Get item id
     // Get assetID param
@@ -174,12 +166,9 @@ router.post("/upload", async (req, res) => {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    let uuidInDatabase = await UserAccounts.findOne({
-      attributes: ["PrincipalID"],
-      where: { PrincipalID: uuid },
-    });
-
-    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
 
     // Get assetID param
     const { assetID } = req.query;
@@ -220,12 +209,9 @@ router.post("/private", async (req, res) => {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    let uuidInDatabase = await UserAccounts.findOne({
-      attributes: ["PrincipalID"],
-      where: { PrincipalID: uuid },
-    });
-
-    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
 
     //Get item id
     let { assetID } = req.body;

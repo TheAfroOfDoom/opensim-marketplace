@@ -5,18 +5,16 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
+const { isUserLoggedIn } = require("../util.js");
 
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    let uuidInDatabase = await UserAccounts.findOne({
-      attributes: ["PrincipalID"],
-      where: { PrincipalID: uuid },
-    });
-
-    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
 
     // Give relations
     UserAccounts.hasMany(Assets);
@@ -84,13 +82,9 @@ router.get("/public", async (req, res) => {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    let uuidInDatabase = await UserAccounts.findOne({
-      attributes: ["PrincipalID"],
-      where: { PrincipalID: uuid },
-    });
-
-    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
-
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
     // Give relations
     UserAccounts.hasMany(Assets);
     Assets.belongsTo(UserAccounts);
