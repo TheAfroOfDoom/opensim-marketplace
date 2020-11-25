@@ -25,14 +25,13 @@ router.get("/", async (req, res) => {
         "assetType",
         "InventoryName",
         "InvType",
-        "creatorID",
         "creationDate",
         "InventoryID",
       ],
       include: [
         {
           model: Assets,
-          attributes: ["public"],
+          attributes: ["public", "CreatorID"],
           required: true,
           on: {
             col1: sequelize.where(
@@ -44,6 +43,11 @@ router.get("/", async (req, res) => {
         },
       ],
     });
+
+    for (const invItem of inventoryInfo) {
+      invItem.dataValues.isCreator = invItem.assets[0].CreatorID === uuid;
+      //console.log(invItem.isCreator);
+    }
     return res.send(inventoryInfo);
   } catch (e) {
     console.log(e);
@@ -153,7 +157,6 @@ router.post("/upload", async (req, res) => {
       attributes: ["CreatorID"],
     });
 
-    console.log(creatorID.CreatorID + "-----------" + uuid);
     if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
 
     //Update database

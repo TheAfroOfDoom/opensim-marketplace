@@ -126,19 +126,12 @@ export default class LoginScreen extends React.Component {
     return info;
   };
 
-  isCreator = (obj) => {
-    if (obj.creatorID === Cookies.get("uuid")) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   isPublic = (obj) => {
-    if (obj.assets[0].public && this.isCreator(obj)) {
+    console.log(obj.isCreator);
+    if (obj.assets[0].public && obj.isCreator) {
       return true;
     }
-    if (!obj.assets[0].public && this.isCreator(obj)) {
+    if (!obj.assets[0].public && obj.isCreator) {
       return false;
     }
   };
@@ -154,6 +147,7 @@ export default class LoginScreen extends React.Component {
       return (
         <div className="InventoryContainer">
           {this.state.data.map((obj) => {
+            console.log(obj);
             return (
               <div id={`${obj.InventoryName.replace("Default ", "")}`}>
                 <Card bsPrefix="crunk">
@@ -180,7 +174,8 @@ export default class LoginScreen extends React.Component {
                     >
                       Remove
                     </Button>
-                    {this.isCreator(obj) ? (
+
+                    {obj.isCreator ? (
                       this.isPublic(obj) ? (
                         <Button
                           onClick={this.privateItem
