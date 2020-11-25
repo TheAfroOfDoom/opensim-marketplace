@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const sequelize = require("../../config/database");
-const InventoryItems = require("../../models/InventoryItems");
-const md5 = require("md5");
 
 router.get("/", async (req, res) => {
   try {

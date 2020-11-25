@@ -3,14 +3,20 @@ const router = express.Router();
 const sequelize = require("../../config/database");
 const InventoryItems = require("../../models/InventoryItems");
 const Assets = require("../../models/Assets");
-const validateUUID = require("uuid-validate");
-const { validate } = require("uuid");
+const UserAccounts = require("../../models/UserAccounts");
+const _ = require("lodash");
 
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (!validate(uuid) && !validateUUID(uuid)) throw new Error("Unauthorized");
+
+    let uuidInDatabase = await UserAccounts.findOne({
+      attributes: ["PrincipalID"],
+      where: { PrincipalID: uuid },
+    });
+
+    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -65,13 +71,22 @@ router.post("/add", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (!validate(uuid)) throw new Error("Unauthorized");
 
-    //Get item id
-    let { assetID } = req.body;
-    if (!validate(assetID)) throw new Error("Invalid ID");
+    let uuidInDatabase = await UserAccounts.findOne({
+      attributes: ["PrincipalID"],
+      where: { PrincipalID: uuid },
+    });
 
-    console.log(req.body);
+    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+
+    // Get assetID param
+    const { assetID } = req.query;
+
+    let asset = await Assets.findOne({
+      attributes: ["id"],
+      where: { id: assetID },
+    });
+    if (_.isEmpty(asset)) throw new Error("Invalid ID");
 
     //Run SP
     const info = await sequelize.query(
@@ -103,11 +118,23 @@ router.post("/remove", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (!validate(uuid)) throw new Error("Unauthorized");
+
+    let uuidInDatabase = await UserAccounts.findOne({
+      attributes: ["PrincipalID"],
+      where: { PrincipalID: uuid },
+    });
+
+    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
 
     //Get item id
-    let { assetID } = req.body;
-    if (!validate(assetID)) throw new Error("Invalid ID");
+    // Get assetID param
+    const { assetID } = req.query;
+
+    let asset = await Assets.findOne({
+      attributes: ["id"],
+      where: { id: assetID },
+    });
+    if (_.isEmpty(asset)) throw new Error("Invalid ID");
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -146,10 +173,22 @@ router.post("/upload", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (!validate(uuid)) throw new Error("Unauthorized");
 
-    //Get item id
-    let { assetID } = req.body;
+    let uuidInDatabase = await UserAccounts.findOne({
+      attributes: ["PrincipalID"],
+      where: { PrincipalID: uuid },
+    });
+
+    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
+
+    // Get assetID param
+    const { assetID } = req.query;
+
+    let asset = await Assets.findOne({
+      attributes: ["id"],
+      where: { id: assetID },
+    });
+    if (_.isEmpty(asset)) throw new Error("Invalid ID");
 
     //Check user is creator
     const [creatorID] = await Assets.findAll({
@@ -180,7 +219,13 @@ router.post("/private", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    if (!validate(uuid)) throw new Error("Unauthorized");
+
+    let uuidInDatabase = await UserAccounts.findOne({
+      attributes: ["PrincipalID"],
+      where: { PrincipalID: uuid },
+    });
+
+    if (_.isEmpty(uuidInDatabase)) throw new Error("Unauthorized");
 
     //Get item id
     let { assetID } = req.body;
