@@ -7,6 +7,19 @@ const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
 const { isUserLoggedIn } = require("../util.js");
 
+/**
+ * @swagger
+ * /inventory:
+ *   get:
+ *     tags:
+ *       - Inventory
+ *     description: Fetch User Inventory
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Return user inventory
+ */
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
@@ -65,6 +78,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /inventory/add:
+ *   post:
+ *     tags:
+ *       - Inventory
+ *     description: Add asset to user inventory
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: assetID
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of asset
+ *     responses:
+ *       200:
+ *         description: Add item to user inventory
+ */
 router.post("/add", async (req, res) => {
   try {
     //Check if user is authenticated
@@ -109,6 +142,26 @@ router.post("/add", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /inventory/remove:
+ *   post:
+ *     tags:
+ *       - Inventory
+ *     description: Remove asset from user inventory
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: assetID
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of asset
+ *     responses:
+ *       200:
+ *         description: Item successfully removed from user inventory
+ */
 router.post("/remove", async (req, res) => {
   try {
     //Check if user is authenticated
@@ -155,12 +208,34 @@ router.post("/remove", async (req, res) => {
     console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
     } else {
       return res.sendStatus(400);
     }
   }
 });
 
+/**
+ * @swagger
+ * /inventory/upload:
+ *   post:
+ *     tags:
+ *       - Inventory
+ *     description: Make user created item public
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: assetID
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of asset
+ *     responses:
+ *       200:
+ *         description: Item successfully made public
+ */
 router.post("/upload", async (req, res) => {
   try {
     //Check if user is authenticated
@@ -204,6 +279,26 @@ router.post("/upload", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /inventory/private:
+ *   post:
+ *     tags:
+ *       - Inventory
+ *     description: Make user created item private
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: assetID
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of asset
+ *     responses:
+ *       200:
+ *         description: Item successfully made private
+ */
 router.post("/private", async (req, res) => {
   try {
     //Check if user is authenticated

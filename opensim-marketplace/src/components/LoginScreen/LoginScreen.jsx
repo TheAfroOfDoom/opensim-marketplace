@@ -28,27 +28,27 @@ export default class LoginScreen extends React.Component {
 
   submitHandler = async (event) => {
     event.preventDefault();
-    try{
-    axios
-      .get("/api/login", {
-        params: {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          password: this.state.password,
-        },
-      })
-      .then((response) => {
-        if (response.status === 201) {
-          console.log("Password worked");
-          this.setState({ loginSuccess: true });
-          this.props.handleLogin(true);
-        }
-      })
-      .catch((error) => {
-        console.log("Password Did not work: " + error);
-        this.setState({ loginFail: true });
-      });
-    }catch(err){
+    try {
+      axios
+        .get("/api/login", {
+          params: {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            password: this.state.password,
+          },
+        })
+        .then((response) => {
+          if (response.status === 201) {
+            console.log("Password worked");
+            this.setState({ loginSuccess: true });
+            this.props.handleLogin(true);
+          }
+        })
+        .catch((error) => {
+          console.log("Password Did not work: " + error);
+          this.setState({ loginFail: true });
+        });
+    } catch (err) {
       console.log(err.message);
     }
   };

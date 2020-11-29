@@ -5,6 +5,38 @@ const Auth = require("../../models/Auth");
 const UserAccounts = require("../../models/UserAccounts");
 const md5 = require("md5");
 
+/**
+ * @swagger
+ * /login:
+ *   get:
+ *     tags:
+ *       - Login
+ *     description: Authenticate user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: firstName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: First Name of user
+ *       - in: query
+ *         name: lastName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Last Name of user
+ *       - in: query
+ *         name: password
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Password of user
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated user
+ */
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated

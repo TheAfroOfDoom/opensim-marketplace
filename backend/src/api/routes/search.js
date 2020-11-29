@@ -7,6 +7,58 @@ const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
 const { isUserLoggedIn } = require("../util.js");
 
+/**
+ * @swagger
+ * /search:
+ *   get:
+ *     tags:
+ *       - Search
+ *     description: Search databases for public and system created assets
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: cookie
+ *         name: uuid
+ *         type: string
+ *         description: User access token
+ *       - in: query
+ *         name: searchString
+ *         type: string
+ *         required: false
+ *         description: Asset name to search for
+ *       - in: query
+ *         name: assetType
+ *         type: number
+ *         required: false
+ *         description: ID of asset type. refer to [OpenSim documentation](http://opensimulator.org/wiki/Assets#assetType)
+ *       - in: query
+ *         name: limit
+ *         type: number
+ *         required: false
+ *         description: Maximum number of objects in response
+ *       - in: query
+ *         name: offset
+ *         type: number
+ *         required: false
+ *         description: Offset from first found object (for paginiation)
+ *       - in: query
+ *         name: order
+ *         type: string
+ *         required: false
+ *         default: NAME_ASC
+ *         description: >
+ *           Sort returned assets <br>
+ *           Options: <br>
+ *           * CREATE_ASC <br>
+ *           * CREATE_DESC <br>
+ *           * NAME_ASC <br>
+ *           * NAME_DESC <br>
+ *           * ACCESS_ASC <br>
+ *           * ACCESS_DESC <br>
+ *     responses:
+ *       200:
+ *         description: Return array of like objects
+ */
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
@@ -77,6 +129,58 @@ router.get("/", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /search/public:
+ *   get:
+ *     tags:
+ *       - Search
+ *     description: Search databases for public and system created assets
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: cookie
+ *         name: uuid
+ *         type: string
+ *         description: User access token
+ *       - in: query
+ *         name: searchString
+ *         type: string
+ *         required: false
+ *         description: Asset name to search for
+ *       - in: query
+ *         name: assetType
+ *         type: number
+ *         required: false
+ *         description: ID of asset type. refer to [OpenSim documentation](http://opensimulator.org/wiki/Assets#assetType)
+ *       - in: query
+ *         name: limit
+ *         type: number
+ *         required: false
+ *         description: Maximum number of objects in response
+ *       - in: query
+ *         name: offset
+ *         type: number
+ *         required: false
+ *         description: Offset from first found object (for paginiation)
+ *       - in: query
+ *         name: order
+ *         type: string
+ *         required: false
+ *         default: NAME_ASC
+ *         description: >
+ *           Sort returned assets <br>
+ *           Options: <br>
+ *           * CREATE_ASC <br>
+ *           * CREATE_DESC <br>
+ *           * NAME_ASC <br>
+ *           * NAME_DESC <br>
+ *           * ACCESS_ASC <br>
+ *           * ACCESS_DESC <br>
+ *     responses:
+ *       200:
+ *         description: Return array of like objects
+ */
 router.get("/public", async (req, res) => {
   try {
     //Check if user is authenticated

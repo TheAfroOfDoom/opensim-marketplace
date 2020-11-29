@@ -7,6 +7,26 @@ const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
 const { isUserLoggedIn, isAssetInDatabase } = require("../util.js");
 
+/**
+ * @swagger
+ * /item:
+ *   get:
+ *     tags:
+ *       - Item
+ *     description: Get advanced information about asset
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of asset
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved item information
+ */
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated

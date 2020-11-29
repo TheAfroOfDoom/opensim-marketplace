@@ -13,7 +13,27 @@ const compression = require("compression");
 
 const path = require("path");
 
+//Setup Swagger for documentation
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: "OpenSim Marketplace",
+      description: "API for OpenSim Marketplace",
+      servers: ["http://localhost:5000"],
+    },
+    host: "localhost:5000",
+    basePath: "/api/",
+  },
+  apis: ["src/api/routes/*.js"],
+};
+
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
 // Set static folder
+
 app.use(
   express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
 );
@@ -22,18 +42,6 @@ app.use(
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
-
-//Database
-const sequelize = require("./config/database");
-
-/* Endpoints */
-/*
-app.get("/", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../../opensim-marketplace/build/index.html")
-  );
-});
-*/
 
 app.use("/api/connection", require("./api/routes/connection"));
 
