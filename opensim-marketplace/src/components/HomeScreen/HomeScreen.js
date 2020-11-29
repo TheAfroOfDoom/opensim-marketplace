@@ -6,6 +6,11 @@ import CCard from "./CCard";
 
 import "./HomeScreen.css";
 
+/*
+ Imports for necessary packages
+ creates the categories array; contains the name of each asset and their Type
+ for redirect in the search categories bar
+*/
 let categories = [
   { name: "Material", assetType: -2 },
   { name: "Texture", assetType: 0 },
@@ -47,12 +52,17 @@ export default class HomeScreen extends React.Component {
       console.log(err.message);
     }
   }
-
+  /*
+render function to display all items on home page
+contains a welcome message,
+search categories which search for assets by Type
+and item carousel with recently updated items
+*/
   render() {
     let dataarr = this.state.data;
     let sorted = null;
     if (dataarr != null) {
-      sorted = dataarr.splice(0, 12).sort((first, second) => {
+      sorted = dataarr.splice(0, 16).sort((first, second) => {
         if (first.create_time < second.create_time) return 1;
         if (first.create_time > second.create_time) return -1;
         else return 0;
@@ -91,7 +101,7 @@ export default class HomeScreen extends React.Component {
             <Carousel.Item>
               <div className="grid-container">
                 {sorted &&
-                  sorted.slice(0, 6).map((obj, index) => {
+                  sorted.slice(0, 8).map((obj, index) => {
                     return <CCard obj={obj} categories={categories} />;
                   })}
               </div>
@@ -99,7 +109,7 @@ export default class HomeScreen extends React.Component {
             <Carousel.Item>
               <div className="grid-container">
                 {sorted &&
-                  sorted.slice(6, 11).map((obj, index) => {
+                  sorted.slice(9, 16).map((obj, index) => {
                     return <CCard obj={obj} categories={categories} />;
                   })}
               </div>

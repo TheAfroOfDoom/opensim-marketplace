@@ -97,6 +97,7 @@
   margin-left: 5%;
   margin-right: 5%;
   margin-top: 10px;
+  margin-bottom: 2rem;
   border-radius: 5px;
   border-style: solid;
   border-color: white;
@@ -151,10 +152,25 @@
 }
 .grid-container {
   padding-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
   display: grid;
   padding: auto;
+  padding-bottom: 20px;
   grid-template-columns: repeat(auto-fit, minmax(405px, 1fr));
 }
 .carousel-slide {
   padding: 0px;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  top: 40%; /* Aligns it at the top */
+  bottom: 40%;
+  width: 40px !important;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.carousel-indicators {
+  bottom: -10px !important;
 }
