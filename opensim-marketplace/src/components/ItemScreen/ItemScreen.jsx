@@ -4,22 +4,22 @@ import Moment from "react-moment";
 
 import { Button, Image } from "react-bootstrap";
 import "./ItemScreen.css";
-import texture_default from "./Images/Texture_Default.png";
-import animation_default from "./Images/Animation_Default.png";
-import attachment_default from "./Images/Attachment_Default.png";
-import bodyparts_default from "./Images/BodyParts_Default.png";
-import callingcard_default from "./Images/CallingCard_Default.png";
-import cloths_default from "./Images/Cloths_Default.png";
-import gesture_default from "./Images/Gesture_Default.png";
-import landmark_default from "./Images/Landmark_Default.png";
-import material_default from "./Images/Material_Default.png";
-import mesh_default from "./Images/Mesh_Default.png";
-import notecard_default from "./Images/NoteCard_Default.png";
-import object_default from "./Images/Object_Default.png";
-import script_default from "./Images/Script_Default.png";
-import sound_default from "./Images/Sound_Default.png";
-
 import { Link } from "react-router-dom";
+
+let texture_default = "Images/Texture_Default.png";
+let animation_default = "Images/Animation_Default.png";
+let attachment_default = "Images/Attachment_Default.png";
+let bodyparts_default = "Images/BodyParts_Default.png";
+let callingcard_default = "Images/CallingCard_Default.png";
+let cloths_default = "Images/Cloths_Default.png";
+let gesture_default = "Images/Gesture_Default.png";
+let landmark_default = "Images/Landmark_Default.png";
+let material_default = "Images/Material_Default.png";
+let mesh_default = "Images/Mesh_Default.png";
+let notecard_default = "Images/NoteCard_Default.png";
+let object_default = "Images/Object_Default.png";
+let script_default = "Images/Script_Default.png";
+let sound_default = "Images/Sound_Default.png";
 
 export default class ItemScreen extends React.Component {
   constructor(props) {

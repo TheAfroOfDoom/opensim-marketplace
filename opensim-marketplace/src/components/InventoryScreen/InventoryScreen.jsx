@@ -8,6 +8,21 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
 
+let texture_default = "Images/Texture_Default.png";
+let animation_default = "Images/Animation_Default.png";
+let attachment_default = "Images/Attachment_Default.png";
+let bodyparts_default = "Images/BodyParts_Default.png";
+let callingcard_default = "Images/CallingCard_Default.png";
+let cloths_default = "Images/Cloths_Default.png";
+let gesture_default = "Images/Gesture_Default.png";
+let landmark_default = "Images/Landmark_Default.png";
+let material_default = "Images/Material_Default.png";
+let mesh_default = "Images/Mesh_Default.png";
+let notecard_default = "Images/NoteCard_Default.png";
+let object_default = "Images/Object_Default.png";
+let script_default = "Images/Script_Default.png";
+let sound_default = "Images/Sound_Default.png";
+
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +32,15 @@ export default class LoginScreen extends React.Component {
   getInventory = async () => {
     try {
       const response = await axios.get("/api/inventory");
-      this.setState({ data: response.data });
+      let test = response.data.sort((one, two) => {
+        if (one.isCreator && !two.isCreator) {
+          return -1;
+        }
+        if (!one.isCreator && two.isCreator) {
+          return 1;
+        } else return 0;
+      });
+      this.setState({ data: test });
     } catch (error) {
       alert("Get Inventory: " + error);
     }
@@ -62,66 +85,65 @@ export default class LoginScreen extends React.Component {
 
   getAssetType = (assetType) => {
     let info = {
-      assettype: "",
-      //pic: "",
+      type: "",
+      pic: "",
     };
     switch (assetType) {
       case -2:
-        info.assettype = "Material";
-        //info.pic = hey;
-        //info.invtype =
+        info.type = "Material";
+        info.pic = material_default;
         break;
       case 0:
-        info.assettype = "Texture";
-        //info.pic = hey;
+        info.type = "Texture";
+        info.pic = texture_default;
         break;
       case 1:
-        info.assettype = "Sound";
-        //info.pic = hey;
+        info.type = "Sound";
+        info.pic = sound_default;
         break;
       case 2:
-        info.assettype = "Calling Card";
-        //info.pic = hey;
+        info.type = "Calling Card";
+        info.pic = callingcard_default;
         break;
       case 3:
-        info.assettype = "Landmark";
-        //info.pic = hey;
+        info.type = "Landmark";
+        info.pic = landmark_default;
         break;
       case 5:
-        info.assettype = "Clothing";
-        //info.pic = hey;
+        info.type = "Clothing";
+        info.pic = cloths_default;
         break;
       case 6:
-        info.assettype = "Object";
-        //info.pic = hey;
+        info.type = "Object";
+        info.pic = object_default;
         break;
       case 7:
-        info.assettype = "Notecard";
-        //info.pic = hey;
+        info.type = "Notecard";
+        info.pic = notecard_default;
         break;
       case 10:
-        info.assettype = "LSLText (aka a script)";
-        //info.pic = hey;
+        info.type = "LSLText (aka a script)";
+        info.pic = script_default;
         break;
       case 13:
-        info.assettype = "Body Part";
-        //info.pic = hey;
+        info.type = "Body Part";
+        info.pic = bodyparts_default;
         break;
       case 20:
-        info.assettype = "Animation";
-        //info.pic = hey;
+        info.type = "Animation";
+        info.pic = animation_default;
         break;
       case 21:
-        info.assettype = "Gesture";
-        //info.pic = hey;
+        info.type = "Gesture";
+        info.pic = gesture_default;
         break;
       case 49:
-        info.assettype = "Mesh";
-        //info.pic = hey;
+        info.type = "Mesh";
+        info.pic = mesh_default;
         break;
       default:
-        info.assettype = "Invalid Type";
-        //info.pic = hey;
+        info.type = "Invalid Type";
+        info.pic = attachment_default;
         break;
     }
     return info;
@@ -153,51 +175,66 @@ export default class LoginScreen extends React.Component {
                 key={obj.assetID}
               >
                 <Card bsPrefix="crunk">
-                  <Card.Header as="h5">{obj.InventoryName}</Card.Header>
+                  <Card.Header as="h5">
+                    {obj.InventoryName} {obj.isCreator ? <i>(creator)</i> : ""}
+                  </Card.Header>
                   <Card.Body as="h6">
-                    <Card.Text>
-                      Asset Type: {this.getAssetType(obj.assetType).assettype}
-                    </Card.Text>
-                    <Card.Text>
-                      Create Time:{" "}
-                      {
-                        <Moment format="MM/DD/YYYY HH:mm" unix>
-                          {obj.creationDate}
-                        </Moment>
-                      }
-                    </Card.Text>
-                    <div className="inventory-button-group">
-                      <Link to={`/item/${obj.assetID}`}>
-                        <Button variant="info">Inspect Item</Button>
-                      </Link>
+                    <div>
+                      <div className="left-column">
+                        <img
+                          className="inventory-picture"
+                          src={this.getAssetType(obj.assetType).pic}
+                        ></img>
+                      </div>
+                      <div className="right-column">
+                        <Card.Text>
+                          Asset Type: {this.getAssetType(obj.assetType).type}
+                        </Card.Text>
+                        <Card.Text>
+                          Create Time:{" "}
+                          {
+                            <Moment format="MM/DD/YYYY HH:mm" unix>
+                              {obj.creationDate}
+                            </Moment>
+                          }
+                        </Card.Text>
+                        <div className="inventory-button-group">
+                          <Link to={`/item/${obj.assetID}`}>
+                            <Button variant="info">Inspect Item</Button>
+                          </Link>
 
-                      <Button
-                        variant="danger"
-                        onClick={this.removeItem.bind(this, obj.assetID)}
-                      >
-                        Remove
-                      </Button>
+                          <Button
+                            variant="danger"
+                            onClick={this.removeItem.bind(this, obj.assetID)}
+                          >
+                            Remove
+                          </Button>
 
-                      {obj.isCreator ? (
-                        this.isPublic(obj) ? (
-                          <Button
-                            onClick={this.privateItem
-                              .bind(this, obj.assetID)
-                              .bind(this, obj.creatorID)}
-                          >
-                            Make Private
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="success"
-                            onClick={this.uploadItem.bind(this, obj.assetID)}
-                          >
-                            Make Public
-                          </Button>
-                        )
-                      ) : (
-                        <div />
-                      )}
+                          {obj.isCreator ? (
+                            this.isPublic(obj) ? (
+                              <Button
+                                onClick={this.privateItem
+                                  .bind(this, obj.assetID)
+                                  .bind(this, obj.creatorID)}
+                              >
+                                Make Private
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="success"
+                                onClick={this.uploadItem.bind(
+                                  this,
+                                  obj.assetID
+                                )}
+                              >
+                                Make Public
+                              </Button>
+                            )
+                          ) : (
+                            <div />
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </Card.Body>
                 </Card>

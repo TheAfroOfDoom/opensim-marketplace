@@ -108,7 +108,7 @@ router.post("/add", async (req, res) => {
     }
 
     // Get assetID param
-    const { assetID } = req.query;
+    const { assetID } = req.body;
 
     let asset = await Assets.findOne({
       attributes: ["id"],
@@ -131,7 +131,7 @@ router.post("/add", async (req, res) => {
     console.log("Add Error: " + sel.error);
     return res.status(200).send({ error: sel.error === 1 ? true : false });
   } catch (e) {
-    //console.error(e);
+    console.error(e);
     if (e.message === "Unauthorized") {
       return res.send(401);
     } else if (e.message === "Invalid ID") {
