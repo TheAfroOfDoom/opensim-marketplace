@@ -12,11 +12,11 @@
 }
 */
 
-h5{
+h5 {
   color: #84fff2;
 }
 
-h6{
+h6 {
   color: #2ec4b6;
 }
 
@@ -30,7 +30,39 @@ h6{
   box-shadow: 0px 14px 60px rgba(34, 35, 58, 0.7);
 }
 
-.InventoryContainer Button{
+.InventoryContainer Button {
   margin-right: 10px;
+}
 
+.inventory-button-group {
+}
+
+@media (max-width: 400px) {
+  .inventory-button-group {
+    display: grid;
+    grid-template-columns: auto;
+    justify-content: center;
+  }
+  .inventory-button-group button {
+    margin-top: 10px;
+  }
+  .InventoryContainer Button {
+    margin-right: 0px;
+  }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+}
+
+/* Large devices (desktops, less than 1200px) */
+@media (max-width: 1199.98px) {
 }

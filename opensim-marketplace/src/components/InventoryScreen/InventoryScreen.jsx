@@ -35,6 +35,7 @@ export default class LoginScreen extends React.Component {
 
   uploadItem = async (assetID) => {
     try {
+      console.log(assetID);
       const response = await axios.post("/api/inventory/upload", {
         assetID: assetID,
       });
@@ -71,7 +72,7 @@ export default class LoginScreen extends React.Component {
         //info.invtype =
         break;
       case 0:
-        info.assettype = "Texture in JPEG2000 J2C stream format";
+        info.assettype = "Texture";
         //info.pic = hey;
         break;
       case 1:
@@ -127,7 +128,6 @@ export default class LoginScreen extends React.Component {
   };
 
   isPublic = (obj) => {
-    console.log(obj.isCreator);
     if (obj.assets[0].public && obj.isCreator) {
       return true;
     }
@@ -147,13 +147,14 @@ export default class LoginScreen extends React.Component {
       return (
         <div className="InventoryContainer">
           {this.state.data.map((obj) => {
-            console.log(obj);
             return (
-              <div id={`${obj.InventoryName.replace("Default ", "")}`}>
+              <div
+                id={`${obj.InventoryName.replace("Default ", "")}`}
+                key={obj.assetID}
+              >
                 <Card bsPrefix="crunk">
                   <Card.Header as="h5">{obj.InventoryName}</Card.Header>
                   <Card.Body as="h6">
-                    <Card.Text>Inventory Type: {obj.InvType}</Card.Text>
                     <Card.Text>
                       Asset Type: {this.getAssetType(obj.assetType).assettype}
                     </Card.Text>
@@ -165,38 +166,39 @@ export default class LoginScreen extends React.Component {
                         </Moment>
                       }
                     </Card.Text>
-                    <Link to={`/item/${obj.assetID}`}>
-                      <Button variant="info">Inspect Item</Button>
-                    </Link>
-                    <Button
-                      variant="danger"
-                      onClick={this.removeItem.bind(this, obj.assetID)}
-                    >
-                      Remove
-                    </Button>
+                    <div className="inventory-button-group">
+                      <Link to={`/item/${obj.assetID}`}>
+                        <Button variant="info">Inspect Item</Button>
+                      </Link>
 
-                    {obj.isCreator ? (
-                      this.isPublic(obj) ? (
-                        <Button
-                          onClick={this.privateItem
-                            .bind(this, obj.assetID)
-                            .bind(this, obj.creatorID)}
-                        >
-                          un-Upload
-                        </Button>
+                      <Button
+                        variant="danger"
+                        onClick={this.removeItem.bind(this, obj.assetID)}
+                      >
+                        Remove
+                      </Button>
+
+                      {obj.isCreator ? (
+                        this.isPublic(obj) ? (
+                          <Button
+                            onClick={this.privateItem
+                              .bind(this, obj.assetID)
+                              .bind(this, obj.creatorID)}
+                          >
+                            Make Private
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="success"
+                            onClick={this.uploadItem.bind(this, obj.assetID)}
+                          >
+                            Make Public
+                          </Button>
+                        )
                       ) : (
-                        <Button
-                          variant="success"
-                          onClick={this.uploadItem
-                            .bind(this, obj.assetID)
-                            .bind(this, obj.creatorID)}
-                        >
-                          Upload
-                        </Button>
-                      )
-                    ) : (
-                      <div />
-                    )}
+                        <div />
+                      )}
+                    </div>
                   </Card.Body>
                 </Card>
               </div>

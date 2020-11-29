@@ -5,7 +5,7 @@ const InventoryItems = require("../../models/InventoryItems");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
-const { isUserLoggedIn } = require("../util.js");
+const { isUserLoggedIn, isAssetInDatabase } = require("../util.js");
 
 /**
  * @swagger
@@ -246,13 +246,11 @@ router.post("/upload", async (req, res) => {
     }
 
     // Get assetID param
-    const { assetID } = req.query;
+    const { assetID } = req.body;
 
-    let asset = await Assets.findOne({
-      attributes: ["id"],
-      where: { id: assetID },
-    });
-    if (_.isEmpty(asset)) throw new Error("Invalid ID");
+    if (!(await isAssetInDatabase(assetID))) {
+      throw new Error("Invalid ID");
+    }
 
     //Check user is creator
     const [creatorID] = await Assets.findAll({
@@ -308,8 +306,12 @@ router.post("/private", async (req, res) => {
       throw new Error("Unauthorized");
     }
 
-    //Get item id
-    let { assetID } = req.body;
+    // Get assetID param
+    const { assetID } = req.body;
+
+    if (!(await isAssetInDatabase(assetID))) {
+      throw new Error("Invalid ID");
+    }
 
     //Check user is creator
     const [creatorID] = await Assets.findAll({
