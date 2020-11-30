@@ -5,6 +5,8 @@ OpenSim Asset Marketplace is a marketplace for the OpenSim environment. Users ca
 
 ## Installation
 #### Prerequisites
+* Must have a preexisting OpenSim database (installation process found [here](http://opensimulator.org/wiki/Configuration).
+
 * Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
 
 Check versions with `node --version` and `npm --version`.
@@ -27,13 +29,13 @@ Check version with `git --version`
 
 
 #### Installing
-1. __Install git repository__
+1. __Modify OpenSim `assets` table__
 
-In the command prompt or terminal, move the the folder that you would like to keep the local repository. Once there type in the console: 
-
-`git clone https://gitlab.com/senior-design-project-12/opensim-marketplace.git`
-
-This will create a local repository identical to the cloud repository.
+Run the following SQL script (`modify_table.sql`) on the database your OpenSim instance uses to add a new field to the `assets` table:
+```sql
+ALTER TABLE `opensim`.`assets` 
+ADD COLUMN `public` TINYINT(1) UNSIGNED ZEROFILL NOT NULL DEFAULT '0';
+```
 
 2. __Install packages for frontend__
 
