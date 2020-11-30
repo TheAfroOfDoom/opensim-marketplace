@@ -2,7 +2,7 @@ import React from "react";
 
 import "./InventoryScreen.css";
 
-import { Spinner, Card, Button } from "react-bootstrap";
+import { Spinner, Card, Button, Image } from "react-bootstrap";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -58,7 +58,7 @@ export default class LoginScreen extends React.Component {
 
   uploadItem = async (assetID) => {
     try {
-      console.log(assetID);
+      //console.log(assetID);
       const response = await axios.post("/api/inventory/upload", {
         assetID: assetID,
       });
@@ -174,19 +174,20 @@ export default class LoginScreen extends React.Component {
                 id={`${obj.InventoryName.replace("Default ", "")}`}
                 key={obj.assetID}
               >
-                <Card bsPrefix="crunk">
-                  <Card.Header as="h5">
+                <Card bsPrefix="main-card">
+                  <Card.Header className="main-header">
                     {obj.InventoryName} {obj.isCreator ? <i>(creator)</i> : ""}
                   </Card.Header>
                   <Card.Body as="h6">
-                    <div>
-                      <div className="left-column">
-                        <img
-                          className="inventory-picture"
-                          src={this.getAssetType(obj.assetType).pic}
-                        ></img>
-                      </div>
-                      <div className="right-column">
+                    <div className="main-block">
+                    <div className="image-column">
+                      <Image
+                        className="inventory-picture"
+                        src={this.getAssetType(obj.assetType).pic}
+
+                      ></Image>
+                    </div>
+                      <div className="text-column">
                         <Card.Text>
                           Asset Type: {this.getAssetType(obj.assetType).type}
                         </Card.Text>
@@ -235,6 +236,7 @@ export default class LoginScreen extends React.Component {
                           )}
                         </div>
                       </div>
+
                     </div>
                   </Card.Body>
                 </Card>

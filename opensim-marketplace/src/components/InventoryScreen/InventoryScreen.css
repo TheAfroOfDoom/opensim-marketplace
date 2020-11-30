@@ -11,16 +11,39 @@
   margin-top: 5vh;
 }
 */
-
-h5 {
+.main-block{
+  display: flex;
+}
+.main-header {
   color: #84fff2;
+  font-family: Segoe UI, sans-serif;
+  letter-spacing: -2px;
+  font-size: 30px;
+  font-weight: 300;
 }
 
-h6 {
+.image-column{
+  justify-content: right;
+  display: block;
+  align-items: right;
+  position: relative;
+  width:120px;
+  height:120px;
+  margin-right: 2rem;
+}
+
+
+.text-column {
   color: #2ec4b6;
+  font-family: Segoe UI, sans-serif;
+  letter-spacing: -1px;
+  font-size: 20px;
+  font-weight: 300;
+  justify-content: left;
+
 }
 
-.crunk {
+.main-card {
   margin-left: auto;
   margin-right: auto;
   margin-top: 5vh;
@@ -29,6 +52,8 @@ h6 {
   border-radius: 20px;
   box-shadow: 0px 20px 50px rgba(34, 35, 58, 1);
   max-width: 1000px;
+  /*font-family: "Roboto", sans-serif;*/
+
 }
 
 .InventoryContainer Button {
@@ -39,20 +64,10 @@ h6 {
 }
 
 .inventory-picture {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
 }
 
-.left-column {
-  width: 65%;
-  position: relative;
-  margin-right: 1rem;
-}
-
-.right-column {
-  width: 50%;
-  margin-top: 30px;
-}
 
 @media (max-width: 400px) {
   .inventory-button-group {
@@ -68,6 +83,11 @@ h6 {
   }
 }
 
+@media (max-width: 420px) {
+
+
+
+}
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
 }
