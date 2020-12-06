@@ -2,8 +2,18 @@
 
 ## Introduction
 
+<<<<<<< HEAD
 OpenSim Marketplace is a marketplace for the OpenSim environment. Users can upload their creations and also download new ones to use. There are also multiple ways to locate assets, searching by type or
 a search string.
+=======
+
+## Installation
+
+#### Prerequisites
+
+- Must have a preexisting OpenSim database (installation process found [here](http://opensimulator.org/wiki/Configuration).
+
+- Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
 
 ## Installation
 
@@ -54,6 +64,15 @@ In the command prompt or terminal, in the root of the local repository, type the
 In the folder, install the packages:
 
 `npm install` or `yarn`
+
+4. **Modify OpenSim `assets` table**
+
+Run the following SQL script (`modify_table.sql`) on the database your OpenSim instance uses to add a new field to the `assets` table:
+
+```sql
+ALTER TABLE `opensim`.`assets`
+ADD COLUMN `public` TINYINT(1) UNSIGNED ZEROFILL NOT NULL DEFAULT '0';
+```
 
 ## Running
 
