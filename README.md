@@ -1,41 +1,39 @@
-# OpenSim Asset Marketplace
+# OpenSim Marketplace
 
 ## Introduction
-OpenSim Asset Marketplace is a marketplace for the OpenSim environment. Users can upload their creations and also download new ones to use.
+
+OpenSim Marketplace is a marketplace for the OpenSim environment. Users can upload their creations and also download new ones to use. There are also multiple ways to locate assets, searching by type or
+a search string.
 
 ## Installation
+
 #### Prerequisites
-* Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
 
-Check versions with `node --version` and `npm --version`.
+- Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
 
-* Optionally, you can also use [yarn](https://classic.yarnpkg.com/en/docs/install) instead of npm.
+  - Check versions with `node --version` and `npm --version`.
 
-Check version with `yarn --version`.
+- Optionally, you can also use [yarn](https://classic.yarnpkg.com/en/docs/install) instead of npm.
 
-* Must have a valid version of [Git](https://git-scm.com/).
+  - Check version with `yarn --version`.
 
-Check version with `git --version`
+- Must have a valid version of [Git](https://git-scm.com/).
 
-* Must have a valid connection the database. Make sure you are connected through [hamachi](https://www.vpn.net/) and the database PC is online (or internet connection if we later move to the cloud).
-
-* If you are logged into Gitlab through Github, then your username/password combination will not work using git. You must get an access token and substitute that for your password:
-    1. Log into gitlab [here](https://gitlab.com/users/sign_in)
-    2. Go to your settings by clicking your profile picture in the top right corner, and clicking settings.
-    3. On the left side, click the tab for 'Access Tokens'
-    4. Create a name, and optionally an expiration date, then select the box for 'api'. Click 'create personal access token', and you should be given an access code. Store it somewhere so you can access it later.
-
+  - Check version with `git --version`
 
 #### Installing
-1. __Install git repository__
 
-In the command prompt or terminal, move the the folder that you would like to keep the local repository. Once there type in the console: 
+1. **Install git repository**
+
+In the command prompt or terminal, move the folder that you would like to keep the local repository. Once there type in the console:
 
 `git clone https://gitlab.com/senior-design-project-12/opensim-marketplace.git`
 
-This will create a local repository identical to the cloud repository.
+This will create a local repository identical to the Gitlab repository.
 
-2. __Install packages for frontend__
+type `cd opensim-marketplace` to enter the project folder. Within, there should be 2 folders: `opensim-marketplace` and `backend`
+
+2. **Install packages for frontend**
 
 In the command prompt or terminal, in the root of the local repository, type the following:
 
@@ -47,7 +45,7 @@ In the folder, install the packages:
 
 This will create a `node_modules` folder holding all third party libraries
 
-3. __Install packages for backend__
+3. **Install packages for backend**
 
 In the command prompt or terminal, in the root of the local repository, type the following:
 
@@ -57,62 +55,49 @@ In the folder, install the packages:
 
 `npm install` or `yarn`
 
-## Usage
-The frontend and backend must both be run seperately.
+## Running
 
-#### frontend
-In the command prompt or terminal, move to the frontend directory and run the following command:
+#### Environment Variables
+
+Must ensure that there is a valid connection to the database. In order to connect to the database, modify the .env file in the `backend` root folder.
+
+- `PORT` for changing port server runs on. Default is 5000
+- `TEST_UUID` User ID for testing. **Used for testing only**
+- `DB_URL` for the IP of the database or location name of the database.
+- `DB_USERNAME` Username of connection
+- `DB_PASSWORD` Password of connection
+- `DB_NAME` Name of the database to connect to (Ex: 'opensim').
+
+#### Frontend
+
+In the command prompt or terminal, move to the `opensim-marketplace` directory.
+
+**Note:** Before running the development react server, a location for the backend server must be specified. In the frontend directory, open the `package.json` file and change `proxy` from `http://localhost:5000/` to the where the server will be run.
+
+To run the development react server, type:
 
 `npm start`
 
-This will start the React at __localhost:3000__. 
-While editing the project in the code, any edits that are made to the `src` folder will be automatically updated on the browser window.
+**Note:** This will start the React at `http://localhost`. or at whatever port is specified in `package.json`. To change this port, find the scripts section of `package.json` and modify the `start` script to specified port.
 
-#### backend
-In the command prompt or terminal, move to the backend directory and run the following command:
+**Note:** While editing the project in the code, any edits that are made to the `src` or `public` folder will be automatically updated on the browser window.
+
+At any time, you can run `npm run build` or `yarn build`. This will create an optimized build in the folder within the frontend directory called `build`. The `build` folder is a static HTML file with vanilla javascript. This HTML is referenced by the backend Node.js server
+
+**Note:** You can run this html file directory and see the website load, but it will not be functional even with the backend server running. To work correctly, it must be run through the backend server
+
+#### Backend
+
+In the command prompt or terminal, move to the `backend` directory and run the following command:
 
 `npm run dev`
 
-This will start a local Node.js server at __localhost:5000__.
+This will start a local Node.js server at **localhost:5000** or whatever port specified.
 
-Optionally, there is an npm package you can download called [nodemon](https://www.npmjs.com/package/nodemon). When run with this package, changes to backend code will automatically update and restart the server. Install with `npm install -g nodemon` then start the server with the following command:
+When accessing `http://localhost:{port}/` or wherever the backend server is started, the production build found in `opensim-marketplace/build` of the marketplace should load. This will work exactly as the React Development Server should if run.
 
-`nodemon ./src/index.js`
+**Note:** The backend requires that there be connection to the database to function properly
 
-__Note:__ The backend requires that there be connection to the database to funcion properly
+**Note:** The React development server will rely on the backend being up and running. Always make sure that both are running together to ensure that everything works as intended.
 
-__Note:__ Features of the frontend will rely on the backend being up and running. Always make sure that both are running together to ensure that evrything works as intended.
-
-__Note:__ Any time you pull or merge from the repository, make sure you run `npm install` or `yarn` to download any new modules
-
-## Tools & Resources
-
-
-#### Text Editor Packages
-Use packages that can be added to make developing much easier and smoother. Many you can find will provide autocomplete, snippets, and syntax highlighting.
-
-These are a few recommendations:
-##### Atom
-* [atom-beautify](https://atom.io/packages/atom-beautify) - Cleans up code to desired style. Works with nearly all languages.
-* [atom-ide-ui](https://atom.io/packages/atom-ide-ui) - Provides visual syntax highlighting and error detection. Foundation for several packages supporting several languages.
-* [atom-typescript](https://atom.io/packages/atom-typescript) - Provides IDE functionality for typescript, superset of javascript. We may not directly use typescript, but this package will be in the background if it is used in the project.
-* [minimap](https://atom.io/users/atom-minimap) - A minimap that shows the whole file. These files can potentially get quite large and confusing so this can be helpful.
-* [platformio-ide-terminal](https://atom.io/packages/platformio-ide-terminal) - A command prompt or terminal built into atom.
-* [prettier-atom](https://atom.io/packages/prettier-atom) - Package to format files to the 'prettier' style.
-* [react-snippets](https://atom.io/packages/react-snippets) - Package providing snippets for common React code
-
-##### VSCode
-* [ES7 React/Redux/GraphQL/React-Native snippets](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets) - Excellent package that provides several snippets for common React code.
-* [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) - Helps identify errors in javascript code. Works with JS and JSX files.
-* [Prettier](https://marketeplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) - Package to format files to 'prettier' style
-
-
-#### React Documentation
-Documentation on the different pieces of [React](https://reactjs.org/docs/getting-started.html). This will explain how to get started with React along with the various elements that make it useful.
-
-#### Postman
-[Postman](https://www.postman.com/) is an online service that will allow for query testing of a local backend. You can test out different endpoints and view the data recieved.
-
-#### MySQL Workbench
-[MySQL Workbench](https://www.mysql.com/products/workbench/) is a software that allows for testing queries and database management. It is a GUI makes the process a lot more visual and streamlined.
-
+**Note:** Any time you pull or merge from the repository, make sure you run `npm install` or `yarn` to download any new modules
