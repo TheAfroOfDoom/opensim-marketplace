@@ -68,7 +68,7 @@ In the folder, install the packages:
 
 Run both of the SQL scripts on the database your OpenSim instance uses:
 - `modifyTable.sql`: to add a new field to the `assets` table required for uploading
-- `marketplaceDownloadAsset`: to add the stored procedure required for downloading.
+- `marketplaceDownloadAsset.sql`: to add the stored procedure required for downloading.
 
 ## Running
 
