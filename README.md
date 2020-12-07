@@ -14,12 +14,6 @@ a search string.
 
 - Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
 
-## Installation
-
-#### Prerequisites
-
-- Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
-
   - Check versions with `node --version` and `npm --version`.
 
 - Optionally, you can also use [yarn](https://classic.yarnpkg.com/en/docs/install) instead of npm.
