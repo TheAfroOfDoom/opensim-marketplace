@@ -2,7 +2,6 @@
 
 ## Introduction
 
-<<<<<<< HEAD
 OpenSim Marketplace is a marketplace for the OpenSim environment. Users can upload their creations and also download new ones to use. There are also multiple ways to locate assets, searching by type or
 a search string.
 =======
