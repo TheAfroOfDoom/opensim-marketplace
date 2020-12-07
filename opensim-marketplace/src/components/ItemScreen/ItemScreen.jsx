@@ -1,20 +1,25 @@
 import React from "react";
 import axios from "axios";
 import Moment from "react-moment";
-import ReactDOM from "react-dom";
-import {
-  Nav,
-  Form,
-  FormControl,
-  NavDropdown,
-  Button,
-  Image,
-} from "react-bootstrap";
-import "./ItemScreen.css";
 
-//import { Link } from "react-router-dom";
-import { HashLink as Link } from "react-router-hash-link";
-//import ReactCanvas from "@gfodor/react-canvas";
+import { Button, Image } from "react-bootstrap";
+import "./ItemScreen.css";
+import { Link } from "react-router-dom";
+
+let texture_default = "Images/Texture_Default.png";
+let animation_default = "Images/Animation_Default.png";
+let attachment_default = "Images/Attachment_Default.png";
+let bodyparts_default = "Images/BodyParts_Default.png";
+let callingcard_default = "Images/CallingCard_Default.png";
+let cloths_default = "Images/Cloths_Default.png";
+let gesture_default = "Images/Gesture_Default.png";
+let landmark_default = "Images/Landmark_Default.png";
+let material_default = "Images/Material_Default.png";
+let mesh_default = "Images/Mesh_Default.png";
+let notecard_default = "Images/NoteCard_Default.png";
+let object_default = "Images/Object_Default.png";
+let script_default = "Images/Script_Default.png";
+let sound_default = "Images/Sound_Default.png";
 
 export default class ItemScreen extends React.Component {
   constructor(props) {
@@ -23,174 +28,163 @@ export default class ItemScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await axios.get("/item", {
-      params: {
-        id: this.props.match.params.assetId,
-        color: "green",
-      },
-    });
+    console.log("Hey::");
+    let error;
+    try {
+      const response = await axios
+        .get("/api/item", {
+          params: {
+            id: this.props.match.params.assetId,
+          },
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            throw new Error(`${err.config.url} Unauthorized`);
+          }
+          if (err.response.status === 400) {
+            throw new Error(`${err.config.url} not found:2`);
+          }
+          throw err;
+        });
 
-    this.setState({
-      data: response.data,
-    });
+      this.setState({
+        data: response.data,
+      });
+    } catch (err) {
+      error = err;
+      console.log(error.message);
+    }
   }
 
   handleAdd = async () => {
-    const response = await axios.get("/add", {
-      params: {
-        assetID: this.props.match.params.assetId,
-      },
+    const response = await axios.post("/api/inventory/add", {
+      assetID: this.props.match.params.assetId,
     });
   };
 
   getAssetType = (assetType) => {
-    let stuff = {
+    let info = {
       type: "",
       pic: "",
     };
     switch (assetType) {
       case -2:
-        stuff.type = "Material";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/c/c2/Peter_Griffin.png";
+        info.type = "Material";
+        info.pic = material_default;
         break;
       case 0:
-        stuff.type = "Texture in JPEG2000 J2C stream format";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Texture in JPEG2000 J2C stream format";
+        info.pic = texture_default;
         break;
       case 1:
-        //result = "Sound";
-        //pic = "https://upload.wikimedia.org/wikipedia/en/0/02/Stewie_Griffin.png";
-        stuff.type = "Sound";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Sound";
+        info.pic = sound_default;
         break;
       case 2:
-        //result = "Calling Card";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Calling Card";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Calling Card";
+        info.pic = callingcard_default;
         break;
       case 3:
-        //result = "Landmark";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Landmark";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Landmark";
+        info.pic = landmark_default;
         break;
       case 5:
-        //result = "Clothing";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Clothing";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Clothing";
+        info.pic = cloths_default;
         break;
       case 6:
-        //result = "Object";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Object";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Object";
+        info.pic = object_default;
         break;
       case 7:
-        //result = "Notecard";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Notecard";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/0/02/Stewie_Griffin.png";
+        info.type = "Notecard";
+        info.pic = notecard_default;
         break;
       case 10:
-        //result = "LSLText (aka a script)";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "LSLText (aka a script)";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "LSLText (aka a script)";
+        info.pic = script_default;
         break;
       case 13:
-        //result = "Body Part";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Body Part";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Body Part";
+        info.pic = bodyparts_default;
         break;
       case 20:
-        //result = "Animation";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Animation";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Animation";
+        info.pic = animation_default;
         break;
       case 21:
-        //result = "Gesture";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Gesture";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Gesture";
+        info.pic = gesture_default;
         break;
       case 49:
-        //result = "Mesh";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Mesh";
-        stuff.pic =
-          "https://upload.wikimedia.org/wikipedia/en/a/a5/Lois_Griffin.png";
+        info.type = "Mesh";
+        info.pic = mesh_default;
         break;
       default:
-        //result = "Invalid Type";
-        //pic = "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
-        stuff.type = "Invalid Type";
-        stuff.pic =
-          "https://kangsblackbeltacademy.com/wp-content/uploads/2017/04/default-image-720x530.jpg";
+        info.type = "Invalid Type";
+        info.pic = attachment_default;
         break;
     }
-    return stuff;
+    return info;
   };
 
   render() {
     if (this.state.data == null) {
-      return <div />;
+      return <div data-testid="items" />;
     } else {
+      const { itemInfo } = this.state.data;
+      const { userInfo } = this.state.data;
+      const { invInfo } = this.state.data;
+      console.log(invInfo.inInventory);
       return (
         <body className="page">
           <div>
-            {this.state.data &&
-              this.state.data.map((obj) => {
-                return (
-                  <body>
-                    <h1 className="title">{obj.name}</h1>
+            <img />
+            <div className="container">
+              <div className="left-column">
+                <Image
+                  data-testid="itemss"
+                  src={this.getAssetType(itemInfo.assetType).pic}
+                  fluid
+                />
+              </div>
 
-                    <Image
-                      className="image"
-                      src={this.getAssetType(obj.assetType).pic}
-                    />
-                    <div className="infoBox">
-                      <h3>Description</h3>
-                      <p>{this.getAssetType(obj.assetType).type}</p>
-                    </div>
-                    <div className="infoBox">
-                      <h3>User Details</h3>
-                      <p>A bunch of junk</p>
-                    </div>
-                    <div className="infoBox">
-                      <h3>Download & Details</h3>
-                      <p>
-                        Create Time: {<Moment unix>{obj.create_time}</Moment>}
-                      </p>
-                      <p>{this.state.dataString.substring(0, 10)}</p>
-                      <Link to={`/inventory#${obj.name}`}>
-                        <Button onClick={this.handleAdd}>
-                          Add To Inventory
-                        </Button>
-                      </Link>
-                    </div>
-                  </body>
-                );
-              })}
+              <div className="right-column">
+                <div className="asset-description">
+                  <h1>{itemInfo.name}</h1>
+                  <p>{this.getAssetType(itemInfo.assetType).type}</p>
+                </div>
+                <div className="user-description">
+                  <h3>Creator Information</h3>
+                  <p>First Name: {userInfo.FirstName}</p>
+                  <p>Last Name: {userInfo.LastName}</p>
+                </div>
+                <div className="asset-download">
+                  <h3>Download & Details</h3>
+                  <p>
+                    Create Time:{" "}
+                    {
+                      <Moment format="MM/DD/YYYY HH:mm" unix>
+                        {itemInfo.create_time}
+                      </Moment>
+                    }
+                  </p>
+                  {console.log(invInfo.inInventory)}
+                  {!invInfo.inInventory ? (
+                    <Link to={`/inventory#${itemInfo.name}`}>
+                      <Button onClick={this.handleAdd}>Add To Inventory</Button>
+                    </Link>
+                  ) : (
+                    <Link to={`/inventory#${itemInfo.name}`}>
+                      <Button>View In Inventory</Button>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </body>
       );
     }
   }
 }
-//<img className="image" src={`data:image/png;base64,${this.state.dataString}`} />

@@ -1,0 +1,204 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.App {
+  height: 100vh;
+  background: #02394a;
+  overflow: auto;
+}
+.side {
+  /* height: auto; /* Full-height: remove this if you want "auto" height */
+
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 20px; /* Set the width of the sidebar */
+  margin-bottom: 20px;
+  /*position: relative;*/ /* Fixed Sidebar (stay in place on scroll) */
+  /*z-index: 1; /* Stay on top */ /* Stay at the top */
+  /*left: 0;*/
+  flex-direction: column;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: white;
+  background-color: #343a40; /* Black */
+  /*overflow-x: hidden;*/
+  /* Disable horizontal scroll */
+  box-shadow: 0px 14px 60px rgba(34, 35, 58, 0.7);
+}
+
+.sideButton {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: #84fff2;
+  display: row;
+  background: none;
+  border: none;
+}
+/*
+.my__carousel_main {
+        div{
+            ol{
+                li{
+                    background-color: red;
+                    border-radius: 50%;
+                    height: 10px;
+                    width: 10px;
+                }
+            }
+        }
+    }
+*/
+
+/*
+@media (max-width: 1500px) {
+  .side {
+    display: flex;
+  }
+  .c {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(20px, 1fr));
+  }
+}
+*/
+
+.title {
+  padding: 6px 16px 6px 16px;
+  text-decoration: none;
+  text-align: center;
+  font-size: 30px;
+  color: #ff8e32;
+  display: block;
+  background: none;
+  border-bottom: 1px solid rgb(225, 232, 238);
+
+  margin-left: 15px;
+  margin-right: 15px;
+}
+.jumbo {
+  text-align: center;
+  height: auto;
+  color: #fff;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 20px;
+  box-shadow: 0px 14px 60px rgba(34, 35, 58, 0.7);
+}
+
+.jumbotext {
+  vertical-align: bottom;
+  bottom: 0;
+  color: #fff;
+}
+.item {
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 10px;
+  margin-bottom: 2rem;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: white;
+  color: white;
+  background-color: #343a40;
+  text-align: center;
+  box-shadow: 0px 14px 60px rgba(34, 35, 58, 0.7);
+}
+.itemTitle {
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  border-style: solid;
+  border-color: white;
+  background-color: #343a40;
+  text-align: center;
+  display: block;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  color: #ff8e32;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(225, 232, 238);
+}
+.c {
+  /*
+  display: flex;
+  justify-content: space-around;
+  */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  border-spacing: 2rem 2rem;
+  white-space: nowrap;
+}
+
+.cards {
+  width: 400px;
+  height: auto;
+  background-color: #02394a;
+  border-color: white;
+  margin-bottom: 10px;
+  border-style: solid;
+  box-shadow: 0px 14px 60px rgba(34, 35, 58, 0.7);
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 20px;
+}
+.body {
+  horizontal-align: left;
+}
+.grid-container {
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  display: grid;
+  padding: auto;
+  padding-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(405px, 1fr));
+}
+.carousel-slide {
+  padding: 0px;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  top: 40%; /* Aligns it at the top */
+  bottom: 40%;
+  width: 40px !important;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.carousel-indicators {
+  bottom: -10px !important;
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .sideButton {
+    font-size: 1.25rem;
+  }
+  .grid-container {
+    grid-template-columns: auto;
+  }
+  .cards {
+    width: 60vw;
+  }
+  .cards h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+}
+
+/* Large devices (desktops, less than 1200px) */
+@media (max-width: 1199.98px) {
+}

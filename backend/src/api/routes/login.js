@@ -4,18 +4,53 @@ const sequelize = require("../../config/database");
 const Auth = require("../../models/Auth");
 const UserAccounts = require("../../models/UserAccounts");
 const md5 = require("md5");
-const uuid = require("uuid");
 
+/**
+ * @swagger
+ * /login:
+ *   get:
+ *     tags:
+ *       - Login
+ *     description: Authenticate user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: firstName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: First Name of user
+ *       - in: query
+ *         name: lastName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Last Name of user
+ *       - in: query
+ *         name: password
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Password of user
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated user
+ */
 router.get("/", async (req, res) => {
   try {
-    const { firstName, lastName, password } = req.query;
-    if (firstName == "" || lastName == "" || password == "") {
-    }
+    //Check if user is authenticated
+    const { uuid } = req.cookies;
+    if (uuid !== undefined) throw new Error("Already Authorized");
 
+    //Get Query params
+    const { firstName, lastName, password } = req.query;
+
+    // Give relations
     Auth.hasMany(UserAccounts);
     UserAccounts.belongsTo(Auth);
 
-    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    //Get array of logins
     const loginInfo = await Auth.findAll({
       attributes: ["UUID", "passwordHash", "passwordSalt"],
       include: [
@@ -24,8 +59,8 @@ router.get("/", async (req, res) => {
           attributes: [],
           required: true,
           where: {
-            FirstName: firstName,
-            LastName: lastName,
+            FirstName: firstName.trim(),
+            LastName: lastName.trim(),
           },
           on: {
             col1: sequelize.where(
@@ -39,16 +74,17 @@ router.get("/", async (req, res) => {
       required: true,
     });
 
+    // Code sometimes doesnt return (I have no idea why). THis is to stop a double return.
     responseSent = false;
 
-    for (let i = 0; i < loginInfo.length; i++) {
-      user = loginInfo[i];
-      console.log(user);
+    for (let user of loginInfo) {
+      //Hash Password
       let hashedPassword = md5(
         md5(password) + ":" + user.dataValues.passwordSalt
       );
+
+      //Check if password is correct
       if (hashedPassword === user.dataValues.passwordHash) {
-        console.log(user.dataValues.UUID.toString());
         responseSent = true;
         return res
           .status(201)
@@ -57,38 +93,19 @@ router.get("/", async (req, res) => {
         break;
       }
     }
+
     if (!responseSent) {
+      // User/Pass is not correct
       return res.status(400).send("Failure");
     }
-  } catch (error) {
-    console.log("error");
-    return res.status(400).send("Failure");
+  } catch (e) {
+    //console.log(error);
+    if (e.message === "Already Authorized") {
+      return res.status(400).send("Already Authorized");
+    } else {
+      return res.status(400).send("Failure");
+    }
   }
 });
 
 module.exports = router;
-
-/*
-router.get("/", (req, res) => {
-  //Destructure Username and Password params
-  const { email, password } = req.query;
-  // Attempt SQL Query
-  opensim.query(
-    `SELECT auth.UUID, auth.passwordHash, auth.passwordSalt, auth.webLoginKey FROM auth INNER JOIN useraccounts ON useraccounts.PrincipalID=auth.UUID WHERE Email="${email}";`,
-    (err, result, fields) => {
-      //Check to see if password matches
-      for (let i = 0; i < result.length; i++) {
-        user = result[i];
-        console.log(user);
-        let hashedPassword = md5(md5(password) + ":" + user.passwordSalt);
-        if (hashedPassword === user.passwordHash) {
-          let obj;
-          return res.send({ UUID: user.UUID, webLoginKey: user.webLoginKey });
-        }
-      }
-
-      return res.send("Name/Password Does not match");
-    }
-  );
-});
-*/

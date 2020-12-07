@@ -1,10 +1,14 @@
 .nav {
-  height: 50px;
+  height: 60px;
   width: 100%;
-  background-color: #2d001e;
 }
 
-.logo {
+/*Brand {
   justify-content: center;
   align-self: center;
+    border: 3px solid white;
+}
+*/
+header {
+  border-bottom: 3px solid white;
 }

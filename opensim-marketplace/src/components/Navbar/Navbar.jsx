@@ -1,16 +1,10 @@
 import React from "react";
 import "./Navbar.css";
 import Navbar from "react-bootstrap/Navbar";
-import { Nav, Form, FormControl, NavDropdown, Button } from "react-bootstrap";
+import Cookies from "js-cookie";
+import { Nav, Form, Button } from "react-bootstrap";
 import axios from "axios";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  withRouter,
-  Redirect,
-} from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 class NavigationBar extends React.Component {
   constructor(props) {
@@ -19,7 +13,7 @@ class NavigationBar extends React.Component {
   }
 
   onClick = async () => {
-    const response = await axios.get("/search", {
+    const response = await axios.get("/api/search/public", {
       params: {
         searchString: this.state.search,
       },
@@ -33,12 +27,34 @@ class NavigationBar extends React.Component {
     this.setState({ search: fleldVal });
   }
 
+  checkStatus = () => {
+    if (this.props.data) {
+      console.log("Logging Out");
+      Cookies.remove("uuid");
+      this.props.handleLogin(false);
+    } else {
+      console.log("Not Logged In");
+    }
+  };
+
   render() {
     return (
       <header>
-        <Navbar variant="light" expand="lg" bg="light">
-          <Link to="/">
-            <Navbar.Brand>OpenSim Marketplace</Navbar.Brand>
+        <Navbar
+          variant="dark"
+          bg="dark"
+          expand="lg"
+          style={{ paddingLeft: "10px" }}
+        >
+          <Link exact to="/">
+            <Navbar.Brand>
+              <img
+                className="d-inline-block align-top"
+                src="minilogo.png"
+                style={{ height: 30, width: 30 }}
+              />{" "}
+              OpenSim Marketplace
+            </Navbar.Brand>
           </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -46,11 +62,8 @@ class NavigationBar extends React.Component {
             <Link to="/inventory">
               <Navbar.Brand>Inventory</Navbar.Brand>
             </Link>
-            <Link to="/upload">
-              <Navbar.Brand>Upload</Navbar.Brand>
-            </Link>
-            <Link to="/login">
-              <Navbar.Brand>Login</Navbar.Brand>
+            <Link to="/login" onClick={this.checkStatus}>
+              <Navbar.Brand>Logout</Navbar.Brand>
             </Link>
             <Form inline onSubmit={this.onClick}>
               <Form.Control
@@ -76,3 +89,11 @@ class NavigationBar extends React.Component {
 }
 
 export default NavigationBar;
+
+/*
+<Link exact to="/">
+  <Navbar.Brand>
+    <div style={{ fontSize: "1.5rem" }}>OpenSim Marketplace</div>
+  </Navbar.Brand>
+</Link>
+*/
