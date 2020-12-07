@@ -2,7 +2,6 @@
 
 ## Introduction
 
-<<<<<<< HEAD
 OpenSim Marketplace is a marketplace for the OpenSim environment. Users can upload their creations and also download new ones to use. There are also multiple ways to locate assets, searching by type or
 a search string.
 =======
@@ -11,15 +10,15 @@ a search string.
 
 #### Prerequisites
 
-- Must have a preexisting OpenSim database (installation process found [here](http://opensimulator.org/wiki/Configuration).
+- Must have a preexisting OpenSim database (installation process found [here](http://opensimulator.org/wiki/Configuration)).
 
-- Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
+- Must have `Node >= 8.10` and `npm >= 5.6`. You can grab them from this link [here](https://nodejs.org/en/).
 
 ## Installation
 
 #### Prerequisites
 
-- Must have `Node >= 8.10` and `npm >= 5.6`. If not, you can grab them from this link [here](https://nodejs.org/en/).
+- Must have `Node >= 8.10` and `npm >= 5.6`. You can grab them from this link [here](https://nodejs.org/en/).
 
   - Check versions with `node --version` and `npm --version`.
 
@@ -85,7 +84,7 @@ Must ensure that there is a valid connection to the database. In order to connec
 - `DB_URL` for the IP of the database or location name of the database.
 - `DB_USERNAME` Username of connection
 - `DB_PASSWORD` Password of connection
-- `DB_NAME` Name of the database to connect to (Ex: 'opensim').
+- `DB_NAME` Name of the database to connect to (e.g.: 'opensim').
 
 #### Frontend
 
@@ -115,8 +114,7 @@ This will start a local Node.js server at **localhost:5000** or whatever port sp
 
 When accessing `http://localhost:{port}/` or wherever the backend server is started, the production build found in `opensim-marketplace/build` of the marketplace should load. This will work exactly as the React Development Server should if run.
 
-**Note:** The backend requires that there be connection to the database to function properly
-
-**Note:** The React development server will rely on the backend being up and running. Always make sure that both are running together to ensure that everything works as intended.
-
-**Note:** Any time you pull or merge from the repository, make sure you run `npm install` or `yarn` to download any new modules
+**Note:**
+- The backend requires that there be connection to the database to function properly
+- The React development server will rely on the backend being up and running. Always make sure that both are running together to ensure that everything works as intended.
+- Any time you pull or merge from the repository, make sure you run `npm install` or `yarn` to download any new modules
