@@ -23,10 +23,12 @@ async function isAssetInDatabase(assetID) {
     return false;
   }
 
-  let asset = await Assets.findAll({
+  let asset = await Assets.findOne({
     attributes: ["id"],
     where: { id: assetID },
   });
+
+  console.log(asset);
   if (_.isEmpty(asset)) return false;
 
   return true;

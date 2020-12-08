@@ -171,15 +171,12 @@ router.post("/remove", async (req, res) => {
       throw new Error("Unauthorized");
     }
 
-    //Get item id
     // Get assetID param
-    const { assetID } = req.query;
+    const { assetID } = req.body;
 
-    let asset = await Assets.findOne({
-      attributes: ["id"],
-      where: { id: assetID },
-    });
-    if (_.isEmpty(asset)) throw new Error("Invalid ID");
+    if (!(await isAssetInDatabase(assetID))) {
+      throw new Error("Invalid ID");
+    }
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -246,7 +243,10 @@ router.post("/upload", async (req, res) => {
     }
 
     // Get assetID param
+    console.log(req.body);
     const { assetID } = req.body;
+
+    console.log("AssetID: " + assetID);
 
     if (!(await isAssetInDatabase(assetID))) {
       throw new Error("Invalid ID");
@@ -271,6 +271,8 @@ router.post("/upload", async (req, res) => {
       return res.sendStatus(401);
     } else if (e.message === "Forbidden") {
       return res.sendStatus(403);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
     } else {
       return res.sendStatus(400);
     }
@@ -333,6 +335,8 @@ router.post("/private", async (req, res) => {
       return res.sendStatus(401);
     } else if (e.message === "Forbidden") {
       return res.sendStatus(403);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
     } else {
       return res.sendStatus(400);
     }
