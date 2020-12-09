@@ -60,7 +60,7 @@ describe("Test /api/inventory/remove method", () => {
       .post("/api/inventory/remove")
       .send({ assetID: "00000000-0000-1111-9999-000000000001" })
       .set("Cookie", [`uuid=dfafbece-1e64-4f40-a435-edadd348c631`]);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(401);
   });
 
   it("Test with authorization and correct assetID", async () => {
@@ -135,7 +135,7 @@ describe("Test /api/inventory/upload method", () => {
       .post("/api/inventory/upload")
       .send({ assetID: "00000000-0000-1111-9999-000000000001" })
       .set("Cookie", [`uuid=dfafbece-1e64-4f40-a435-edadd348c631`]);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(401);
   });
 
   it("Test with authorization and correct assetID", async () => {
@@ -210,7 +210,7 @@ describe("Test /api/inventory/private method", () => {
       .post("/api/inventory/private")
       .send({ assetID: "00000000-0000-1111-9999-000000000001" })
       .set("Cookie", [`uuid=dfafbece-1e64-4f40-a435-edadd348c631`]);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(401);
   });
 
   it("Test with authorization and correct assetID", async () => {

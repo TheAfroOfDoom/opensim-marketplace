@@ -26,33 +26,3 @@ describe("Test the /api/inventory path", () => {
     expect(response.statusCode).toBe(401);
   });
 });
-
-var SequelizeMock = require("sequelize-mock");
-var DBConnectionMock = new SequelizeMock();
-
-describe("Trying mock test", () => {
-  test("Test POST on ", async () => {
-    var UserMock = DBConnectionMock.define(
-      "users",
-      {
-        email: "email@example.com",
-        username: "blink",
-        picture: "user-picture.jpg",
-      },
-      {
-        instanceMethods: {
-          myTestFunc: function () {
-            return "Test User";
-          },
-        },
-      }
-    );
-
-    let response = await UserMock.findOne({
-      where: {
-        username: "my-user",
-      },
-    });
-    expect(response.email).toBe("email@example.com");
-  });
-});
