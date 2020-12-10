@@ -1,36 +1,16 @@
-.inner {
-  width: 40vw;
-  margin: auto;
-  background-color: white;
-  padding: 40px 55px 45px 55px;
-  border-radius: 20px;
-  box-shadow: 0px 14px 60px rgba(34, 35, 58, 0.7);
-}
-
-.outer {
-  display: flex;
-  height: 93vh;
+.login-form {
   justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  overflow: auto;
+  min-height: 90vh;
+}
+.button-block {
+  width: 100%;
+}
+.login-background {
+  justify-content: center;
+  min-height: 25vh;
+  padding: 50px;
 }
 
-.outer .form-control:focus {
-  box-shadow: none;
-}
-
-.outer h3 {
-  text-align: center;
-  margin: 0;
-  line-height: 1;
-  padding-bottom: 20px;
-  font-weight: 400;
-}
-
-.alert {
-  width: 40vw;
-  text-align: center;
-  margin-top: 50px;
-  font-size: 1.5rem;
+.error-message {
+  margin-bottom: 10vh;
 }
