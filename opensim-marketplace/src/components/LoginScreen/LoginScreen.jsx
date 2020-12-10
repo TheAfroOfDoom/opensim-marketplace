@@ -2,9 +2,6 @@ import React from "react";
 
 import {
   Button,
-  FormControl,
-  FormGroup,
-  InputLabel,
   Container,
   TextField,
   Grid,
@@ -110,7 +107,7 @@ export default class LoginScreen extends React.Component {
                         <TextField
                           placeholder="Last Name"
                           variant="outlined"
-                          onChange={this.handleFirstName.bind(this)}
+                          onChange={this.handleLastName.bind(this)}
                           fullWidth
                         />
                       </Grid>
