@@ -26,15 +26,12 @@ export default class LoginScreen extends React.Component {
   }
 
   handleFirstName = (event) => {
-    console.log(event.target.value);
     this.setState({ firstName: event.target.value });
   };
   handleLastName = (event) => {
-    console.log(event.target.value);
     this.setState({ lastName: event.target.value });
   };
   handlePassword = (event) => {
-    console.log(event.target.value);
     this.setState({ password: event.target.value });
   };
 
@@ -85,7 +82,7 @@ export default class LoginScreen extends React.Component {
                 elevation={20}
                 className="login-background"
               >
-                <Grid item>
+                <Grid item container justify="center">
                   <Typography component="h1" variant="h5">
                     Sign in
                   </Typography>
