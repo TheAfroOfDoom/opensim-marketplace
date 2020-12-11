@@ -1,11 +1,23 @@
 import React from "react";
 import axios from "axios";
 import Moment from "react-moment";
-
-import { Button, Image } from "react-bootstrap";
 import "./ItemScreen.css";
 import { Link } from "react-router-dom";
 
+// Material UI Components
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
+import CardMedia from "@material-ui/core/CardMedia";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
+
+// Material UI Icons
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import NotInterestedIcon from "@material-ui/icons/NotInterested";
+
+// Images
 let texture_default = "Images/Texture_Default.png";
 let animation_default = "Images/Animation_Default.png";
 let attachment_default = "Images/Attachment_Default.png";
@@ -73,7 +85,7 @@ export default class ItemScreen extends React.Component {
         info.pic = material_default;
         break;
       case 0:
-        info.type = "Texture in JPEG2000 J2C stream format";
+        info.type = "Texture";
         info.pic = texture_default;
         break;
       case 1:
@@ -132,59 +144,174 @@ export default class ItemScreen extends React.Component {
     if (this.state.data == null) {
       return <div data-testid="items" />;
     } else {
-      const { itemInfo } = this.state.data;
-      const { userInfo } = this.state.data;
-      const { invInfo } = this.state.data;
-      console.log(invInfo.inInventory);
+      const { itemInfo, userInfo, invInfo } = this.state.data;
+      console.log(itemInfo, userInfo, invInfo);
       return (
-        <body className="page">
-          <div>
-            <img />
-            <div className="container">
-              <div className="left-column">
-                <Image
-                  data-testid="itemss"
-                  src={this.getAssetType(itemInfo.assetType).pic}
-                  fluid
-                />
-              </div>
+        <Container>
+          <Grid container justify="center" direction="row">
+            <Grid item container>
+              <Grid
+                container
+                direction="column"
+                justify="center"
+                spacing={2}
+                className="item-form"
+              >
+                <Paper className="item-background" elevation={20}>
+                  <div className="left-column">
+                    <CardMedia className="cover" image="/Images/test.webp" />
+                  </div>
+                  <div className="right-column">
+                    <div className="right-column-one">
+                      <Typography component="h1" variant="h2" overline>
+                        {itemInfo.name}
+                      </Typography>
+                      <Divider style={{ marginBottom: "30px" }} />
+                      <Typography component="h4" variant="h5" gutterBottom>
+                        {this.getAssetType(itemInfo.assetType).type}
+                      </Typography>
+                      <Typography
+                        component="h5"
+                        variant="subtitle"
+                        gutterBottom
+                      >
+                        {itemInfo.description}
+                      </Typography>
+                      <Typography
+                        component="h5"
+                        variant="subtitle"
+                        gutterBottom
+                      >
+                        Creator: {userInfo.FirstName} {userInfo.LastName}
+                      </Typography>
 
-              <div className="right-column">
-                <div className="asset-description">
-                  <h1>{itemInfo.name}</h1>
-                  <p>{this.getAssetType(itemInfo.assetType).type}</p>
-                </div>
-                <div className="user-description">
-                  <h3>Creator Information</h3>
-                  <p>First Name: {userInfo.FirstName}</p>
-                  <p>Last Name: {userInfo.LastName}</p>
-                </div>
-                <div className="asset-download">
-                  <h3>Download & Details</h3>
-                  <p>
-                    Create Time:{" "}
-                    {
-                      <Moment format="MM/DD/YYYY HH:mm" unix>
-                        {itemInfo.create_time}
-                      </Moment>
-                    }
-                  </p>
-                  {console.log(invInfo.inInventory)}
-                  {!invInfo.inInventory ? (
-                    <Link to={`/inventory#${itemInfo.name}`}>
-                      <Button onClick={this.handleAdd}>Add To Inventory</Button>
-                    </Link>
-                  ) : (
-                    <Link to={`/inventory#${itemInfo.name}`}>
-                      <Button>View In Inventory</Button>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </body>
+                      <Typography
+                        component="h5"
+                        variant="subtitle"
+                        gutterBottom
+                      >
+                        Created:{" "}
+                        {
+                          <Moment format="MM/DD/YYYY HH:mm" unix>
+                            {itemInfo.create_time}
+                          </Moment>
+                        }
+                      </Typography>
+                      <Typography
+                        component="h5"
+                        variant="subtitle"
+                        gutterBottom
+                      >
+                        Modified:{" "}
+                        {
+                          <Moment format="MM/DD/YYYY HH:mm" unix>
+                            {itemInfo.access_time}
+                          </Moment>
+                        }
+                      </Typography>
+                      <Divider style={{ marginBottom: "30px" }} />
+                      {itemInfo.public === true ? (
+                        <div>
+                          <CheckCircleIcon style={{ float: "left" }} />
+                          <Typography component="h5" variant="h5" gutterBottom>
+                            Public
+                          </Typography>
+                        </div>
+                      ) : (
+                        <div>
+                          <NotInterestedIcon style={{ float: "left" }} />
+                          <Typography component="h5" variant="h5" gutterBottom>
+                            Private
+                          </Typography>
+                        </div>
+                      )}
+                      {invInfo.inInventory === true ? (
+                        <div>
+                          <CheckCircleIcon style={{ float: "left" }} />
+                          <Typography component="h5" variant="h5" gutterBottom>
+                            In Inventory
+                          </Typography>
+                        </div>
+                      ) : (
+                        <div>
+                          <NotInterestedIcon style={{ float: "left" }} />
+                          <Typography component="h5" variant="h5" gutterBottom>
+                            Not In Inventory
+                          </Typography>
+                        </div>
+                      )}
+                    </div>
+                    <div className="right-column-two">
+                      {!invInfo.inInventory ? (
+                        <Link to={`/inventory#${itemInfo.name}`}>
+                          <Button variant="outlined" onClick={this.handleAdd}>
+                            Add to Inventory
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link to={`/inventory#${itemInfo.name}`}>
+                          <Button variant="outlined">View In Inventory</Button>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Container>
       );
     }
   }
 }
+
+/*
+
+<body className="page">
+  <div>
+    <img />
+    <div className="container">
+      <div className="left-column">
+        <Image
+          data-testid="itemss"
+          src={this.getAssetType(itemInfo.assetType).pic}
+          fluid
+        />
+      </div>
+
+      <div className="right-column">
+        <div className="asset-description">
+          <h1>{itemInfo.name}</h1>
+          <p>{this.getAssetType(itemInfo.assetType).type}</p>
+        </div>
+        <div className="user-description">
+          <h3>Creator Information</h3>
+          <p>First Name: {userInfo.FirstName}</p>
+          <p>Last Name: {userInfo.LastName}</p>
+        </div>
+        <div className="asset-download">
+          <h3>Download & Details</h3>
+          <p>
+            Create Time:{" "}
+            {
+              <Moment format="MM/DD/YYYY HH:mm" unix>
+                {itemInfo.create_time}
+              </Moment>
+            }
+          </p>
+          {console.log(invInfo.inInventory)}
+          {!invInfo.inInventory ? (
+            <Link to={`/inventory#${itemInfo.name}`}>
+              <Button onClick={this.handleAdd}>Add To Inventory</Button>
+            </Link>
+          ) : (
+            <Link to={`/inventory#${itemInfo.name}`}>
+              <Button>View In Inventory</Button>
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+ */

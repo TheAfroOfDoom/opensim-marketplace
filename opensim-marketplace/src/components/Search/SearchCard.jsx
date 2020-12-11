@@ -64,12 +64,13 @@ export default function SearchCard(props) {
   const classes = useStyles();
   const theme = useTheme();
   return (
-    <Card className={classes.root}>
-      <CardMedia
-        className={classes.cover}
-        image="/Images/test.webp"
-        title="Live from space album cover"
-      />
+    <Card className={classes.root} elevation={10}>
+      <Link to={`/item/${props.obj.id}`} className={classes.cover}>
+        <CardMedia
+          image="/Images/test.webp"
+          style={{ height: "100%", width: "100%" }}
+        />
+      </Link>
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Typography component="h5" variant="h5">
@@ -79,7 +80,7 @@ export default function SearchCard(props) {
             {props.assetType}
           </Typography>
           <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-            Create Time:{" "}
+            Created:{" "}
             {
               <Moment format="MM/DD/YYYY HH:mm" unix>
                 {props.obj.create_time}
@@ -91,7 +92,7 @@ export default function SearchCard(props) {
       <div className={classes.actionsContainer}>
         <CardActions>
           <Link to={`/item/${props.obj.id}`}>
-            <Button size="small" className={classes.viewButton}>
+            <Button className={classes.viewButton} variant="outlined">
               View Item
             </Button>
           </Link>
