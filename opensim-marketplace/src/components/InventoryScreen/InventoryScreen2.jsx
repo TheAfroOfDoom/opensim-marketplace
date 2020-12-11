@@ -2,16 +2,11 @@ import React from "react";
 
 import "./InventoryScreen.css";
 
-import { Spinner } from "react-bootstrap";
-
+import { Spinner, Card, Button, Image } from "react-bootstrap";
+import Cookies from "js-cookie";
 import axios from "axios";
-
-import Grid from "@material-ui/core/Grid";
-import Container from "@material-ui/core/Container";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
-
-import InventoryCard from "./InventoryCard";
+import { Link } from "react-router-dom";
+import Moment from "react-moment";
 
 let texture_default = "Images/Texture_Default.png";
 let animation_default = "Images/Animation_Default.png";
@@ -28,14 +23,10 @@ let object_default = "Images/Object_Default.png";
 let script_default = "Images/Script_Default.png";
 let sound_default = "Images/Sound_Default.png";
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: null, setOpen: null, open: null };
+    this.state = { data: null };
   }
 
   getInventory = async () => {
@@ -54,7 +45,6 @@ export default class LoginScreen extends React.Component {
       alert("Get Inventory: " + error);
     }
   };
-
   removeItem = async (assetID) => {
     try {
       const response = await axios.post("/api/inventory/remove", {
@@ -73,7 +63,6 @@ export default class LoginScreen extends React.Component {
         assetID: assetID,
       });
       this.getInventory();
-      this.setState({ open: true });
     } catch (error) {
       alert("Upload: " + error);
     }
@@ -89,6 +78,10 @@ export default class LoginScreen extends React.Component {
       alert("Un-Upload: " + error);
     }
   };
+
+  componentDidMount() {
+    this.getInventory();
+  }
 
   getAssetType = (assetType) => {
     let info = {
@@ -165,18 +158,6 @@ export default class LoginScreen extends React.Component {
     }
   };
 
-  componentDidMount() {
-    this.getInventory();
-  }
-
-  handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    this.setState({ open: false });
-  };
-
   render() {
     if (this.state.data == null) {
       return (
@@ -186,34 +167,80 @@ export default class LoginScreen extends React.Component {
       );
     } else {
       return (
-        <div>
-          <Container maxWidth="md" style={{ marginTop: "30px" }}>
-            <Grid container direction="row" alignItems="center" spacing={5}>
-              {this.state.data.map((obj) => {
-                return (
-                  <Grid item xs={12}>
-                    <InventoryCard
-                      data={obj}
-                      assetType={this.getAssetType(obj.assetType)}
-                      isPublic={this.isPublic}
-                      remove={this.removeItem}
-                      upload={this.uploadItem}
-                      private={this.privateItem}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Container>
-          <Snackbar
-            open={this.state.open}
-            autoHideDuration={6000}
-            onClose={this.handleSnackClose}
-          >
-            <Alert onClose={this.handleSnackClose} severity="success">
-              This is a success message!
-            </Alert>
-          </Snackbar>
+        <div className="InventoryContainer">
+          {this.state.data.map((obj) => {
+            return (
+              <div
+                id={`${obj.InventoryName.replace("Default ", "")}`}
+                key={obj.assetID}
+              >
+                <Card bsPrefix="main-card">
+                  <Card.Header className="main-header">
+                    {obj.InventoryName} {obj.isCreator ? <i>(creator)</i> : ""}
+                  </Card.Header>
+                  <Card.Body as="h6">
+                    <div className="main-block">
+                      <div className="image-column">
+                        <Image
+                          className="inventory-picture"
+                          src={this.getAssetType(obj.assetType).pic}
+                        ></Image>
+                      </div>
+                      <div className="text-column">
+                        <Card.Text>
+                          Asset Type: {this.getAssetType(obj.assetType).type}
+                        </Card.Text>
+                        <Card.Text>
+                          Create Time:{" "}
+                          {
+                            <Moment format="MM/DD/YYYY HH:mm" unix>
+                              {obj.creationDate}
+                            </Moment>
+                          }
+                        </Card.Text>
+                        <div className="inventory-button-group">
+                          <Link to={`/item/${obj.assetID}`}>
+                            <Button variant="info">Inspect Item</Button>
+                          </Link>
+
+                          <Button
+                            variant="danger"
+                            onClick={this.removeItem.bind(this, obj.assetID)}
+                          >
+                            Remove
+                          </Button>
+
+                          {obj.isCreator ? (
+                            this.isPublic(obj) ? (
+                              <Button
+                                onClick={this.privateItem
+                                  .bind(this, obj.assetID)
+                                  .bind(this, obj.creatorID)}
+                              >
+                                Make Private
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="success"
+                                onClick={this.uploadItem.bind(
+                                  this,
+                                  obj.assetID
+                                )}
+                              >
+                                Make Public
+                              </Button>
+                            )
+                          ) : (
+                            <div />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+            );
+          })}
         </div>
       );
     }

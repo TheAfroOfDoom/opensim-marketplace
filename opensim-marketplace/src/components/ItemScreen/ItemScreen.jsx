@@ -3,6 +3,7 @@ import axios from "axios";
 import Moment from "react-moment";
 import "./ItemScreen.css";
 import { Link } from "react-router-dom";
+import _ from "lodash";
 
 // Material UI Components
 import Typography from "@material-ui/core/Typography";
@@ -157,102 +158,124 @@ export default class ItemScreen extends React.Component {
                 spacing={2}
                 className="item-form"
               >
-                <Paper className="item-background" elevation={20}>
-                  <div className="left-column">
-                    <CardMedia className="cover" image="/Images/test.webp" />
-                  </div>
-                  <div className="right-column">
-                    <div className="right-column-one">
-                      <Typography component="h1" variant="h2" overline>
-                        {itemInfo.name}
-                      </Typography>
-                      <Divider style={{ marginBottom: "30px" }} />
-                      <Typography component="h4" variant="h5" gutterBottom>
-                        {this.getAssetType(itemInfo.assetType).type}
-                      </Typography>
-                      <Typography
-                        component="h5"
-                        variant="subtitle"
-                        gutterBottom
-                      >
-                        {itemInfo.description}
-                      </Typography>
-                      <Typography
-                        component="h5"
-                        variant="subtitle"
-                        gutterBottom
-                      >
-                        Creator: {userInfo.FirstName} {userInfo.LastName}
-                      </Typography>
-
-                      <Typography
-                        component="h5"
-                        variant="subtitle"
-                        gutterBottom
-                      >
-                        Created:{" "}
-                        {
-                          <Moment format="MM/DD/YYYY HH:mm" unix>
-                            {itemInfo.create_time}
-                          </Moment>
-                        }
-                      </Typography>
-                      <Typography
-                        component="h5"
-                        variant="subtitle"
-                        gutterBottom
-                      >
-                        Modified:{" "}
-                        {
-                          <Moment format="MM/DD/YYYY HH:mm" unix>
-                            {itemInfo.access_time}
-                          </Moment>
-                        }
-                      </Typography>
-                      <Divider style={{ marginBottom: "30px" }} />
-                      {itemInfo.public === true ? (
-                        <div>
-                          <CheckCircleIcon style={{ float: "left" }} />
-                          <Typography component="h5" variant="h5" gutterBottom>
-                            Public
-                          </Typography>
-                        </div>
-                      ) : (
-                        <div>
-                          <NotInterestedIcon style={{ float: "left" }} />
-                          <Typography component="h5" variant="h5" gutterBottom>
-                            Private
-                          </Typography>
-                        </div>
-                      )}
-                      {invInfo.inInventory === true ? (
-                        <div>
-                          <CheckCircleIcon style={{ float: "left" }} />
-                          <Typography component="h5" variant="h5" gutterBottom>
-                            In Inventory
-                          </Typography>
-                        </div>
-                      ) : (
-                        <div>
-                          <NotInterestedIcon style={{ float: "left" }} />
-                          <Typography component="h5" variant="h5" gutterBottom>
-                            Not In Inventory
-                          </Typography>
-                        </div>
-                      )}
+                <Paper className="item-background" elevation={5}>
+                  <div className="item-container">
+                    <div className="left-column">
+                      <CardMedia className="cover" image="/Images/test.webp" />
                     </div>
-                    <div className="right-column-two">
-                      {!invInfo.inInventory ? (
-                        <Link to={`/inventory#${itemInfo.name}`}>
-                          <Button variant="outlined" onClick={this.handleAdd}>
-                            Add to Inventory
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Link to={`/inventory#${itemInfo.name}`}>
-                          <Button variant="outlined">View In Inventory</Button>
-                        </Link>
-                      )}
+                    <div className="right-column">
+                      <div className="right-column-one">
+                        <Typography component="h1" variant="h2" overline>
+                          {itemInfo.name}
+                        </Typography>
+                        <Divider style={{ marginBottom: "30px" }} />
+                        <Typography component="h4" variant="h5" gutterBottom>
+                          {this.getAssetType(itemInfo.assetType).type}
+                        </Typography>
+                        <Typography
+                          component="h5"
+                          variant="subtitle"
+                          gutterBottom
+                        >
+                          {itemInfo.description}
+                        </Typography>
+                        <Typography
+                          component="h5"
+                          variant="subtitle"
+                          gutterBottom
+                        >
+                          {_.isEmpty(userInfo)
+                            ? "Creator: Default Asset"
+                            : `Creator: ${userInfo.FirstName} ${userInfo.LastName}`}
+                        </Typography>
+
+                        <Typography
+                          component="h5"
+                          variant="subtitle"
+                          gutterBottom
+                        >
+                          Created:{" "}
+                          {
+                            <Moment format="MM/DD/YYYY HH:mm" unix>
+                              {itemInfo.create_time}
+                            </Moment>
+                          }
+                        </Typography>
+                        <Typography
+                          component="h5"
+                          variant="subtitle"
+                          gutterBottom
+                        >
+                          Modified:{" "}
+                          {
+                            <Moment format="MM/DD/YYYY HH:mm" unix>
+                              {itemInfo.access_time}
+                            </Moment>
+                          }
+                        </Typography>
+                        <Divider style={{ marginBottom: "30px" }} />
+                        {itemInfo.public === true ? (
+                          <div>
+                            <CheckCircleIcon style={{ float: "left" }} />
+                            <Typography
+                              component="h5"
+                              variant="h5"
+                              gutterBottom
+                            >
+                              Public
+                            </Typography>
+                          </div>
+                        ) : (
+                          <div>
+                            <NotInterestedIcon style={{ float: "left" }} />
+                            <Typography
+                              component="h5"
+                              variant="h5"
+                              gutterBottom
+                            >
+                              Private
+                            </Typography>
+                          </div>
+                        )}
+                        {invInfo.inInventory === true ? (
+                          <div>
+                            <CheckCircleIcon style={{ float: "left" }} />
+                            <Typography
+                              component="h5"
+                              variant="h5"
+                              gutterBottom
+                            >
+                              In Inventory
+                            </Typography>
+                          </div>
+                        ) : (
+                          <div>
+                            <NotInterestedIcon style={{ float: "left" }} />
+                            <Typography
+                              component="h5"
+                              variant="h5"
+                              gutterBottom
+                            >
+                              Not In Inventory
+                            </Typography>
+                          </div>
+                        )}
+                      </div>
+                      <div className="right-column-two">
+                        {!invInfo.inInventory ? (
+                          <Link to={`/inventory#${itemInfo.name}`}>
+                            <Button variant="outlined" onClick={this.handleAdd}>
+                              Add to Inventory
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Link to={`/inventory#${itemInfo.name}`}>
+                            <Button variant="contained" color="primary">
+                              View In Inventory
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Paper>
