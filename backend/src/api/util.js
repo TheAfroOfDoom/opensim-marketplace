@@ -1,6 +1,7 @@
 const Assets = require("../models/Assets");
 const UserAccounts = require("../models/UserAccounts");
 const _ = require("lodash");
+const openjpeg = require("../openjpeg.js");
 
 async function isUserLoggedIn(uuid) {
   if (uuid === undefined || uuid === null) {
@@ -34,4 +35,8 @@ async function isAssetInDatabase(assetID) {
   return true;
 }
 
-module.exports = { isUserLoggedIn, isAssetInDatabase };
+module.exports = {
+  isUserLoggedIn,
+  isAssetInDatabase,
+  openjpeg: openjpeg.openjpeg,
+};
