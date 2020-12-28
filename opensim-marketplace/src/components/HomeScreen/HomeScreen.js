@@ -33,12 +33,16 @@ export default class HomeScreen extends React.Component {
   }
 
   searchRedirect = async (assetType) => {
-    const response = await axios.get("/api/search/public", {
-      params: { assetType: assetType },
-    });
-    console.log(response);
-    this.props.searchData(response.data);
-    this.setState({ redirect: true });
+    try{
+      const response = await axios.get("/api/search/public", {
+        params: { assetType: assetType },
+      });
+      console.log(response);
+      this.props.searchData(response.data);
+      this.setState({ redirect: true });
+    }catch(err){
+      console.log(err.message);
+    }
   };
 
   async componentDidMount() {
@@ -79,7 +83,7 @@ and item carousel with recently updated items
             </div>
           </Jumbotron>
         </div>
-        <div class="side">
+        <div className="side">
           <h1 className="title">Search Categories</h1>
           <div className="c">
             {categories.map((obj) => {
@@ -94,7 +98,7 @@ and item carousel with recently updated items
             })}
           </div>
         </div>
-        {this.state.redirect ? <Redirect to="/search" /> : <div />}
+        {this.state.redirect ? <Redirect data-testid="Redirect" to="/search" /> : <div />}
         <div className="item">
           <h1 className="itemTitle">Recently Updated Items</h1>
           <Carousel className="carousel-slide">

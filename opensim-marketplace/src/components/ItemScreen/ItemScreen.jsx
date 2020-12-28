@@ -28,7 +28,7 @@ export default class ItemScreen extends React.Component {
   }
 
   async componentDidMount() {
-    console.log("Hey::");
+    //console.log("Hey::");
     let error;
     try {
       const response = await axios
