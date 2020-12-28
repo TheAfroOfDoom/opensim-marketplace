@@ -33,8 +33,11 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // Set static folder
-
 app.use(
+  express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
+);
+app.use(
+  "/marketplace",
   express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
 );
 
@@ -53,8 +56,7 @@ app.use("/api/search", require("./api/routes/search"));
 
 app.use("/api/inventory", require("./api/routes/inventory"));
 
-app.get("/", (req, res) => {
-  console.log("Request: " + req);
+app.get("*", (req, res) => {
   res.sendFile(
     path.resolve(__dirname, "../../opensim-marketplace/build", "index.html")
   );
