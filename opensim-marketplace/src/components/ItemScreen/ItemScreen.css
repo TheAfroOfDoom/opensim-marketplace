@@ -18,7 +18,9 @@
 
 .left-column {
   flex: 1;
+  display: flex;
   margin-right: 20px;
+  justify-content: center;
 }
 
 .right-column {

@@ -19,10 +19,14 @@ router.get("/", async (req, res) => {
   try {
     await sequelize.authenticate();
     console.log("Connection has been established successfully.");
-    return res.send("Connection has been established successfully.");
+    return res.json({
+      message: "Connection has been established successfully.",
+    });
   } catch (error) {
     console.error("Unable to connect to the database:", error);
-    return res.send("Unable to connect to the database:", error);
+    return res.json({
+      message: `Unable to connect to the database: ${error}`,
+    });
   }
 });
 

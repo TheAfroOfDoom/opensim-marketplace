@@ -157,6 +157,7 @@ export default class SearchScreen extends React.Component {
                     <Grid item xs={12} md={6} lg={4} xl={3}>
                       <SearchCard
                         obj={obj}
+                        index={index}
                         assetType={this.getAssetType(obj.assetType).assettype}
                       />
                     </Grid>

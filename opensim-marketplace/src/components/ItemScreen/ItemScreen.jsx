@@ -322,6 +322,13 @@ export default class ItemScreen extends React.Component {
               </Grid>
             </Grid>
           </Grid>
+          <div>
+            <image
+              height={imageInfo.height}
+              width={imageInfo.width}
+              src={`data:image/jpg;base64,${imageInfo.data}`}
+            />
+          </div>
         </Container>
       );
     }

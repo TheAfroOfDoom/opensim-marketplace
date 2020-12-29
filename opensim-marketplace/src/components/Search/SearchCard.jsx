@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 //Import Material Components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -61,16 +60,61 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SearchCard(props) {
+  useEffect(() => {
+    if (
+      props.obj.assetType === 0 &&
+      props.obj.data !== undefined &&
+      !("Error" in props.obj.data)
+    ) {
+      console.log(props.obj.data);
+      var canvas = document.getElementById(`myCanvas${props.index}`); //get the canvas element (use whatever you actually need here!)
+      canvas.width = props.obj.data.width;
+      canvas.height = props.obj.data.height;
+      var ctx = canvas.getContext("2d");
+
+      var output = props.obj.data.data;
+
+      console.log(props.obj.name);
+      console.table([props.obj.data.width, props.obj.data.height]);
+
+      var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      var componentSize = canvas.width * canvas.height;
+      for (var y = 0; y < canvas.height; y++) {
+        for (var x = 0; x < canvas.width; x++) {
+          var value = output[y * canvas.width + x];
+          var base = (y * canvas.width + x) * 4;
+          image.data[base + 0] =
+            output[0 * componentSize + y * canvas.width + x];
+          image.data[base + 1] =
+            output[1 * componentSize + y * canvas.width + x];
+          image.data[base + 2] =
+            output[2 * componentSize + y * canvas.width + x];
+          image.data[base + 3] = 255; //the alpha part..
+        }
+      }
+      ctx.putImageData(image, 0, 0);
+    }
+  });
+
   const classes = useStyles();
   const theme = useTheme();
+
   return (
     <Card className={classes.root} elevation={10}>
       <Link to={`/item/${props.obj.id}`} className={classes.cover}>
-        <CardMedia
-          image="/Images/test.webp"
-          style={{ height: "100%", width: "100%" }}
-        />
+        <CardMedia image="" />
+        {props.obj.assetType === 0 && props.obj.data !== undefined ? (
+          <canvas
+            id={`myCanvas${props.index}`}
+            width={props.obj.data.width}
+            height={props.obj.data.height}
+            className="cover"
+          ></canvas>
+        ) : (
+          <CardMedia className="cover" image="/Images/test.webp" />
+        )}
       </Link>
+
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Typography component="h5" variant="h5">

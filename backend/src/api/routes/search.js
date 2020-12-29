@@ -5,7 +5,12 @@ const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
-const { isUserLoggedIn } = require("../util.js");
+const {
+  isUserLoggedIn,
+  openjpeg,
+  setCacheItem,
+  getCacheItem,
+} = require("../util.js");
 
 /**
  * @swagger
@@ -186,6 +191,7 @@ router.get("/public", async (req, res) => {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
+    console.log(uuid);
     if (!(await isUserLoggedIn(uuid))) {
       throw new Error("Unauthorized");
     }
@@ -215,7 +221,8 @@ router.get("/public", async (req, res) => {
 
     let orderParam = { order: getSort(order) };
 
-    let limitParam = limit !== undefined ? { limit: parseInt(limit) } : {};
+    let limitParam =
+      limit !== undefined ? { limit: parseInt(limit) } : { limit: 24 };
 
     let offsetParam = offset !== undefined ? { offset: parseInt(offset) } : {};
 
@@ -226,9 +233,11 @@ router.get("/public", async (req, res) => {
       ...orderParam,
     };
 
-    return res.send(await getAssets(params));
+    let assets = await getAssets(params);
+    const x = await Promise.all(assets.map((obj) => getConvertedObject(obj)));
+    return res.send(x);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     }
@@ -251,6 +260,7 @@ function getAssets(params) {
       "create_time",
       "CreatorID",
       "access_time",
+      "data",
     ],
     include: [
       {
@@ -273,24 +283,54 @@ function getSort(order) {
   switch (order) {
     case "CREATE_ASC":
       return [["create_time", "ASC"]];
-      break;
     case "CREATE_DESC":
       return [["create_time", "DESC"]];
-      break;
     case "NAME_ASC":
       return [["name", "ASC"]];
-      break;
     case "NAME_DESC":
       return [["name", "DESC"]];
-      break;
     case "ACCESS_ASC":
       return [["access_time", "ASC"]];
-      break;
     case "ACCESS_DESC":
       return [["access_time", "DESC"]];
-      break;
     default:
       return [["name", "ASC"]];
+  }
+}
+
+async function convertImage(assetType, data) {
+  if (assetType === 0) {
+    let arr = [];
+
+    for (let i = 0; i < data.length; i++) {
+      arr.push(data[i]);
+    }
+    try {
+      let j2k = openjpeg(arr, "j2k");
+      return Promise.resolve(j2k);
+    } catch (e) {
+      console.log(`Error: ${e}`);
+      return { Error: "error" };
+    }
+  }
+}
+
+async function getConvertedObject(obj) {
+  try {
+    let temp = obj;
+
+    if (obj.dataValues.assetType !== 0) return obj;
+    const imageData = await getCacheItem(obj.dataValues.id);
+    if (imageData === undefined) {
+      let x = await convertImage(obj.dataValues.assetType, obj.dataValues.data);
+      temp.dataValues.data = await x;
+      await setCacheItem(obj.dataValues.id, x);
+    } else {
+      temp.dataValues.data = imageData;
+    }
+    return temp;
+  } catch (e) {
+    console.log("Error:" + e);
   }
 }
 

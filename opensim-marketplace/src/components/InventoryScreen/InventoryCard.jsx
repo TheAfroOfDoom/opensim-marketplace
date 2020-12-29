@@ -17,7 +17,11 @@ import CardActions from "@material-ui/core/CardActions";
 export default function InventoryCard(props) {
   console.log(props.data);
   return (
-    <Card className="root" elevation={10}>
+    <Card
+      className="root"
+      elevation={10}
+      id={`${props.data.InventoryName.replace("Default ", "")}`}
+    >
       <Link to={`/item/${props.data.assetID}`} className="image-cover">
         <CardMedia image="/Images/test.webp" className="image" />
       </Link>
