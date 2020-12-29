@@ -1,10 +1,12 @@
 import React from "react";
-import Card from "react-bootstrap/Card";
-import { Button, Pagination } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import "./SearchScreen.css";
-import Moment from "react-moment";
+import { Pagination } from "react-bootstrap";
+//import "./SearchScreen.css";
 import _ from "lodash";
+
+import NoResults from "./NoResults";
+import SearchCard from "./SearchCard";
+
+import { Container, Grid } from "@material-ui/core";
 
 export default class SearchScreen extends React.Component {
   constructor(props) {
@@ -155,54 +157,29 @@ export default class SearchScreen extends React.Component {
       );
 
     if (_.isEmpty(items)) {
-      return (
-        <div className="centered empty-container">
-          <div className="centered body">
-            <h2>No results</h2>
-            <h6>Refine search and try again</h6>
-          </div>
-        </div>
-      );
+      return <NoResults />;
     } else
       return (
-        <div className="searchContainer">
-          <div className="grid-container">
-            {this.props.data &&
-              temparray.map((obj, index) => {
-                return (
-                  <div style={{ margin: "1rem" }}>
-                    <Card bsPrefix="new-custom">
-                      <Card.Header>
-                        <Link to={`/item/${obj.id}`}>
-                          <Card.Title border="dark" className="text-item">
-                            {obj.name}
-                          </Card.Title>
-                        </Link>
-                      </Card.Header>
-                      <Card.Body className="body">
-                        <Card.Text>
-                          Asset Type:{" "}
-                          {this.getAssetType(obj.assetType).assettype}
-                        </Card.Text>
-                        <Card.Text>
-                          Create Time:{" "}
-                          {
-                            <Moment format="MM/DD/YYYY HH:mm" unix>
-                              {obj.create_time}
-                            </Moment>
-                          }
-                        </Card.Text>
-                        <Link to={`/item/${obj.id}`}>
-                          <Button>More Info</Button>
-                        </Link>
-                      </Card.Body>
-                    </Card>
-                  </div>
-                );
-              })}
-          </div>
+        <div>
+          <Container maxWidth={false} style={{ marginTop: "30px" }}>
+            <Grid container direction="row" alignItems="center" spacing={3}>
+              {this.props.data &&
+                temparray.map((obj, index) => {
+                  return (
+                    <Grid item xs={12} md={6} lg={4} xl={3}>
+                      <SearchCard
+                        obj={obj}
+                        index={index}
+                        assetType={this.getAssetType(obj.assetType).assettype}
+                      />
+                    </Grid>
+                  );
+                })}
+            </Grid>
+          </Container>
+
           {this.props.data != null ? (
-            <div className="pager" class="d-flex justify-content-center">
+            <div className="d-flex justify-content-center pager">
               <Pagination>
                 <Pagination.First onClick={() => this.firstSet()} />
                 <Pagination.Prev onClick={() => this.lastSet(items.length)} />

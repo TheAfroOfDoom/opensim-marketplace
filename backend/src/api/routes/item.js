@@ -5,7 +5,7 @@ const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
-const { isUserLoggedIn, isAssetInDatabase } = require("../util.js");
+const { isUserLoggedIn, isAssetInDatabase, openjpeg } = require("../util.js");
 
 /**
  * @swagger
@@ -64,9 +64,22 @@ router.get("/", async (req, res) => {
         "access_time",
         "public",
         "CreatorID",
+        "data",
       ],
       where: { id: id },
     });
+
+    let j2k;
+    //CONVERT TO USBALE IMAGE FORMAT
+    if (itemInfo.assetType === 0) {
+      let arr = [];
+
+      for (let i = 0; i < itemInfo.data.length; i++) {
+        arr.push(itemInfo.data[i]);
+      }
+      j2k = openjpeg(arr, "j2k");
+      console.log(j2k);
+    }
 
     //If there is an asset
     if (!_.isEmpty(itemInfo)) {
@@ -99,6 +112,7 @@ router.get("/", async (req, res) => {
         invInfo: !_.isEmpty(invInfo)
           ? { ...invInfo.dataValues, inInventory: true }
           : { inInventory: false },
+        imageInfo: itemInfo.assetType === 0 ? j2k : {},
       });
     } else {
       //No asset. Return all empty objects
@@ -107,6 +121,7 @@ router.get("/", async (req, res) => {
         userInfo: {},
         creator: false,
         invInfo: { inInventory: false },
+        imageInfo: {},
       });
     }
   } catch (e) {

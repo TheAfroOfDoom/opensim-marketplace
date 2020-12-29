@@ -1,0 +1,98 @@
+.InventoryContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 5%;
+}
+/*
+.card {
+  margin-left: 5vw;
+  margin-right: 5vw;
+  margin-top: 5vh;
+}
+*/
+.main-block {
+  display: flex;
+}
+.main-header {
+  color: #84fff2;
+  font-family: Segoe UI, sans-serif;
+  letter-spacing: -2px;
+  font-size: 30px;
+  font-weight: 300;
+}
+
+.image-column {
+  justify-content: right;
+  display: block;
+  align-items: right;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-right: 2rem;
+}
+
+.text-column {
+  color: #2ec4b6;
+  font-family: Segoe UI, sans-serif;
+  letter-spacing: -1px;
+  font-size: 20px;
+  font-weight: 300;
+  justify-content: left;
+}
+
+.main-card {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5vh;
+  background: #343a40;
+  border: 4px solid #fff;
+  border-radius: 20px;
+  box-shadow: 0px 20px 50px rgba(34, 35, 58, 1);
+  max-width: 1000px;
+  /*font-family: "Roboto", sans-serif;*/
+}
+
+.InventoryContainer Button {
+  margin-right: 10px;
+}
+
+.inventory-button-group {
+}
+
+.inventory-picture {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 400px) {
+  .inventory-button-group {
+    display: grid;
+    grid-template-columns: auto;
+    justify-content: center;
+  }
+  .inventory-button-group button {
+    margin-top: 10px;
+  }
+  .InventoryContainer Button {
+    margin-right: 0px;
+  }
+}
+
+@media (max-width: 420px) {
+}
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+}
+
+/* Large devices (desktops, less than 1200px) */
+@media (max-width: 1199.98px) {
+}

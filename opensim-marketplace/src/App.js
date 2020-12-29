@@ -5,11 +5,7 @@ import React from "react";
 import "./App.css";
 
 //Import NPM Packages
-import {
-  HashRouter as Router,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Cookies from "js-cookie";
 
 //Import Custom Components
@@ -42,8 +38,6 @@ class App extends React.Component {
 
   handleSearchChange = (data) => {
     this.setState({ data2: data });
-    console.log("DATA: " + data);
-    console.log(Cookies.get());
   };
 
   checkStatus = () => {
@@ -60,20 +54,39 @@ class App extends React.Component {
   };
 
   render() {
-
     return (
       <div className="App">
         <Router basename="marketplace">
-        {!Cookies.get("uuid") ? (
-          !this.state.loggedIn ? (
-            <div>
-              <Route path="/login">
-                <LoginScreen handleLogin={this.handleLogin} />
-              </Route>
-              <Redirect to="/login" />
-            </div>
+          {!Cookies.get("uuid") ? (
+            !this.state.loggedIn ? (
+              <div>
+                <Route path="/login">
+                  <LoginScreen handleLogin={this.handleLogin} />
+                </Route>
+                <Redirect to="/login" />
+              </div>
+            ) : (
+              <div>
+                <NavigationBar
+                  searchData={this.handleSearchChange}
+                  data={this.state.loggedIn}
+                  handleLogin={this.handleLogin}
+                />
+                <Route path="/login">
+                  <Redirect to="/" />
+                </Route>
+                <Route path="/inventory" component={InventoryScreen} />
+                <Route path="/search">
+                  <SearchScreen data={this.state.data2} activeDefault={0} />
+                </Route>
+                <Route path="/item/:assetId" component={ItemScreen} />
+                <Route exact path="/">
+                  <HomeScreen searchData={this.handleSearchChange} />
+                </Route>
+              </div>
+            )
           ) : (
-            <div>
+            <div data-testid="main">
               <NavigationBar
                 searchData={this.handleSearchChange}
                 data={this.state.loggedIn}
@@ -91,28 +104,7 @@ class App extends React.Component {
                 <HomeScreen searchData={this.handleSearchChange} />
               </Route>
             </div>
-          )
-       ) : (
-          <div data-testid="main">
-            <NavigationBar
-              searchData={this.handleSearchChange}
-              data={this.state.loggedIn}
-              handleLogin={this.handleLogin}
-            />
-            <Route path="/login">
-              <Redirect to="/" />
-            </Route>
-            <Route path="/inventory" component={InventoryScreen} />
-            <Route path="/search">
-              <SearchScreen data={this.state.data2} activeDefault={0} />
-
-            </Route>
-            <Route path="/item/:assetId" component={ItemScreen} />
-            <Route exact path="/">
-              <HomeScreen searchData={this.handleSearchChange} />
-            </Route>
-          </div>
-        )}
+          )}
         </Router>
       </div>
     );

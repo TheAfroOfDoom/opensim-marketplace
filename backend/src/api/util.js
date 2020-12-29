@@ -1,6 +1,8 @@
 const Assets = require("../models/Assets");
 const UserAccounts = require("../models/UserAccounts");
 const _ = require("lodash");
+const openjpeg = require("../openjpeg.js");
+const cache = require("../config/cache.js");
 
 async function isUserLoggedIn(uuid) {
   if (uuid === undefined || uuid === null) {
@@ -34,4 +36,26 @@ async function isAssetInDatabase(assetID) {
   return true;
 }
 
-module.exports = { isUserLoggedIn, isAssetInDatabase };
+async function setCacheItem(assetKey, data) {
+  try {
+    return await cache.set(assetKey, data);
+  } catch (e) {
+    console.error(`Problem setting cache item at KEY=${assetKey}`);
+  }
+}
+
+async function getCacheItem(assetKey) {
+  try {
+    return await cache.get(assetKey);
+  } catch (e) {
+    console.error(`Problem getting cache item at KEY=${assetKey}`);
+  }
+}
+
+module.exports = {
+  isUserLoggedIn,
+  isAssetInDatabase,
+  openjpeg: openjpeg.openjpeg,
+  setCacheItem: setCacheItem,
+  getCacheItem: getCacheItem,
+};

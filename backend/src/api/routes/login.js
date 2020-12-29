@@ -99,7 +99,7 @@ router.get("/", async (req, res) => {
       return res.status(400).send("Failure");
     }
   } catch (e) {
-    //console.log(error);
+    //console.log(e);
     if (e.message === "Already Authorized") {
       return res.status(400).send("Already Authorized");
     } else {

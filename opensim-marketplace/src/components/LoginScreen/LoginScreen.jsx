@@ -1,6 +1,15 @@
 import React from "react";
 
-import { Form, FormGroup, Button, Alert } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  TextField,
+  Grid,
+  Paper,
+  Typography,
+} from "@material-ui/core";
+import { Alert, AlertTitle } from "@material-ui/lab";
+
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import "./LoginScreen.css";
@@ -27,81 +36,108 @@ export default class LoginScreen extends React.Component {
   };
 
   submitHandler = async (event) => {
-    event.preventDefault();
     try {
-      axios
-        .get("/api/login", {
-          params: {
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            password: this.state.password,
-          },
-        })
-        .then((response) => {
-          if (response.status === 201) {
-            console.log("Password worked");
-            this.setState({ loginSuccess: true });
-            this.props.handleLogin(true);
-          }
-        })
-        .catch((error) => {
-          console.log("Password Did not work: " + error);
-          this.setState({ loginFail: true });
-        });
+      event.preventDefault();
+      console.log("Submitting Credentials");
+      const response = await axios.get("/api/login", {
+        params: {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          password: this.state.password,
+        },
+      });
+
+      if (response.status === 201) {
+        console.log("Password worked");
+        this.setState({ loginSuccess: true });
+        this.props.handleLogin(true);
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log("Login Failed: " + err.message);
+      this.setState({ loginFail: true });
     }
   };
 
   render() {
     return (
-      <div className="outer">
-        {this.state.loginFail ? (
-          <Alert variant={"danger"} className="alert">
-            Password Incorrect
-          </Alert>
-        ) : (
-          <div />
-        )}
-        <div className="inner">
-          <Form onSubmit={this.submitHandler}>
-            <h3>Sign In</h3>
-            <FormGroup>
-              <div className="form-group">
-                <Form.Label>First Name</Form.Label>
-                <Form.Control
-                  placeholder="First name"
-                  onChange={this.handleFirstName.bind(this)}
-                />
-              </div>
-
-              <div className="form-group">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  placeholder="Last name"
-                  onChange={this.handleLastName.bind(this)}
-                />
-              </div>
-              <div className="form-group">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  onChange={this.handlePassword.bind(this)}
-                />
-              </div>
-              <Button
-                type="submit"
-                className="btn btn-dark btn-lg btn-block"
-                onClick={this.submitHandler}
+      <Container maxWidth="md">
+        <Grid container justify="center" direction="row">
+          <Grid item container>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              spacing={2}
+              className="login-form"
+            >
+              {this.state.loginFail ? (
+                <Alert severity="error" className="error-message">
+                  <AlertTitle>Password Incorrect</AlertTitle>
+                </Alert>
+              ) : (
+                <div />
+              )}
+              <Paper
+                variant="elevation"
+                elevation={20}
+                className="login-background"
               >
-                Submit
-              </Button>
-            </FormGroup>
-          </Form>
-        </div>
+                <Grid item container justify="center">
+                  <Typography component="h1" variant="h5">
+                    Sign in
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <form onSubmit={this.submitHandler}>
+                    <Grid container direction="column" spacing={2}>
+                      <Grid item>
+                        <Typography component="h3">First Name</Typography>
+                        <TextField
+                          placeholder="First Name"
+                          variant="outlined"
+                          onChange={this.handleFirstName.bind(this)}
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Typography component="h3">Last Name</Typography>
+                        <TextField
+                          placeholder="Last Name"
+                          variant="outlined"
+                          onChange={this.handleLastName.bind(this)}
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Typography component="h3">Password</Typography>
+                        <TextField
+                          type="password"
+                          placeholder="Password"
+                          variant="outlined"
+                          onChange={this.handlePassword.bind(this)}
+                          required
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          type="submit"
+                          className="button-block"
+                        >
+                          Submit
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </form>
+                </Grid>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Grid>
         {this.state.loginSuccess ? <Redirect to="/" /> : <div />}
-      </div>
+      </Container>
     );
   }
 }
