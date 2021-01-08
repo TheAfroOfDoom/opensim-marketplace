@@ -1,0 +1,22 @@
+assetTypes = {
+  MATERIAL: -2,
+  TEXTURE: 0,
+  SOUND: 1,
+  CALLING_CARD: 2,
+  LANDMARK: 3,
+  CLOTHING: 5,
+  OBJECT: 6,
+  NOTECARD: 7,
+  FOLDER: 8,
+  SCRIPT: 10,
+  BODY_PART: 13,
+  ANIMATION: 20,
+  GESTURE: 21,
+  LINK: 24,
+  LINK_FOLDER: 25,
+  MARKETPLACE_FOLDER: 26,
+  MESH: 49,
+  SETTING: 56,
+};
+
+module.exports = { assetTypes };

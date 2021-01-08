@@ -11,6 +11,7 @@ const {
   setCacheItem,
   getCacheItem,
 } = require("../util.js");
+const { assetTypes } = require("../types.js");
 
 /**
  * @swagger
@@ -234,8 +235,19 @@ router.get("/public", async (req, res) => {
     };
 
     let assets = await getAssets(params);
+
+    stats = {};
+    console.log(assets);
+    //Convert data
+    for (const [key, value] of Object.entries(assetTypes)) {
+      stats[`${key}`] = assets.filter(
+        (x) => value === x.dataValues.assetType
+      ).length;
+    }
     const x = await Promise.all(assets.map((obj) => getConvertedObject(obj)));
-    return res.send(x);
+
+    console.log(x);
+    return res.send({ data: x, stats });
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
@@ -300,11 +312,7 @@ function getSort(order) {
 
 async function convertImage(assetType, data) {
   if (assetType === 0) {
-    let arr = [];
-
-    for (let i = 0; i < data.length; i++) {
-      arr.push(data[i]);
-    }
+    let arr = Array.prototype.slice.call(data, 0);
     try {
       let j2k = openjpeg(arr, "j2k");
       return Promise.resolve(j2k);
