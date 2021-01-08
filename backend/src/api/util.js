@@ -52,10 +52,24 @@ async function getCacheItem(assetKey) {
   }
 }
 
+async function convertImage(assetType, data) {
+  if (assetType === 0) {
+    let arr = Array.prototype.slice.call(data, 0);
+    try {
+      let j2k = openjpeg.openjpeg(arr, "j2k");
+      return j2k;
+    } catch (e) {
+      console.log(`Error: ${e}`);
+      return { Error: "error" };
+    }
+  }
+}
+
 module.exports = {
   isUserLoggedIn,
   isAssetInDatabase,
   openjpeg: openjpeg.openjpeg,
   setCacheItem: setCacheItem,
   getCacheItem: getCacheItem,
+  convertImage,
 };

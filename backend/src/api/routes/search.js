@@ -244,10 +244,14 @@ router.get("/public", async (req, res) => {
         (x) => value === x.dataValues.assetType
       ).length;
     }
+    /*
     const x = await Promise.all(assets.map((obj) => getConvertedObject(obj)));
+
 
     console.log(x);
     return res.send({ data: x, stats });
+    */
+    return res.send({ data: assets, stats });
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
@@ -272,7 +276,6 @@ function getAssets(params) {
       "create_time",
       "CreatorID",
       "access_time",
-      "data",
     ],
     include: [
       {
