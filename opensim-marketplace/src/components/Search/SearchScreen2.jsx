@@ -81,25 +81,37 @@ export default class SearchScreen extends React.Component {
   };
 
   nextSet = (length) => {
-    if (length > this.state.end) {
-      this.setState({ start: this.state.start + 1 });
-      this.setState({ end: this.state.end + 1 });
-      this.handlePage(this.state.active + 1);
+    if(length > 10){
+      if (length > this.state.end) {
+        this.setState({ start: this.state.start + 1 });
+        this.setState({ end: this.state.end + 1 });
+        this.handlePage(this.state.active + 1);
+      }
+    }else{
+      if(this.state.active < length-1){
+        this.handlePage(this.state.active + 1);
+      }
     }
   };
 
-  lastSet = () => {
-    if (0 < this.state.start) {
-      this.setState({ start: this.state.start - 1 });
-      this.setState({ end: this.state.end - 1 });
-      this.handlePage(this.state.active - 1);
+  lastSet = (length) => {
+    if(length > 10){
+      if (0 < this.state.start) {
+        this.setState({ start: this.state.start - 1 });
+        this.setState({ end: this.state.end - 1 });
+        this.handlePage(this.state.active - 1);
+      }
+    }else{
+      if(this.state.active > 0){
+        this.handlePage(this.state.active - 1);
+      }
     }
   };
 
   endSet = (length) => {
     if (
-      (this.state.end != length || this.state.active != length - 1) &&
-      this.state.end - this.state.start === 9
+      (this.state.end < length && this.state.active != length - 1) &&
+      (this.state.end - this.state.start === 9)
     ) {
       this.setState({ start: this.state.start + (length - this.state.end) });
       this.setState({ end: length });
@@ -191,8 +203,8 @@ export default class SearchScreen extends React.Component {
           {this.props.data != null ? (
             <div className="pager" class="d-flex justify-content-center">
               <Pagination>
-                <Pagination.First onClick={() => this.firstSet(0)} />
-                <Pagination.Prev onClick={() => this.lastSet()} />
+                <Pagination.First onClick={() => this.firstSet()} />
+                <Pagination.Prev onClick={() => this.lastSet(items.length)} />
                 {items.slice(this.state.start, this.state.end)}
                 <Pagination.Next onClick={() => this.nextSet(items.length)} />
                 <Pagination.Last onClick={() => this.endSet(items.length)} />

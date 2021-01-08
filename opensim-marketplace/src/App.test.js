@@ -1,5 +1,6 @@
 import React from "react";
-import { HashRouter as Router, Route, Redirect } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Link} from "react-router-dom";
+import { Button, Image } from "react-bootstrap";
 import mockedAxios from "axios";
 import Cookies from "js-cookie";
 
@@ -28,25 +29,29 @@ describe("App", () => {
   test("Render App (Redirect Sign In Path)", () => {
     const { getByText } = render(<App />);
     expect(getByText(/Sign In/i)).toBeInTheDocument();
-
     fireEvent.change(screen.getByPlaceholderText("First name"), {
-      target: { value: "first" },
+      target: { value: "Jonas" },
     });
+    expect(getByText(/first/i)).toBeInTheDocument();
     fireEvent.change(screen.getByPlaceholderText("Last name"), {
-      target: { value: "last" },
+      target: { value: "Wojtas" },
     });
+    expect(getByText(/last/i)).toBeInTheDocument();
     fireEvent.change(screen.getByPlaceholderText("Password"), {
       target: { value: "password" },
     });
+    expect(getByText(/password/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button"));
+
   });
-  /*
+
   test("Failure Render App (Not Logged in)", () => {
     const { getByTestId } = render(<App />);
     expect(getByTestId("main")).toBeInTheDocument();
   });
-*/
-  test("Render App (Logged In Render) HomeScreen", () => {
+
+
+  test("Render App (Logged In Render) HomeScreen", async () => {
     Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
@@ -63,9 +68,11 @@ describe("App", () => {
     wait(() => {
       //expect(getByTestId('itemss')).toBeInTheDocument();
       expect(getByText(/Creator:/i)).toBeInTheDocument();
+      expect(getByText(/asdf/i)).toBeInTheDocument();
+      expect(getByText(/Johnny/i)).toBeInTheDocument();
     });
-    expect(getByText(/Welcome/i)).toBeInTheDocument();
-    expect(getByText(/Recently Updated Items/i)).toBeInTheDocument();
+    //expect(getByText(/Welcome/i)).toBeInTheDocument();
+    //expect(getByText(/Recently Updated Items/i)).toBeInTheDocument();
   });
 
   test("Render App (Logged In Render) NavigationBar", () => {
@@ -81,6 +88,22 @@ describe("App", () => {
     expect(linkElement).toBeInTheDocument();
   });
 
+  test("Render NavigationBar Search Box", () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+    const { getByText } = render(
+      <Router>
+        <NavigationBar />
+      </Router>
+    );
+    fireEvent.change(screen.getByPlaceholderText(/search/i), {
+      target: { value: "Rocks" },
+    });
+    const linkElement = getByText(/OpenSim Marketplace/i);
+    expect(linkElement).toBeInTheDocument();
+  });
+
   test("Render App (Logged In Render) ItemScreen", async () => {
     Cookies.get = jest
       .fn()
@@ -90,7 +113,7 @@ describe("App", () => {
       itemInfo: {
         name: "asdf",
         description: "asdf",
-        assetType: 0,
+        assetType: 1,
         id: 1341341234,
         create_time: 123412341,
         access_time: 123412341,
@@ -103,14 +126,14 @@ describe("App", () => {
     });
     const { getByText, findByTestId, getByTestId } = render(<ItemScreen />);
     wait(() => {
-      //expect(getByTestId('itemss')).toBeInTheDocument();
+
       expect(getByText(/Creator Information/i)).toBeInTheDocument();
+      expect(getByText(/Sound/i)).toBeInTheDocument();
     });
-    //const linkElement = await findByTestId("itemss");
-    //expect(linkElement).toBeInTheDocument();
+
   });
 
-  test("Render SearchScreen Asset Info", () => {
+  test("Render SearchScreen Asset Info", async () => {
     Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
@@ -127,19 +150,20 @@ describe("App", () => {
     wait(() => {
       //expect(getByTestId('itemss')).toBeInTheDocument();
       expect(getByText(/Create Time:/i)).toBeInTheDocument();
+      expect(getByText(/asdf/i)).toBeInTheDocument();
     });
   });
 
-  test("Render InventoryScreen Asset Info", () => {
+  test("Render InventoryScreen Asset Info", async () => {
     Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
     mockedAxios.get.mockResolvedValueOnce({
       assetID: "asdf",
       InventoryName: "asdf",
-      assetType: 0,
+      assetType: 1,
       InvType: 0,
-      InventoryID: 1341341234,
+      InventoryID: 112341234,
       creationDate: 123412341,
       CreatorID: 123412341234,
     });
@@ -147,66 +171,64 @@ describe("App", () => {
       <InventoryScreen />
     );
     wait(() => {
-      //expect(getByTestId('itemss')).toBeInTheDocument();
       expect(getByText(/Create Time:/i)).toBeInTheDocument();
+      expect(getByText(/Sound/i)).toBeInTheDocument();
     });
   });
-});
 
-describe("Item Page", () => {
-  test("Render ItemScreen Creator Info", async () => {
-    Cookie.get = jest
+  test("Render ItemScreen Add To Inventory Button and Its Functions", async () => {
+    Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          itemInfo: {
-            name: "Rocks",
-            assetType: 0,
-            create_time: 1232324,
-          },
-          userInfo: {
-            FirstName: "Jonas",
-            LastName: "Wojtas",
-          },
-          invInfo: {
-            inInventory: false,
-          },
-        },
-      })
-    );
-    const { getByText, findByTestId } = render(<ItemScreen />);
-    const linkElement = await findByTestId("items");
-    expect(linkElement).toBeInTheDocument();
+      mockedAxios.get.mockResolvedValueOnce({invInfo: { inInventory: false },});
+    const handleAdd = jest.fn();
+    const {getByText} = render(<ItemScreen>
+      <Button onClick={handleAdd}>Add To Inventory</Button>
+    </ItemScreen>);
+      wait(() => {
+        fireEvent.click(screen.getByText(/Add To Inventory/i));
+        expect(handleAdd).toHaveBeenCalledTimes(1);
+      });
   });
-});
 
-describe("Item Page", () => {
-  test("Render ItemScreen Item Name Info", async () => {
-    Cookie.get = jest
+  test("Render ItemScreen View In Inventory Button", async () => {
+    Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          itemInfo: {
-            name: "Rocks",
-            assetType: 0,
-            create_time: 1232324,
-          },
-          userInfo: {
-            FirstName: "Jonas",
-            LastName: "Wojtas",
-          },
-          invInfo: {
-            inInventory: false,
-          },
-        },
-      })
-    );
-    const { getByText, findByTestId } = render(<ItemScreen />);
-    const linkElement = await findByTestId("name");
-    expect(linkElement).toBeInTheDocument();
+      mockedAxios.get.mockResolvedValueOnce({invInfo: { inInventory: true },});
+
+    const {getByText} = render(<ItemScreen>
+      <Button>View In Inventory</Button>
+    </ItemScreen>);
+      wait(() => {
+        fireEvent.click(screen.getByText(/View In Inventory/i));
+      });
+  });
+
+});
+
+
+describe("Home Screen", () => {
+
+  test("Render HomeScreen Redirect", async () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+    mockedAxios.get.mockResolvedValueOnce({
+        assetType: 1,
+    });
+    const { getByText, getByTestId } = render(<HomeScreen />);
+    wait(() => {
+      fireEvent.click(screen.getByText("Material"));
+      expect(getByTestId("Redirect")).toBeInTheDocument();
+    });
+  });
+
+  test("Render HomeScreen noRedirect", async () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+    const { getByText, getByTestId } = render(<HomeScreen />);
+    expect(getByTestId("Redirect")).toBeInTheDocument();
   });
 });

@@ -2,16 +2,38 @@ import React from "react";
 import { Pagination } from "react-bootstrap";
 //import "./SearchScreen.css";
 import _ from "lodash";
-
+import axios from "axios";
 import NoResults from "./NoResults";
 import SearchCard from "./SearchCard";
-
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Box from '@material-ui/core/Box';
 import { Container, Grid } from "@material-ui/core";
 
 export default class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { active: this.props.activeDefault, start: 0, end: 9 };
+    this.state = { data:null, active: this.props.activeDefault, start: 0, end: 9, loading:false };
+  }
+
+  getSearch = async () =>{
+    if(this.props.data != null && this.props.data != this.state.previous && this.state.loading != true){
+      console.log("Duud: " + this.props.data);
+      this.setState({loading: true});
+      const response = await axios.get("/api/search/public", {
+        params: {
+          searchString: this.props.data,
+        },
+      });
+      this.setState({data: response.data, previous: this.props.data, loading:false});
+    }
+  }
+
+  componentDidMount(){
+    this.getSearch();
+  }
+  componentDidUpdate(){
+
+    this.getSearch();
   }
 
   handlePage = async (value) => {
@@ -83,25 +105,37 @@ export default class SearchScreen extends React.Component {
   };
 
   nextSet = (length) => {
-    if (length > this.state.end) {
-      this.setState({ start: this.state.start + 1 });
-      this.setState({ end: this.state.end + 1 });
-      this.handlePage(this.state.active + 1);
+    if(length > 10){
+      if (length > this.state.end) {
+        this.setState({ start: this.state.start + 1 });
+        this.setState({ end: this.state.end + 1 });
+        this.handlePage(this.state.active + 1);
+      }
+    }else{
+      if(this.state.active < length-1){
+        this.handlePage(this.state.active + 1);
+      }
     }
   };
 
-  lastSet = () => {
-    if (0 < this.state.start) {
-      this.setState({ start: this.state.start - 1 });
-      this.setState({ end: this.state.end - 1 });
-      this.handlePage(this.state.active - 1);
+  lastSet = (length) => {
+    if(length > 10){
+      if (0 < this.state.start) {
+        this.setState({ start: this.state.start - 1 });
+        this.setState({ end: this.state.end - 1 });
+        this.handlePage(this.state.active - 1);
+      }
+    }else{
+      if(this.state.active > 0){
+        this.handlePage(this.state.active - 1);
+      }
     }
   };
 
   endSet = (length) => {
     if (
-      (this.state.end != length || this.state.active != length - 1) &&
-      this.state.end - this.state.start === 9
+      (this.state.end < length && this.state.active != length - 1) &&
+      (this.state.end - this.state.start === 9)
     ) {
       this.setState({ start: this.state.start + (length - this.state.end) });
       this.setState({ end: length });
@@ -121,10 +155,12 @@ export default class SearchScreen extends React.Component {
   };
 
   render() {
+
+
     let items = [];
-    if (this.props.data) {
+    if (this.state.data) {
       //console.log("Length:", this.props.data.length);
-      for (let i = 0; i < Math.ceil(this.props.data.length / 24); i++) {
+      for (let i = 0; i < Math.ceil(this.state.data.length / 24); i++) {
         items.push(
           <Pagination.Item
             key={i + 1}
@@ -138,20 +174,28 @@ export default class SearchScreen extends React.Component {
     }
 
     let temparray =
-      this.props.data &&
-      this.props.data.slice(
+      this.state.data &&
+      this.state.data.slice(
         this.state.active * 24,
         this.state.active * 24 + 24
       );
-
-    if (_.isEmpty(items)) {
+    if (this.state.loading) {
+      return(
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <div className="progress-center">
+            <CircularProgress />
+          </div>
+        </div>
+            );
+    }else if (_.isEmpty(items) && !this.state.loading) {
       return <NoResults />;
     } else
       return (
         <div>
           <Container maxWidth={false} style={{ marginTop: "30px" }}>
             <Grid container direction="row" alignItems="center" spacing={3}>
-              {this.props.data &&
+
+              {this.state.data &&
                 temparray.map((obj, index) => {
                   return (
                     <Grid item xs={12} md={6} lg={4} xl={3}>
@@ -166,11 +210,11 @@ export default class SearchScreen extends React.Component {
             </Grid>
           </Container>
 
-          {this.props.data != null ? (
+          {this.state.data != null ? (
             <div className="d-flex justify-content-center pager">
               <Pagination>
-                <Pagination.First onClick={() => this.firstSet(0)} />
-                <Pagination.Prev onClick={() => this.lastSet()} />
+                <Pagination.First onClick={() => this.firstSet()} />
+                <Pagination.Prev onClick={() => this.lastSet(items.length)} />
                 {items.slice(this.state.start, this.state.end)}
                 <Pagination.Next onClick={() => this.nextSet(items.length)} />
                 <Pagination.Last onClick={() => this.endSet(items.length)} />
