@@ -37,6 +37,7 @@ class App extends React.Component {
   }
 
   handleSearchChange = (data) => {
+    console.log("Dood");
     this.setState({ data2: data });
   };
 

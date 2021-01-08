@@ -5,21 +5,18 @@ import Cookies from "js-cookie";
 import { Nav, Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
-
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { search: "", redirect: false };
+    this.state = { search: "", redirect: false};
   }
 
-  onClick = async () => {
-    const response = await axios.get("/api/search/public", {
-      params: {
-        searchString: this.state.search,
-      },
-    });
-    this.props.searchData(response.data);
+  onClick = () => {
+
+    this.props.searchData(this.state.search);
+
     this.setState({ redirect: true });
+
   };
 
   handleChange(event) {
@@ -79,6 +76,7 @@ class NavigationBar extends React.Component {
                   <span>Search</span>
                 </Button>
               </Link>
+
             </Form>
           </Navbar.Collapse>
         </Navbar>
