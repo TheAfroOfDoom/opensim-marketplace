@@ -50,7 +50,7 @@ export default class HomeScreen extends React.Component {
       const response = await axios.get("/api/search/public", { limit: 16 });
       console.log(response);
       this.setState({
-        data: response.data,
+        data: response.data.data,
       });
     } catch (err) {
       console.log(err.message);

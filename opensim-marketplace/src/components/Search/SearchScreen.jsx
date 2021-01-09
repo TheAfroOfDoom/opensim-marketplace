@@ -24,7 +24,7 @@ export default class SearchScreen extends React.Component {
           searchString: this.props.data,
         },
       });
-      this.setState({data: response.data, previous: this.props.data, loading:false});
+      this.setState({data: response.data.data, previous: this.props.data, loading:false});
     }
   }
 
