@@ -60,6 +60,7 @@ router.get("/get", async (req, res) => {
         return res.send({ data: null });
       }
     } else {
+      console.log(JSON.parse(asset.dataValues.marketplace_icon).data.length);
       return res.send({ data: JSON.parse(asset.dataValues.marketplace_icon) });
     }
   } catch (e) {
