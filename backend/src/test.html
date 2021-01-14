@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <canvas id="canvas">
+      This text is displayed if your browser does not support HTML5 Canvas.
+    </canvas>
+  </body>
+  <style>
+    canvas {
+      border: 1px dotted black;
+    }
+  </style>
+  <script>
+    fetch(
+      "http://localhost:5000/api/media/get?assetID=00000000-0000-1111-9999-000000000001",
+      {
+        method: "GET",
+        headers: {
+          Cookie:
+            "uuid=dfafbece-1e64-4f40-a435-edadd348c630; Expires=null; Domain=localhost:5000; Path=/",
+          "Content-Type": "application/json; charset=utf-8",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((res) => {
+        console.log(res);
+
+        var canvas = document.getElementById("canvas"),
+          ctx = canvas.getContext("2d");
+
+        console.table([{ width: res.data.width }, { height: res.data.height }]);
+
+        canvas.width = res.data.width;
+        canvas.height = res.data.height;
+
+        var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var componentSize = canvas.width * canvas.height;
+
+        output = res.data.data;
+
+        let i = 0;
+        for (var y = 0; y < canvas.height; y++) {
+          for (var x = 0; x < canvas.width; x++) {
+            var base = (y * canvas.width + x) * 4;
+            let encodedData = output.charCodeAt(i);
+            let red = (encodedData >> 5) * 32;
+            let green = ((encodedData & 28) >> 2) * 32;
+            let blue = (encodedData & 3) * 64;
+            image.data[base + 0] = red;
+            image.data[base + 1] = green;
+            image.data[base + 2] = blue;
+            image.data[base + 3] = 255; //the alpha part..
+            i++;
+          }
+        }
+        ctx.putImageData(image, 0, 0);
+      })
+      .catch((e) => console.log(e));
+  </script>
+</html>

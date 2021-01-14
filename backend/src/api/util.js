@@ -29,8 +29,6 @@ async function isAssetInDatabase(assetID) {
     attributes: ["id"],
     where: { id: assetID },
   });
-
-  console.log(asset);
   if (_.isEmpty(asset)) return false;
 
   return true;
@@ -59,7 +57,9 @@ async function convertImage(assetType, data) {
       let j2k = openjpeg.openjpeg(arr, "j2k");
 
       let img_data = "";
+
       component_size = j2k.width * j2k.height;
+      //let img_data = new Array(component_size);
       for (let y = 0; y < j2k.height; y++) {
         for (let x = 0; x < j2k.width; x++) {
           let value = j2k.data[y * j2k.width + x] * 4;
@@ -69,7 +69,8 @@ async function convertImage(assetType, data) {
           img_data[base + 1] = j2k.data[1 * component_size + y * j2k.width + x];
           img_data[base + 2] = j2k.data[2 * component_size + y * j2k.width + x];
           img_data[base + 3] = 255;
-          */
+*/
+
           let red = j2k.data[0 * component_size + y * j2k.width + x];
           let green = j2k.data[1 * component_size + y * j2k.width + x];
           let blue = j2k.data[2 * component_size + y * j2k.width + x];

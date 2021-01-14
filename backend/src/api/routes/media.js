@@ -7,9 +7,6 @@ const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
 const {
   isUserLoggedIn,
-  openjpeg,
-  setCacheItem,
-  getCacheItem,
   isAssetInDatabase,
   convertImage,
 } = require("../util.js");
@@ -60,7 +57,6 @@ router.get("/get", async (req, res) => {
         return res.send({ data: null });
       }
     } else {
-      console.log(JSON.parse(asset.dataValues.marketplace_icon).data.length);
       return res.send({ data: JSON.parse(asset.dataValues.marketplace_icon) });
     }
   } catch (e) {

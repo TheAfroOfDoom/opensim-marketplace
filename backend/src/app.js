@@ -13,6 +13,10 @@ const compression = require("compression");
 
 const path = require("path");
 
+// Allow Cors
+var cors = require("cors");
+app.use(cors({ credentials: true }));
+
 //Setup Swagger for documentation
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
