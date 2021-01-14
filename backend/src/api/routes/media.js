@@ -16,10 +16,11 @@ router.get("/get", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-
+    /*
     if (!(await isUserLoggedIn(uuid))) {
       throw new Error("Unauthorized");
     }
+    */
 
     // Get assetID param
     const { assetID, img_data } = req.query;
@@ -51,13 +52,19 @@ router.get("/get", async (req, res) => {
           { where: { id: assetID } }
         );
 
+        //Assets.update({ marketplace_icon: j2k }, { where: { id: assetID } });
+
         return res.send({ data: j2k });
       } else {
         // IS NOT A TEXTURE. RETURN DEFAULT IMAGE OR NULL
         return res.send({ data: null });
       }
     } else {
-      return res.send({ data: JSON.parse(asset.dataValues.marketplace_icon) });
+      console.log(asset);
+      console.log(asset.marketplace_icon);
+      return res.send({
+        data: JSON.parse(asset.dataValues.marketplace_icon),
+      });
     }
   } catch (e) {
     console.log(e);

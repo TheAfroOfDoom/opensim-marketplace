@@ -1,6 +1,7 @@
 const Assets = require("../models/Assets");
 const UserAccounts = require("../models/UserAccounts");
 const _ = require("lodash");
+const { createCanvas } = require("canvas");
 const openjpeg = require("../openjpeg.js");
 const cache = require("../config/cache.js");
 
@@ -52,14 +53,19 @@ async function getCacheItem(assetKey) {
 
 async function convertImage(assetType, data) {
   if (assetType === 0) {
-    let arr = Array.prototype.slice.call(data, 0);
     try {
+      let arr = Array.prototype.slice.call(data, 0);
       let j2k = openjpeg.openjpeg(arr, "j2k");
 
-      let img_data = "";
+      //let img_data = "";
 
       component_size = j2k.width * j2k.height;
       //let img_data = new Array(component_size);
+
+      const canvas = createCanvas(j2k.width, j2k.height);
+      const ctx = canvas.getContext("2d");
+      var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
       for (let y = 0; y < j2k.height; y++) {
         for (let x = 0; x < j2k.width; x++) {
           let value = j2k.data[y * j2k.width + x] * 4;
@@ -75,13 +81,21 @@ async function convertImage(assetType, data) {
           let green = j2k.data[1 * component_size + y * j2k.width + x];
           let blue = j2k.data[2 * component_size + y * j2k.width + x];
           // https://stackoverflow.com/a/25258278/10605458
+
+          image.data[base + 0] = red;
+          image.data[base + 1] = green;
+          image.data[base + 2] = blue;
+          image.data[base + 3] = 255; //the alpha part..
+          /*
           let color =
             (Math.floor(red / 32) << 5) +
             (Math.floor(green / 32) << 2) +
             Math.floor(blue / 64);
           img_data += String.fromCharCode(color);
+          */
         }
       }
+      ctx.putImageData(image, 0, 0);
       /*
       let img_data = [];
       component_size = j2k.width * j2k.height;
@@ -96,7 +110,14 @@ async function convertImage(assetType, data) {
         let a = 255;
       }
       */
-      return { width: j2k.width, height: j2k.height, data: img_data };
+
+      return {
+        width: j2k.width,
+        height: j2k.height,
+        data: canvas.toDataURL("image/jpeg"),
+      };
+
+      //return canvas.toDataURL("image/jpeg");
     } catch (e) {
       console.log(`Error: ${e}`);
       return { Error: "error" };
