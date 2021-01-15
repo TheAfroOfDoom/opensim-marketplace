@@ -45,6 +45,8 @@ app.use(
   express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
 );
 
+app.use("/images/test", express.static(path.join(__dirname, "test.html")));
+
 // Middleware
 app.use(compression());
 app.use(cookieParser());

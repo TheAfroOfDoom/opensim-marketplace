@@ -24,7 +24,7 @@
       event.preventDefault(); // disable normal form submit behavior
       var startTime = new Date().getTime(),
         endTime;
-      return fetch(`http://localhost:5000/api/media/get?assetID=${newID}`, {
+      return fetch(`http://25.5.144.194:5000/api/media/get?assetID=${newID}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
