@@ -38,9 +38,9 @@ export default class SearchScreen extends React.Component {
 
       this.setState({data: response.data.data, previous: this.props.data, loading:false});
     }
-  }
+  };
 
-  componentDidMount(){
+  componentDidMount() {
     this.getSearch();
   }
   componentDidUpdate(){
@@ -116,28 +116,28 @@ export default class SearchScreen extends React.Component {
   };
 
   nextSet = (length) => {
-    if(length > 10){
+    if (length > 10) {
       if (length > this.state.end) {
         this.setState({ start: this.state.start + 1 });
         this.setState({ end: this.state.end + 1 });
         this.handlePage(this.state.active + 1);
       }
-    }else{
-      if(this.state.active < length-1){
+    } else {
+      if (this.state.active < length - 1) {
         this.handlePage(this.state.active + 1);
       }
     }
   };
 
   lastSet = (length) => {
-    if(length > 10){
+    if (length > 10) {
       if (0 < this.state.start) {
         this.setState({ start: this.state.start - 1 });
         this.setState({ end: this.state.end - 1 });
         this.handlePage(this.state.active - 1);
       }
-    }else{
-      if(this.state.active > 0){
+    } else {
+      if (this.state.active > 0) {
         this.handlePage(this.state.active - 1);
       }
     }
@@ -145,8 +145,9 @@ export default class SearchScreen extends React.Component {
 
   endSet = (length) => {
     if (
-      (this.state.end < length && this.state.active != length - 1) &&
-      (this.state.end - this.state.start === 9)
+      this.state.end < length &&
+      this.state.active != length - 1 &&
+      this.state.end - this.state.start === 9
     ) {
       this.setState({ start: this.state.start + (length - this.state.end) });
       this.setState({ end: length });
@@ -166,8 +167,6 @@ export default class SearchScreen extends React.Component {
   };
 
   render() {
-
-
     let items = [];
     if (this.state.data) {
       //console.log("Length:", this.props.data.length);
@@ -191,21 +190,20 @@ export default class SearchScreen extends React.Component {
         this.state.active * 24 + 24
       );
     if (this.state.loading) {
-      return(
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+      return (
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <div className="progress-center">
             <CircularProgress />
           </div>
         </div>
-            );
-    }else if (_.isEmpty(items) && !this.state.loading) {
+      );
+    } else if (_.isEmpty(items) && !this.state.loading) {
       return <NoResults />;
     } else
       return (
         <div>
           <Container maxWidth={false} style={{ marginTop: "30px" }}>
             <Grid container direction="row" alignItems="center" spacing={3}>
-
               {this.state.data &&
                 temparray.map((obj, index) => {
                   return (

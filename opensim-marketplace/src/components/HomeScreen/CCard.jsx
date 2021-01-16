@@ -1,44 +1,120 @@
 import * as React from "react";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
-import { Card, Button } from "react-bootstrap";
+///import { Card, Button } from "react-bootstrap";
+import { useState, useEffect } from "react";
+
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardActions from "@material-ui/core/CardActions";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: "#02394a",
+    color: "#fff",
+    display: "flex",
+    flexDirection: "row",
+    marginTop: "10px",
+    marginBottom: "10px",
+    minHeight: 150,
+  },
+  details: {
+    display: "flex",
+    flex: 3,
+    flexDirection: "column",
+  },
+  content: {
+    flex: 1,
+  },
+  cover: {
+    maxWidth: "150px",
+    flex: 1,
+    marginLeft: 5,
+  },
+  controls: {
+    display: "flex",
+    alignItems: "center",
+    paddingLeft: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
+  itemButton: {
+    right: 0,
+    color: "#fff",
+    backgroundColor: " #ff8e32",
+    alignSelf: "flex-end",
+    marginBottom: "auto",
+  },
+  actionsContainer: {
+    flex: 1,
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
+  imgProps: {
+    minWidth: "256px",
+    minHeight: "256px",
+  },
+}));
 
 export default function CCard(props) {
+  const sClass = useStyles();
+
   return (
     <div style={{ margin: "auto" }}>
-      <Card bsPrefix="cards">
-        <Card.Header>
-          <Link to={`/item/${props.obj.id}`}>
-            <Card.Title border="dark" className="text-item">
-              {props.obj.name}
-            </Card.Title>
-          </Link>
-        </Card.Header>
-        <Card.Body className="body">
-          <h3>
-            Creator:{" "}
-            {props.obj.useraccount ? props.obj.useraccount.FirstName : "None"}{" "}
-            {props.obj.useraccount ? props.obj.useraccount.LastName : "None"}
-          </h3>
-          <p>
-            Asset Type:{" "}
-            {
-              props.categories.find(
-                (element) => element.assetType === props.obj.assetType
-              ).name
-            }
-          </p>
-          <p>
-            {props.obj.description !== ""
-              ? props.obj.description
-              : "No Description"}{" "}
-          </p>
-          <p>
-            <Moment format="MM/DD/YYYY HH:mm" unix>
-              {props.obj.create_time}
-            </Moment>
-          </p>
-        </Card.Body>
+      <Card className={sClass.root}>
+        <div className={sClass.content}>
+          <CardContent>
+            <Link
+              to={`/item/${props.obj.id}`}
+              className={sClass.cover}
+              style={{ textDecoration: "none", color: "#ffff" }}
+            >
+              <Typography component="h5" variant="h5">
+                {props.obj.name}
+              </Typography>
+              <CardMedia
+                className={sClass.imgProps}
+                image="/Images/test.webp"
+              />
+            </Link>
+            <Typography variant="subtitle1">
+              Creator:{" "}
+              {props.obj.useraccount ? props.obj.useraccount.FirstName : "None"}{" "}
+              {props.obj.useraccount ? props.obj.useraccount.LastName : "None"}
+            </Typography>
+            <Typography variant="subtitle1">
+              Date Created:{" "}
+              {
+                <Moment format="MM/DD/YYYY HH:mm" unix>
+                  {props.obj.create_time}
+                </Moment>
+              }
+            </Typography>
+            <Typography variant="subtitle1">
+              Asset Type:{" "}
+              {
+                props.categories.find(
+                  (element) => element.assetType === props.obj.assetType
+                ).name
+              }
+            </Typography>
+          </CardContent>
+        </div>
+        <div className={sClass.actionsContainer}>
+          <CardActions>
+            <Link to={`/item/${props.obj.id}`}>
+              <Button className={sClass.itemButton} variant="outlined">
+                Item Page
+              </Button>
+            </Link>
+          </CardActions>
+        </div>
       </Card>
     </div>
   );
