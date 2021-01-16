@@ -118,7 +118,11 @@ and item carousel with recently updated items
                 <Grid container direction="row" alignItems="center" spacing={3}>
                   {sorted &&
                     sorted.slice(0, 8).map((obj, index) => {
-                      return <CCard obj={obj} categories={categories} />;
+                      return (
+                        <Grid item xs={12} md={6} lg={4} xl={3}>
+                          <CCard obj={obj} categories={categories} />
+                        </Grid>
+                      );
                     })}
                 </Grid>
               </Container>
@@ -131,7 +135,11 @@ and item carousel with recently updated items
                 <Grid container direction="row" alignItems="center" spacing={3}>
                   {sorted &&
                     sorted.slice(9, 17).map((obj, index) => {
-                      return <CCard obj={obj} categories={categories} />;
+                      return (
+                        <Grid item xs={12} md={6} lg={4} xl={3}>
+                          <CCard obj={obj} categories={categories} />
+                        </Grid>
+                      );
                     })}
                 </Grid>
               </Container>

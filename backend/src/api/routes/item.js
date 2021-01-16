@@ -64,23 +64,11 @@ router.get("/", async (req, res) => {
         "access_time",
         "public",
         "CreatorID",
-        "data",
       ],
       where: { id: id },
     });
 
     let j2k;
-    //CONVERT TO USBALE IMAGE FORMAT
-    if (itemInfo.assetType === 0) {
-      let arr = [];
-
-      for (let i = 0; i < itemInfo.data.length; i++) {
-        arr.push(itemInfo.data[i]);
-      }
-      j2k = openjpeg(arr, "j2k");
-      console.log(j2k);
-    }
-
     //If there is an asset
     if (!_.isEmpty(itemInfo)) {
       if (opensimCreatorIDs.includes(itemInfo.CreatorID)) {

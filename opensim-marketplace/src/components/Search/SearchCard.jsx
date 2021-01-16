@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 //Import Material Components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   cover: {
     maxWidth: 150,
     flex: 1,
-    marginLeft: 5,
+    margin: 5,
   },
   controls: {
     display: "flex",
@@ -57,44 +58,31 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     alignItems: "flex-end",
   },
+  imgProps: {
+    height: "100%",
+    width: "100%",
+    resizeMode: "contain",
+  },
 }));
 
 export default function SearchCard(props) {
+  const [imgData, setImgData] = useState(null);
+
   useEffect(() => {
-    if (
-      props.obj.assetType === 0 &&
-      props.obj.data !== undefined &&
-      !("Error" in props.obj.data)
-    ) {
-      console.log(props.obj.data);
-      var canvas = document.getElementById(`myCanvas${props.index}`); //get the canvas element (use whatever you actually need here!)
-      canvas.width = props.obj.data.width;
-      canvas.height = props.obj.data.height;
-      var ctx = canvas.getContext("2d");
-
-      var output = props.obj.data.data;
-
-      //  console.log(props.obj.name);
-      //  console.table([props.obj.data.width, props.obj.data.height]);
-
-      var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      var componentSize = canvas.width * canvas.height;
-      for (var y = 0; y < canvas.height; y++) {
-        for (var x = 0; x < canvas.width; x++) {
-          var value = output[y * canvas.width + x];
-          var base = (y * canvas.width + x) * 4;
-          image.data[base + 0] =
-            output[0 * componentSize + y * canvas.width + x];
-          image.data[base + 1] =
-            output[1 * componentSize + y * canvas.width + x];
-          image.data[base + 2] =
-            output[2 * componentSize + y * canvas.width + x];
-          image.data[base + 3] = 255; //the alpha part..
-        }
+    let fetchData = async (id) => {
+      try {
+        console.log(id);
+        let response = await axios.get("/api/media/get", {
+          params: { assetID: id },
+        });
+        console.log(response);
+        setImgData(response.data.data);
+      } catch (e) {
+        console.log(e);
       }
-      ctx.putImageData(image, 0, 0);
-    }
-  });
+    };
+    fetchData(props.obj.id);
+  }, []);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -102,16 +90,10 @@ export default function SearchCard(props) {
   return (
     <Card className={classes.root} elevation={10}>
       <Link to={`/item/${props.obj.id}`} className={classes.cover}>
-        <CardMedia image="" />
-        {props.obj.assetType === 0 && props.obj.data !== undefined ? (
-          <canvas
-            id={`myCanvas${props.index}`}
-            width={props.obj.data.width}
-            height={props.obj.data.height}
-            className="cover"
-          ></canvas>
+        {imgData === null ? (
+          <CardMedia className={classes.imgProps} image="/Images/test.webp" />
         ) : (
-          <CardMedia className="cover" image="/Images/test.webp" />
+          <CardMedia className={classes.imgProps} image={imgData.data} />
         )}
       </Link>
 
@@ -145,29 +127,3 @@ export default function SearchCard(props) {
     </Card>
   );
 }
-
-/*
-<Card bsPrefix="new-custom">
-  <Card.Header>
-    <Link to={`/item/${props.obj.id}`}>
-      <Card.Title border="dark" className="text-item">
-        {props.obj.name}
-      </Card.Title>
-    </Link>
-  </Card.Header>
-  <Card.Body className="body">
-    <Card.Text>Asset Type: {props.assetType}</Card.Text>
-    <Card.Text>
-      Create Time:{" "}
-      {
-        <Moment format="MM/DD/YYYY HH:mm" unix>
-          {props.obj.create_time}
-        </Moment>
-      }
-    </Card.Text>
-    <Link to={`/item/${props.obj.id}`}>
-      <Button>More Info</Button>
-    </Link>
-  </Card.Body>
-</Card>
- */

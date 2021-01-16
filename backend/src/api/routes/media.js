@@ -23,8 +23,8 @@ router.get("/get", async (req, res) => {
     */
 
     // Get assetID param
-    const { assetID, img_data } = req.query;
-
+    const { assetID } = req.query;
+    console.log(req.query);
     if (!(await isAssetInDatabase(assetID))) {
       throw new Error("Invalid ID");
     }

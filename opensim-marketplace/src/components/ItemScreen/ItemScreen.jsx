@@ -37,7 +37,7 @@ let sound_default = "Images/Sound_Default.png";
 export default class ItemScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: null, dataString: "" };
+    this.state = { data: null, dataString: "", imgData: null };
   }
 
   async componentDidMount() {
@@ -59,38 +59,15 @@ export default class ItemScreen extends React.Component {
           throw err;
         });
 
+      const imgResponse = await axios.get("/api/media/get", {
+        params: {
+          assetID: this.props.match.params.assetId,
+        },
+      });
       this.setState({
         data: response.data,
+        imgData: imgResponse.data,
       });
-
-      var canvas = document.getElementById("myCanvas"); //get the canvas element (use whatever you actually need here!)
-      canvas.width = response.data.imageInfo.width;
-      canvas.height = response.data.imageInfo.height;
-      var ctx = canvas.getContext("2d");
-
-      var output = response.data.imageInfo.data;
-
-      var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      var componentSize = canvas.width * canvas.height;
-      for (var y = 0; y < canvas.height; y++) {
-        for (var x = 0; x < canvas.width; x++) {
-          var value = output[y * canvas.width + x];
-          var base = (y * canvas.width + x) * 4;
-          image.data[base + 0] =
-            output[0 * componentSize + y * canvas.width + x];
-          image.data[base + 1] =
-            output[1 * componentSize + y * canvas.width + x];
-          image.data[base + 2] =
-            output[2 * componentSize + y * canvas.width + x];
-          image.data[base + 3] = 255; //the alpha part..
-        }
-      }
-      ctx.putImageData(image, 0, 0);
-      /*
-      ctx.moveTo(0, 0);
-      ctx.lineTo(response.data.imageInfo.width, response.data.imageInfo.height);
-      ctx.stroke();
-      */
     } catch (err) {
       error = err;
       console.log(error.message);
@@ -173,8 +150,8 @@ export default class ItemScreen extends React.Component {
     if (this.state.data == null) {
       return <div data-testid="items" />;
     } else {
-      const { itemInfo, userInfo, invInfo, imageInfo } = this.state.data;
-      console.log(itemInfo, userInfo, invInfo, imageInfo);
+      const { itemInfo, userInfo, invInfo } = this.state.data;
+      console.log(itemInfo, userInfo, invInfo, this.state.imgData);
       return (
         <Container>
           <Grid container justify="center" direction="row">
@@ -189,18 +166,14 @@ export default class ItemScreen extends React.Component {
                 <Paper className="item-background" elevation={5}>
                   <div className="item-container">
                     <div className="left-column">
-                      {itemInfo.assetType === 0 ? (
-                        <canvas
-                          id="myCanvas"
-                          width={imageInfo.width}
-                          height={imageInfo.height}
-                          style={{ border: "1px solid #000000" }}
-                        ></canvas>
-                      ) : (
-                        <CardMedia
+                      {this.state.imgData !== null &&
+                      this.state.imgData.data !== null ? (
+                        <img
                           className="cover"
-                          image="/Images/test.webp"
+                          src={this.state.imgData.data.data}
                         />
+                      ) : (
+                        <img className="cover" src="/Images/test.webp" />
                       )}
                     </div>
                     <div className="right-column">
@@ -322,13 +295,6 @@ export default class ItemScreen extends React.Component {
               </Grid>
             </Grid>
           </Grid>
-          <div>
-            <image
-              height={imageInfo.height}
-              width={imageInfo.width}
-              src={`data:image/jpg;base64,${imageInfo.data}`}
-            />
-          </div>
         </Container>
       );
     }
