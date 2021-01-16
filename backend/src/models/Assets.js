@@ -21,7 +21,10 @@ const Assets = db.define(
     public: { type: Sequelize.BOOLEAN },
     marketplace_icon: { type: Sequelize.BLOB },
   },
-  { timestamps: false, freezeTableName: true }
+  {
+    timestamps: false,
+    freezeTableName: true,
+  }
 );
 
 module.exports = Assets;

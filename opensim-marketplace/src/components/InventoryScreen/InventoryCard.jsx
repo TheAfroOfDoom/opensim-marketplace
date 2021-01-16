@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import "./InventoryCard.css";
 
@@ -15,6 +15,23 @@ import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
 
 export default function InventoryCard(props) {
+  const [imgData, setImgData] = useState(null);
+
+  useEffect(() => {
+    let fetchData = async (id) => {
+      try {
+        console.log(id);
+        let response = await axios.get("/api/media/get", {
+          params: { assetID: id },
+        });
+        console.log(response);
+        setImgData(response.data.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchData(props.data.assetID);
+  }, []);
   console.log(props.data);
   return (
     <Card
@@ -23,7 +40,11 @@ export default function InventoryCard(props) {
       id={`${props.data.InventoryName.replace("Default ", "")}`}
     >
       <Link to={`/item/${props.data.assetID}`} className="image-cover">
-        <CardMedia image="/Images/test.webp" className="image" />
+        {imgData === null ? (
+          <CardMedia className="image" image="/Images/test.webp" />
+        ) : (
+          <CardMedia className="image" image={imgData.data} />
+        )}
       </Link>
       <div className="details">
         <Typography component="h2" variant="h3">

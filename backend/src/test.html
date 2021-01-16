@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <h3>Enter ID of asset</h3>
+    <form id="myform" onSubmit="JavaScript:handleClick()">
+      <input type="text" id="id_text" /><input type="submit" value="Submit" />
+    </form>
+    <div>
+      <h1 id="size">Height: 0, Width: 0</h1>
+      <img src="" id="image" />
+      <p id="time_taken">Took x ms</p>
+    </div>
+  </body>
+  <style>
+    canvas {
+      border: 1px dotted black;
+    }
+  </style>
+  <script type="text/javascript">
+    function handleClick() {
+      let newID = document.getElementById("id_text").value;
+      event.preventDefault(); // disable normal form submit behavior
+      var startTime = new Date().getTime(),
+        endTime;
+      return fetch(`http://25.5.144.194:5000/api/media/get?assetID=${newID}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((res) => {
+          endTime = new Date().getTime();
+          console.log(res);
+          document.getElementById(
+            "size"
+          ).innerHTML = `Height: ${res.data.height}, Width: ${res.data.width}`;
+          document.getElementById("image").src = res.data.data;
+          document.getElementById("time_taken").innerHTML =
+            "Took " + (endTime - startTime) + "ms";
+        })
+        .catch((e) => console.log(e)); // prevent further bubbling of event
+    }
+    fetch(
+      "http://localhost:5000/api/media/get?assetID=00000000-0000-2222-3333-100000001002",
+      {
+        method: "GET",
+        headers: {
+          Cookie:
+            "uuid=dfafbece-1e64-4f40-a435-edadd348c630; Expires=null; Domain=localhost:5000; Path=/",
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((res) => {
+        console.log(res);
+
+        ///////////////////////
+        //      OLD WAY      //
+        ///////////////////////
+        /*
+          var canvas = document.getElementById("canvas"),
+            ctx = canvas.getContext("2d");
+
+          console.table([{ width: res.data.width }, { height: res.data.height }]);
+
+          canvas.width = res.data.width;
+          canvas.height = res.data.height;
+
+          var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          var componentSize = canvas.width * canvas.height;
+
+          output = res.data.data;
+
+          let i = 0;
+          for (var y = 0; y < canvas.height; y++) {
+            for (var x = 0; x < canvas.width; x++) {
+              var base = (y * canvas.width + x) * 4;
+              let encodedData = output.charCodeAt(i);
+              let red = (encodedData >> 5) * 32;
+              let green = ((encodedData & 28) >> 2) * 32;
+              let blue = (encodedData & 3) * 64;
+              image.data[base + 0] = red;
+              image.data[base + 1] = green;
+              image.data[base + 2] = blue;
+              image.data[base + 3] = 255; //the alpha part..
+              i++;
+            }
+          }
+          ctx.putImageData(image, 0, 0);
+          */
+
+        ///////////////////////
+        //      NEW WAY      //
+        ///////////////////////
+        document.getElementById(
+          "size"
+        ).innerHTML = `Height: ${res.data.height}, Width: ${res.data.width}`;
+        document.getElementById("image").src = res.data.data;
+      })
+      .catch((e) => console.log(e));
+  </script>
+</html>

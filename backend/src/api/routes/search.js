@@ -200,8 +200,20 @@ router.get("/public", async (req, res) => {
     UserAccounts.hasMany(Assets);
     Assets.belongsTo(UserAccounts);
 
+    //Params accepted by api-
+    let {
+      searchString,
+      assetType,
+      limit,
+      offset,
+      order,
+      startCreated,
+      endCreated,
+      startAccessed,
+      endAccessed,
+    } = req.query;
+
     // Check if there is a valid search string
-    let { searchString, assetType, limit, offset, order } = req.query;
     if (searchString === undefined) {
       searchString = "";
     }
@@ -214,12 +226,12 @@ router.get("/public", async (req, res) => {
     let whereParams = {
       name: { [Op.like]: `%${searchString}%` },
       public: 1,
+      ...getTimeParams(req.query),
     };
 
     if (assetType !== undefined) {
       whereParams.assetType = assetType;
     }
-
     let orderParam = { order: getSort(order) };
 
     let limitParam =
@@ -234,10 +246,11 @@ router.get("/public", async (req, res) => {
       ...orderParam,
     };
 
+    let count = await Assets.count({ where: { ...whereParams } });
+
     let assets = await getAssets(params);
 
     stats = {};
-    console.log(assets);
     //Convert data
     for (const [key, value] of Object.entries(assetTypes)) {
       stats[`${key}`] = assets.filter(
@@ -251,7 +264,7 @@ router.get("/public", async (req, res) => {
     console.log(x);
     return res.send({ data: x, stats });
     */
-    return res.send({ data: assets, stats });
+    return res.send({ data: assets, stats, count });
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
@@ -343,6 +356,51 @@ async function getConvertedObject(obj) {
   } catch (e) {
     console.log("Error:" + e);
   }
+}
+
+function getTimeParams({
+  startCreated,
+  endCreated,
+  startAccessed,
+  endAccessed,
+}) {
+  let where = {};
+  if (startCreated != undefined) {
+    if (endCreated != undefined) {
+      // 1 1
+      where.create_time = {
+        [Op.and]: [{ [Op.gte]: startCreated }, { [Op.lte]: endCreated }],
+      };
+    } else {
+      // 1 0
+      where.create_time = { [Op.gte]: startCreated };
+    }
+  } else {
+    // 0 1
+    if (endCreated != undefined) {
+      where.create_time = { [Op.lte]: endCreated };
+    }
+    // 0 0
+  }
+  if (startAccessed !== undefined) {
+    if (endAccessed !== undefined) {
+      // 1 1
+      where.access_time = {
+        [Op.and]: [{ [Op.gte]: startAccessed }, { [Op.lte]: endAccessed }],
+      };
+    } else {
+      // 1 0
+      where.access_time = { [Op.gte]: startAccessed };
+    }
+  } else {
+    // 0 1
+    if (endAccessed !== undefined) {
+      where.access_time = { [Op.lte]: endAccessed };
+    }
+    // 0 0
+  }
+  console.log(where);
+  return where;
 }
 
 module.exports = router;

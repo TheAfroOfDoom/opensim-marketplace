@@ -13,6 +13,10 @@ const compression = require("compression");
 
 const path = require("path");
 
+// Allow Cors
+var cors = require("cors");
+app.use(cors({ credentials: true }));
+
 //Setup Swagger for documentation
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
@@ -40,6 +44,8 @@ app.use(
   "/marketplace",
   express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
 );
+
+app.use("/images/test", express.static(path.join(__dirname, "test.html")));
 
 // Middleware
 app.use(compression());

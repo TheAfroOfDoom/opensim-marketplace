@@ -1,8 +1,8 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
+import axios from "axios";
 ///import { Card, Button } from "react-bootstrap";
-import { useState, useEffect } from "react";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -12,6 +12,7 @@ import CardActions from "@material-ui/core/CardActions";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import { Container, Grid } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +66,28 @@ const useStyles = makeStyles((theme) => ({
 export default function CCard(props) {
   const sClass = useStyles();
 
+  let loadImage = () => {
+    return <CardMedia className={sClass.imgProps} image="/Images/test.webp" />;
+  };
+
+  const [imgData, setImgData] = useState(null);
+
+  useEffect(() => {
+    let fetchData = async (id) => {
+      try {
+        console.log(id);
+        let response = await axios.get("/api/media/get", {
+          params: { assetID: id },
+        });
+        console.log(response);
+        setImgData(response.data.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchData(props.obj.id);
+  }, []);
+
   return (
     <div style={{ margin: "auto" }}>
       <Card className={sClass.root}>
@@ -78,11 +101,16 @@ export default function CCard(props) {
               <Typography component="h5" variant="h5">
                 {props.obj.name}
               </Typography>
-              <CardMedia
-                className={sClass.imgProps}
-                image="/Images/test.webp"
-              />
+              {imgData === null ? (
+                <CardMedia
+                  className={sClass.imgProps}
+                  image="/Images/test.webp"
+                />
+              ) : (
+                <CardMedia className={sClass.imgProps} image={imgData.data} />
+              )}
             </Link>
+
             <Typography variant="subtitle1">
               Creator:{" "}
               {props.obj.useraccount ? props.obj.useraccount.FirstName : "None"}{" "}
