@@ -74,8 +74,8 @@ export default function SearchCard(props) {
 
       var output = props.obj.data.data;
 
-    //  console.log(props.obj.name);
-    //  console.table([props.obj.data.width, props.obj.data.height]);
+      //  console.log(props.obj.name);
+      //  console.table([props.obj.data.width, props.obj.data.height]);
 
       var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
       var componentSize = canvas.width * canvas.height;

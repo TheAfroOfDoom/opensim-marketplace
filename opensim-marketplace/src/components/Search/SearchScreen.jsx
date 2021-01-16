@@ -6,33 +6,46 @@ import axios from "axios";
 import NoResults from "./NoResults";
 import SearchCard from "./SearchCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Box from '@material-ui/core/Box';
+import Box from "@material-ui/core/Box";
 import { Container, Grid } from "@material-ui/core";
 
 export default class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data:null, active: this.props.activeDefault, start: 0, end: 9, loading:false };
+    this.state = {
+      data: null,
+      active: this.props.activeDefault,
+      start: 0,
+      end: 9,
+      loading: false,
+    };
   }
 
-  getSearch = async () =>{
-    if(this.props.data != null && this.props.data != this.state.previous && this.state.loading != true){
+  getSearch = async () => {
+    if (
+      this.props.data != null &&
+      this.props.data != this.state.previous &&
+      this.state.loading != true
+    ) {
       console.log("Duud: " + this.props.data);
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const response = await axios.get("/api/search/public", {
         params: {
           searchString: this.props.data,
         },
       });
-      this.setState({data: response.data, previous: this.props.data, loading:false});
+      this.setState({
+        data: response.data.data,
+        previous: this.props.data,
+        loading: false,
+      });
     }
-  }
+  };
 
-  componentDidMount(){
+  componentDidMount() {
     this.getSearch();
   }
-  componentDidUpdate(){
-
+  componentDidUpdate() {
     this.getSearch();
   }
 
@@ -105,28 +118,28 @@ export default class SearchScreen extends React.Component {
   };
 
   nextSet = (length) => {
-    if(length > 10){
+    if (length > 10) {
       if (length > this.state.end) {
         this.setState({ start: this.state.start + 1 });
         this.setState({ end: this.state.end + 1 });
         this.handlePage(this.state.active + 1);
       }
-    }else{
-      if(this.state.active < length-1){
+    } else {
+      if (this.state.active < length - 1) {
         this.handlePage(this.state.active + 1);
       }
     }
   };
 
   lastSet = (length) => {
-    if(length > 10){
+    if (length > 10) {
       if (0 < this.state.start) {
         this.setState({ start: this.state.start - 1 });
         this.setState({ end: this.state.end - 1 });
         this.handlePage(this.state.active - 1);
       }
-    }else{
-      if(this.state.active > 0){
+    } else {
+      if (this.state.active > 0) {
         this.handlePage(this.state.active - 1);
       }
     }
@@ -134,8 +147,9 @@ export default class SearchScreen extends React.Component {
 
   endSet = (length) => {
     if (
-      (this.state.end < length && this.state.active != length - 1) &&
-      (this.state.end - this.state.start === 9)
+      this.state.end < length &&
+      this.state.active != length - 1 &&
+      this.state.end - this.state.start === 9
     ) {
       this.setState({ start: this.state.start + (length - this.state.end) });
       this.setState({ end: length });
@@ -155,8 +169,6 @@ export default class SearchScreen extends React.Component {
   };
 
   render() {
-
-
     let items = [];
     if (this.state.data) {
       //console.log("Length:", this.props.data.length);
@@ -180,21 +192,20 @@ export default class SearchScreen extends React.Component {
         this.state.active * 24 + 24
       );
     if (this.state.loading) {
-      return(
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+      return (
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <div className="progress-center">
             <CircularProgress />
           </div>
         </div>
-            );
-    }else if (_.isEmpty(items) && !this.state.loading) {
+      );
+    } else if (_.isEmpty(items) && !this.state.loading) {
       return <NoResults />;
     } else
       return (
         <div>
           <Container maxWidth={false} style={{ marginTop: "30px" }}>
             <Grid container direction="row" alignItems="center" spacing={3}>
-
               {this.state.data &&
                 temparray.map((obj, index) => {
                   return (

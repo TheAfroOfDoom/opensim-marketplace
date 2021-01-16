@@ -130,6 +130,7 @@
   justify-content: space-around;
   */
   display: grid;
+  margin-top: 10px;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   border-spacing: 2rem 2rem;
   white-space: nowrap;
