@@ -8,15 +8,13 @@ import { Link, Redirect } from "react-router-dom";
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { search: "", redirect: false};
+    this.state = { search: "", redirect: false };
   }
 
   onClick = () => {
-
     this.props.searchData(this.state.search);
 
     this.setState({ redirect: true });
-
   };
 
   handleChange(event) {
@@ -76,7 +74,6 @@ class NavigationBar extends React.Component {
                   <span>Search</span>
                 </Button>
               </Link>
-
             </Form>
           </Navbar.Collapse>
         </Navbar>

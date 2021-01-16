@@ -3,7 +3,10 @@ import axios from "axios";
 import { Jumbotron, Carousel } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import CCard from "./CCard";
+import { CircularProgress } from "@material-ui/core";
+import { Container, Grid } from "@material-ui/core";
 
+//import CCarousel from "./CCarousel";
 import "./HomeScreen.css";
 
 /*
@@ -33,14 +36,14 @@ export default class HomeScreen extends React.Component {
   }
 
   searchRedirect = async (assetType) => {
-    try{
+    try {
       const response = await axios.get("/api/search/public", {
         params: { assetType: assetType },
       });
       console.log(response);
       this.props.searchData(response.data);
       this.setState({ redirect: true });
-    }catch(err){
+    } catch (err) {
       console.log(err.message);
     }
   };
@@ -50,7 +53,7 @@ export default class HomeScreen extends React.Component {
       const response = await axios.get("/api/search/public", { limit: 16 });
       console.log(response);
       this.setState({
-        data: response.data,
+        data: response.data.data,
       });
     } catch (err) {
       console.log(err.message);
@@ -67,7 +70,7 @@ and item carousel with recently updated items
     let sorted = null;
     if (dataarr != null) {
       console.log(dataarr);
-      sorted = dataarr.splice(0, 16).sort((first, second) => {
+      sorted = dataarr.splice(0, 17).sort((first, second) => {
         if (first.create_time < second.create_time) return 1;
         if (first.create_time > second.create_time) return -1;
         else return 0;
@@ -99,25 +102,39 @@ and item carousel with recently updated items
             })}
           </div>
         </div>
-        {this.state.redirect ? <Redirect data-testid="Redirect" to="/search" /> : <div />}
+        {this.state.redirect ? (
+          <Redirect data-testid="Redirect" to="/search" />
+        ) : (
+          <div />
+        )}
         <div className="item">
           <h1 className="itemTitle">Recently Updated Items</h1>
           <Carousel className="carousel-slide">
             <Carousel.Item>
-              <div className="grid-container">
-                {sorted &&
-                  sorted.slice(0, 8).map((obj, index) => {
-                    return <CCard obj={obj} categories={categories} />;
-                  })}
-              </div>
+              <Container
+                maxWidth={false}
+                style={{ marginTop: "30px", marginBottom: "30px" }}
+              >
+                <Grid container direction="row" alignItems="center" spacing={3}>
+                  {sorted &&
+                    sorted.slice(0, 8).map((obj, index) => {
+                      return <CCard obj={obj} categories={categories} />;
+                    })}
+                </Grid>
+              </Container>
             </Carousel.Item>
             <Carousel.Item>
-              <div className="grid-container">
-                {sorted &&
-                  sorted.slice(9, 16).map((obj, index) => {
-                    return <CCard obj={obj} categories={categories} />;
-                  })}
-              </div>
+              <Container
+                maxWidth={false}
+                style={{ marginBottom: "30px", marginTop: "30px" }}
+              >
+                <Grid container direction="row" alignItems="center" spacing={3}>
+                  {sorted &&
+                    sorted.slice(9, 17).map((obj, index) => {
+                      return <CCard obj={obj} categories={categories} />;
+                    })}
+                </Grid>
+              </Container>
             </Carousel.Item>
           </Carousel>
         </div>
