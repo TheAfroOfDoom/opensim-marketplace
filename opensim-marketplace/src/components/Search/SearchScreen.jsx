@@ -7,23 +7,35 @@ import NoResults from "./NoResults";
 import SearchCard from "./SearchCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from '@material-ui/core/Box';
-import { Container, Grid } from "@material-ui/core";
+import { Container, Grid, Drawer, Divider } from "@material-ui/core";
 
 export default class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data:null, active: this.props.activeDefault, start: 0, end: 9, loading:false };
+    this.state = { data: null, active: this.props.activeDefault, start: 0, end: 9, loading:false };
   }
 
   getSearch = async () =>{
     if(this.props.data != null && this.props.data != this.state.previous && this.state.loading != true){
-      console.log("Duud: " + this.props.data);
+
       this.setState({loading: true});
-      const response = await axios.get("/api/search/public", {
-        params: {
-          searchString: this.props.data,
-        },
-      });
+      let filter = this.props.filterType;
+      let limit = this.props.limitNumber;
+      let type = this.props.typeAsset;
+      let order = this.props.orderType;
+
+      if(limit === 0){
+        limit = 24;
+      }
+      let response = await axios.get("/api/search/public", {
+          params: {
+            order: order,
+            limit: limit,
+            assetType: type,
+            searchString: this.props.data,
+          },
+        });
+
       this.setState({data: response.data.data, previous: this.props.data, loading:false});
     }
   }
@@ -32,7 +44,6 @@ export default class SearchScreen extends React.Component {
     this.getSearch();
   }
   componentDidUpdate(){
-
     this.getSearch();
   }
 
@@ -209,7 +220,6 @@ export default class SearchScreen extends React.Component {
                 })}
             </Grid>
           </Container>
-
           {this.state.data != null ? (
             <div className="d-flex justify-content-center pager">
               <Pagination>
