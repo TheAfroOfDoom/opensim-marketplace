@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const sequelize = require("../../config/database");
 const InventoryItems = require("../../models/InventoryItems");
+const InventoryFolders = require("../../models/InventoryFolders");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
@@ -303,14 +304,12 @@ router.post("/private", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-
     if (!(await isUserLoggedIn(uuid))) {
       throw new Error("Unauthorized");
     }
 
     // Get assetID param
     const { assetID } = req.body;
-
     if (!(await isAssetInDatabase(assetID))) {
       throw new Error("Invalid ID");
     }
@@ -342,5 +341,120 @@ router.post("/private", async (req, res) => {
     }
   }
 });
+
+router.get("/test", async (req, res) => {
+  try {
+    const { uuid } = req.cookies;
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
+
+    // Give relations
+    InventoryItems.hasMany(Assets);
+    Assets.belongsTo(InventoryItems);
+
+    //Get folders and items for user
+    let folders = await InventoryFolders.findAll({
+      where: {
+        agentID: uuid,
+      },
+      attributes: ["folderName", "folderID", "agentID", "parentFolderID"],
+    });
+
+    let items = await InventoryItems.findAll({
+      where: { avatarID: uuid },
+      order: [["InventoryName", "ASC"]],
+      attributes: [
+        "assetID",
+        "assetType",
+        "InventoryName",
+        "InvType",
+        "creationDate",
+        "parentFolderID",
+      ],
+      include: [
+        {
+          model: Assets,
+          attributes: ["public"],
+          required: true,
+          on: {
+            col1: sequelize.where(
+              sequelize.col("assets.id"),
+              "=",
+              sequelize.col("inventoryitems.assetID")
+            ),
+          },
+        },
+      ],
+    });
+
+    for (const invItem of items) {
+      invItem.dataValues.isCreator = invItem.assets[0].CreatorID === uuid;
+    }
+
+    let root = folders.find(
+      (folder) =>
+        folder.dataValues.parentFolderID ===
+        "00000000-0000-0000-0000-000000000000"
+    );
+
+    root.dataValues["folders"] = constructFolders(
+      folders,
+      items,
+      root.dataValues.folderID
+    );
+    root.dataValues["items"] = items.filter(
+      (item) => item.dataValues.parentFolderID === root.dataValues.folderID
+    );
+
+    /*
+    let response = await InventoryItems.findAll({
+      where: {
+        avatarID: uuid,
+      },
+    });
+    */
+    res.send(root);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else if (e.message === "Forbidden") {
+      return res.sendStatus(403);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
+    } else {
+      return res.sendStatus(400);
+    }
+  }
+});
+
+function constructFolders(folders, items, parentFolderID) {
+  let localFolders = folders.filter(
+    (folder) => folder.dataValues.parentFolderID === parentFolderID
+  );
+  localFolders.forEach((f) =>
+    folders.splice(
+      folders.findIndex(
+        (e) => e.dataValues.parentFolderID === f.dataValues.parentFolderID
+      ),
+      1
+    )
+  );
+  console.log(localFolders);
+
+  for (let i = 0; i < localFolders.length; i++) {
+    localFolders[i].dataValues["folders"] = constructFolders(
+      folders,
+      items,
+      localFolders[i].dataValues.folderID
+    );
+
+    localFolders[i].dataValues["items"] = items.filter(
+      (item) => item.dataValues.parentFolderID === parentFolderID
+    );
+  }
+  return localFolders;
+}
 
 module.exports = router;
