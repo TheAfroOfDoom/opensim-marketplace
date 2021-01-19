@@ -125,6 +125,17 @@ async function convertImage(assetType, data) {
   }
 }
 
+function objectFilter(obj, predicate) {
+  let result = {},
+    key;
+  for (key in obj) {
+    if (obj.hasOwnProperty(key) && predicate(obj[key])) {
+      result[key] = obj[key];
+    }
+  }
+  return result;
+}
+
 module.exports = {
   isUserLoggedIn,
   isAssetInDatabase,
@@ -132,4 +143,5 @@ module.exports = {
   setCacheItem: setCacheItem,
   getCacheItem: getCacheItem,
   convertImage,
+  objectFilter,
 };

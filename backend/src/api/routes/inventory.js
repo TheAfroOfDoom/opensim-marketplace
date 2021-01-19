@@ -369,7 +369,6 @@ router.get("/test", async (req, res) => {
         "assetType",
         "InventoryName",
         "InvType",
-        "creationDate",
         "parentFolderID",
       ],
       include: [
@@ -441,6 +440,7 @@ function constructFolders(folders, items, parentFolderID) {
       1
     )
   );
+
   console.log(localFolders);
 
   for (let i = 0; i < localFolders.length; i++) {
@@ -452,6 +452,15 @@ function constructFolders(folders, items, parentFolderID) {
 
     localFolders[i].dataValues["items"] = items.filter(
       (item) => item.dataValues.parentFolderID === parentFolderID
+    );
+
+    items.forEach((f) =>
+      items.splice(
+        items.findIndex(
+          (e) => e.dataValues.parentFolderID === f.dataValues.parentFolderID
+        ),
+        1
+      )
     );
   }
   return localFolders;

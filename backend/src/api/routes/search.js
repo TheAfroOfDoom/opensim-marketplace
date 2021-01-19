@@ -10,6 +10,7 @@ const {
   openjpeg,
   setCacheItem,
   getCacheItem,
+  objectFilter,
 } = require("../util.js");
 const { assetTypes } = require("../types.js");
 
@@ -250,13 +251,14 @@ router.get("/public", async (req, res) => {
 
     let assets = await getAssets(params);
 
-    stats = {};
+    stats = new Object();
     //Convert data
     for (const [key, value] of Object.entries(assetTypes)) {
       stats[`${key}`] = assets.filter(
         (x) => value === x.dataValues.assetType
       ).length;
     }
+    stats = objectFilter(stats, (s) => s !== 0);
     /*
     const x = await Promise.all(assets.map((obj) => getConvertedObject(obj)));
 
@@ -264,6 +266,7 @@ router.get("/public", async (req, res) => {
     console.log(x);
     return res.send({ data: x, stats });
     */
+
     return res.send({ data: assets, stats, count });
   } catch (e) {
     console.log(e);
@@ -323,38 +326,6 @@ function getSort(order) {
       return [["access_time", "DESC"]];
     default:
       return [["name", "ASC"]];
-  }
-}
-
-async function convertImage(assetType, data) {
-  if (assetType === 0) {
-    let arr = Array.prototype.slice.call(data, 0);
-    try {
-      let j2k = openjpeg(arr, "j2k");
-      return Promise.resolve(j2k);
-    } catch (e) {
-      console.log(`Error: ${e}`);
-      return { Error: "error" };
-    }
-  }
-}
-
-async function getConvertedObject(obj) {
-  try {
-    let temp = obj;
-
-    if (obj.dataValues.assetType !== 0) return obj;
-    const imageData = await getCacheItem(obj.dataValues.id);
-    if (imageData === undefined) {
-      let x = await convertImage(obj.dataValues.assetType, obj.dataValues.data);
-      temp.dataValues.data = await x;
-      await setCacheItem(obj.dataValues.id, x);
-    } else {
-      temp.dataValues.data = imageData;
-    }
-    return temp;
-  } catch (e) {
-    console.log("Error:" + e);
   }
 }
 
