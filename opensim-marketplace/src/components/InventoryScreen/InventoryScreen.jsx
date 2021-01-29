@@ -10,7 +10,12 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@material-ui/core";
+import { ExpandMore } from "@material-ui/icons";
 import InventoryCard from "./InventoryCard";
 
 let texture_default = "Images/Texture_Default.png";
@@ -38,10 +43,62 @@ export default class LoginScreen extends React.Component {
     this.state = { data: null, setOpen: null, open: null };
   }
 
+  getFolder = async () => {
+    console.log("Folder retrieval started...");
+    try {
+      const response = await axios.get("/api/intentory/test");
+      console.log(response.data);
+      this.setState({ data: response.data });
+    } catch (error) {
+      alert("Get Folder: " + error);
+    }
+    console.log("Folder structure retreival completed.");
+  };
+
+  /**
+  function constructFolders(folders, items, parentFolderID) {
+    let localFolders = folders.filter(
+      (folder) => folder.dataValues.parentFolderID === parentFolderID
+    );
+    localFolders.forEach((f) =>
+      folders.splice(
+        folders.findIndex(
+          (e) => e.dataValues.parentFolderID === f.dataValues.parentFolderID
+        ),
+        1
+      )
+    );
+
+    console.log(localFolders);
+
+    for (let i = 0; i < localFolders.length; i++) {
+      localFolders[i].dataValues["folders"] = constructFolders(
+        folders,
+        items,
+        localFolders[i].dataValues.folderID
+      );
+
+      localFolders[i].dataValues["items"] = items.filter(
+        (item) => item.dataValues.parentFolderID === parentFolderID
+      );
+
+      items.forEach((f) =>
+        items.splice(
+          items.findIndex(
+            (e) => e.dataValues.parentFolderID === f.dataValues.parentFolderID
+          ),
+          1
+        )
+      );
+    }
+    return localFolders;
+  }
+  */
   getInventory = async () => {
     try {
       const response = await axios.get("/api/inventory");
       let test = response.data.sort((one, two) => {
+        //console.log(response.data);
         if (one.isCreator && !two.isCreator) {
           return -1;
         }
@@ -166,7 +223,7 @@ export default class LoginScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.getInventory();
+    this.getFolder();
   }
 
   handleSnackClose = (event, reason) => {
@@ -187,24 +244,6 @@ export default class LoginScreen extends React.Component {
     } else {
       return (
         <div>
-          <Container maxWidth="md" style={{ marginTop: "30px" }}>
-            <Grid container direction="row" alignItems="center" spacing={5}>
-              {this.state.data.map((obj) => {
-                return (
-                  <Grid item xs={12}>
-                    <InventoryCard
-                      data={obj}
-                      assetType={this.getAssetType(obj.assetType)}
-                      isPublic={this.isPublic}
-                      remove={this.removeItem}
-                      upload={this.uploadItem}
-                      private={this.privateItem}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Container>
           <Snackbar
             open={this.state.open}
             autoHideDuration={6000}
