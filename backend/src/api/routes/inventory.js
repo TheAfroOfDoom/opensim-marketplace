@@ -432,6 +432,7 @@ function constructFolders(folders, items, parentFolderID) {
   let localFolders = folders.filter(
     (folder) => folder.dataValues.parentFolderID === parentFolderID
   );
+
   localFolders.forEach((f) =>
     folders.splice(
       folders.findIndex(
@@ -451,9 +452,10 @@ function constructFolders(folders, items, parentFolderID) {
     );
 
     localFolders[i].dataValues["items"] = items.filter(
-      (item) => item.dataValues.parentFolderID === parentFolderID
+      (item) =>
+        item.dataValues.parentFolderID === localFolders[i].dataValues.folderID
     );
-
+    /*
     items.forEach((f) =>
       items.splice(
         items.findIndex(
@@ -462,6 +464,7 @@ function constructFolders(folders, items, parentFolderID) {
         1
       )
     );
+    */
   }
   return localFolders;
 }

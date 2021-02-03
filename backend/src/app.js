@@ -64,6 +64,8 @@ app.use("/api/inventory", require("./api/routes/inventory"));
 
 app.use("/api/media", require("./api/routes/media"));
 
+app.use("/api/wifi", require("./api/routes/wifi"));
+
 app.get("*", (req, res) => {
   res.sendFile(
     path.resolve(__dirname, "../../opensim-marketplace/build", "index.html")

@@ -197,14 +197,14 @@ describe("Test public /api/search/public method", () => {
       .get("/api/search/public")
       .set("Cookie", [`uuid=${uuid}`])
       .query({ limit: 1 });
-    expect(JSON.parse(response.text).length).toBe(1);
+    expect(JSON.parse(response.text).data.length).toBe(1);
   });
   test("Test GET with authorization and limit ( Number String)", async () => {
     const response = await request(app)
       .get("/api/search/public")
       .set("Cookie", [`uuid=${uuid}`])
       .query({ limit: "1" });
-    expect(JSON.parse(response.text).length).toBe(1);
+    expect(JSON.parse(response.text).data.length).toBe(1);
   });
   test("Test GET with authorization and limit ( Word String)", async () => {
     const response = await request(app)
