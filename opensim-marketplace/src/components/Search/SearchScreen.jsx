@@ -1,15 +1,42 @@
 import React from "react";
 import { Pagination } from "react-bootstrap";
-//import "./SearchScreen.css";
+import { Form, Button, InputGroup } from "react-bootstrap";
+
+import "./SearchScreen.css";
 import _ from "lodash";
 import axios from "axios";
 import NoResults from "./NoResults";
 import SearchCard from "./SearchCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from '@material-ui/core/Box';
-import { Container, Grid, Drawer, Divider } from "@material-ui/core";
+import { withStyles } from '@material-ui/core/styles';
+import { Container, Grid, Drawer, Divider, List, Typography } from "@material-ui/core";
 
-export default class SearchScreen extends React.Component {
+const styles = {
+  root: {
+    marginTop:"30px"
+  },
+  list: {
+    width: 250
+  },
+  fullList: {
+    width: "auto"
+  },
+  paper: {
+    background: "#343a40"
+  },
+  title: {
+    color: "white",
+    textAlign: "center",
+  },
+  input: {
+    paddingLeft: "10px",
+    paddingRight: "10px",
+    marginTop: "1.5rem"
+  }
+};
+
+class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { data: null, active: this.props.activeDefault, start: 0, end: 9, loading:false };
@@ -19,11 +46,14 @@ export default class SearchScreen extends React.Component {
     if(this.props.data != null && this.props.data != this.state.previous && this.state.loading != true){
 
       this.setState({loading: true});
-      let filter = this.props.filterType;
       let limit = this.props.limitNumber;
       let type = this.props.typeAsset;
       let order = this.props.orderType;
+      let dateStart = this.props.startDate;
+      let dateEnd = this.props.endDate;
 
+      console.log("dateStart: ", dateStart);
+      console.log("dateEnd: ", dateEnd);
       if(limit === 0){
         limit = 24;
       }
@@ -32,7 +62,10 @@ export default class SearchScreen extends React.Component {
             order: order,
             limit: limit,
             assetType: type,
+            startCreated: dateStart,
+            endCreated: dateEnd,
             searchString: this.props.data,
+
           },
         });
 
@@ -167,6 +200,8 @@ export default class SearchScreen extends React.Component {
   };
 
   render() {
+
+
     let items = [];
     if (this.state.data) {
       //console.log("Length:", this.props.data.length);
@@ -198,7 +233,13 @@ export default class SearchScreen extends React.Component {
         </div>
       );
     } else if (_.isEmpty(items) && !this.state.loading) {
-      return <NoResults />;
+      return (
+        <div>
+          <div>
+            <NoResults />
+          </div>
+        </div>
+      );
     } else
       return (
         <div>
@@ -235,3 +276,4 @@ export default class SearchScreen extends React.Component {
       );
   }
 }
+export default withStyles(styles)(SearchScreen);
