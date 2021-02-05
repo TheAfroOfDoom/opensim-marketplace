@@ -4,6 +4,8 @@ const sequelize = require("../../config/database");
 const axios = require("axios");
 const xml = require("xml");
 const qs = require("qs");
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 router.post("/login", async (req, res) => {
   try {
@@ -23,9 +25,9 @@ router.post("/login", async (req, res) => {
       method: "post",
       url: "http://25.1.197.128:8002/wifi/login",
       data: qs.stringify({
-        firstname,
-        lastname,
-        password,
+        firstname: "Wifi",
+        lastname: "Admin",
+        password: "kenny123",
         METHOD: "login",
       }),
       headers: {
@@ -33,8 +35,11 @@ router.post("/login", async (req, res) => {
       },
     });
 
-    res.set("Content-Type", "text/html");
-    res.send(response.data);
+    const dom = new JSDOM(response.data);
+    const value = dom.window.document.querySelector("a").href.split("?sid=")[1];
+    console.log(value);
+    res.set("Content-Type", "text/json");
+    res.cookie("sid", value).send("cookie returned");
   } catch (e) {
     console.log(e);
     res.send(e);

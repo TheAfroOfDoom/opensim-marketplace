@@ -118,7 +118,7 @@ export default class LoginScreen extends React.Component {
       const response = await axios.post("/api/inventory/remove", {
         assetID: assetID,
       });
-      this.getInventory();
+      this.getFolder();
     } catch (error) {
       alert("Remove: " + error);
     }
@@ -257,6 +257,7 @@ export default class LoginScreen extends React.Component {
                 <InventoryCard
                   data={obj}
                   assetType={this.getAssetType(obj.assetType)}
+                  remove={this.removeItem.bind(this)}
                 />
               </Container>
             );
