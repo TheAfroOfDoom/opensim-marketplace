@@ -46,4 +46,30 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/map", async (req, res) => {
+  try {
+    const { x, y, zoom } = req.query;
+    console.log(req.query);
+    /*
+    let response = await axios({
+      method: "get",
+      url: `http://25.1.197.128:8002/map-${zoom}-${x}-${y}-objects.jpg`,
+    });
+    */
+    //console.log(response.data);
+    res.writeHead(200, { "Content-Type": "image/jpeg" });
+
+    let response = await axios
+      .get(`http://25.1.197.128:8002/map-${zoom}-${x}-${y}-objects.jpg`, {
+        responseType: "arraybuffer",
+      })
+      .then(function (response) {
+        return Buffer.from(response.data, "binary").toString("base64");
+      });
+    return res.end("data:image/jpeg;base64," + response);
+  } catch (e) {
+    console.log(e);
+    return res.sendStatus(400);
+  }
+});
 module.exports = router;

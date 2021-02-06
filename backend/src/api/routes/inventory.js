@@ -119,17 +119,20 @@ router.post("/add", async (req, res) => {
 
     //Run SP
     const info = await sequelize.query(
-      `CALL marketplaceDownloadAsset(:userID, :assetID, @error);`,
+      `CALL marketplaceDownloadAsset(:userID, :assetID, @error, @inventoryID);`,
       {
         replacements: { userID: uuid, assetID: assetID },
       }
     );
 
-    //Querry error code
-    const [sel] = await sequelize.query("SELECT @error AS error;", {
-      type: sequelize.QueryTypes.SELECT,
-    });
-    console.log("Add Error: " + sel.error);
+    //Query error code
+    const [sel] = await sequelize.query(
+      "SELECT @error as error, @inventoryID as inventoryID;",
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    console.log("Add Error: " + JSON.stringify(sel));
 
     /*REFRESH FIRESTORM USING IARs*/
 
@@ -143,8 +146,8 @@ router.post("/add", async (req, res) => {
         method: "post",
         url: "http://25.1.197.128:9000/SessionCommand/",
         data: qs.stringify({
-          ID: "e729f351-5f62-4c0e-9acf-3f974f139fef",
-          COMMAND: `save iar Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123`,
+          ID: "c1bc078b-3aa7-42ca-9cf9-96de78b44569",
+          COMMAND: `save iar --noassets Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123`,
         }),
         headers: {
           "content-type": "application/x-www-form-urlencoded;charset=utf-8",
@@ -155,17 +158,22 @@ router.post("/add", async (req, res) => {
           method: "post",
           url: "http://25.1.197.128:9000/SessionCommand/",
           data: qs.stringify({
-            ID: "e729f351-5f62-4c0e-9acf-3f974f139fef",
+            ID: "c1bc078b-3aa7-42ca-9cf9-96de78b44569",
             COMMAND: `load iar -m Wifi Admin "Marketplace Downloads" kenny123`,
           }),
           headers: {
             "content-type": "application/x-www-form-urlencoded;charset=utf-8",
           },
         });
+        setTimeout(async function () {
+          await InventoryItems.destroy({
+            where: { inventoryID: sel.inventoryID },
+          });
+        }, 500);
       }, 500);
     }, 500);
 
-    return res.status(200).send({ error: sel.error === 1 ? true : false });
+    return res.status(200).send({ error: false });
   } catch (e) {
     console.error(e);
     if (e.message === "Unauthorized") {

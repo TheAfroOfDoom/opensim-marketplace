@@ -50,7 +50,7 @@ router.get("/get", async (req, res) => {
           { marketplace_icon: JSON.stringify(j2k) },
           { where: { id: assetID } }
         );
-
+        console.log("Help me");
         //Assets.update({ marketplace_icon: j2k }, { where: { id: assetID } });
 
         return res.send({ data: j2k });
