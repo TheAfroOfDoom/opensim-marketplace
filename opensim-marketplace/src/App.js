@@ -24,10 +24,11 @@ class App extends React.Component {
       data2: null,
       loginStatus: null,
       loggedIn: false,
-      filter: null,
       limit: 0,
       type: undefined,
       order: "default",
+      Sdate: undefined,
+      Edate: undefined,
     };
   }
 
@@ -40,8 +41,8 @@ class App extends React.Component {
     }
   }
 
-  handleSearchChange = (data, num, lim, type, order) => {
-    this.setState({ data2: data, filter: num, limit: lim, type: type, order: order});
+  handleSearchChange = (data, lim, type, order, sdate, edate) => {
+    this.setState({ data2: data, limit: lim, type: type, order: order, Sdate: sdate , Edate: edate});
   };
 
 
@@ -83,7 +84,7 @@ class App extends React.Component {
                 </Route>
                 <Route path="/inventory" component={InventoryScreen} />
                 <Route path="/search">
-                  <SearchScreen data={this.state.data2} filterType={this.state.filter} limitNumber={this.state.limit} typeAsset={this.state.type} orderType={this.state.order} activeDefault={0} />
+                  <SearchScreen data={this.state.data2} startDate={this.state.Sdate} endDate={this.state.Edate} limitNumber={this.state.limit} typeAsset={this.state.type} orderType={this.state.order} activeDefault={0} />
                 </Route>
                 <Route path="/item/:assetId" component={ItemScreen} />
                 <Route exact path="/">
@@ -103,7 +104,7 @@ class App extends React.Component {
               </Route>
               <Route path="/inventory" component={InventoryScreen} />
               <Route path="/search">
-                <SearchScreen data={this.state.data2} filterType={this.state.filter} limitNumber={this.state.limit} typeAsset={this.state.type} orderType={this.state.order} activeDefault={0} />
+                <SearchScreen data={this.state.data2} startDate={this.state.Sdate} endDate={this.state.Edate} limitNumber={this.state.limit} typeAsset={this.state.type} orderType={this.state.order} activeDefault={0} />
               </Route>
               <Route path="/item/:assetId" component={ItemScreen} />
               <Route exact path="/">
