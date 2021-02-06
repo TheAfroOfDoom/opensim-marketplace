@@ -13,26 +13,35 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
-import { withStyles, ThemeProvider } from '@material-ui/core/styles';
-import { DateTimePicker,  MuiPickersUtilsProvider } from '@material-ui/pickers'
-import { Container, Grid, Drawer, Divider, List, Typography, TextField, Switch, createMuiTheme } from "@material-ui/core";
+import { withStyles, ThemeProvider } from "@material-ui/core/styles";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {
+  Container,
+  Grid,
+  Drawer,
+  Divider,
+  List,
+  Typography,
+  TextField,
+  Switch,
+  createMuiTheme,
+} from "@material-ui/core";
 import Moment from "react-moment";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 
-
 const styles = {
   root: {
-    marginTop:"30px"
+    marginTop: "30px",
   },
   list: {
-    width: 250
+    width: 250,
   },
   fullList: {
-    width: "auto"
+    width: "auto",
   },
   paper: {
-    background: "#343a40"
+    background: "#343a40",
   },
   title: {
     color: "white",
@@ -41,210 +50,153 @@ const styles = {
   input: {
     paddingLeft: "10px",
     paddingRight: "10px",
-    marginTop: "1.5rem"
+    marginTop: "1.5rem",
   },
   dateInput: {
-
     marginTop: "1rem",
     textAlign: "center",
   },
   date: {
     color: "#fff",
-    textColor: "#fff"
+    textColor: "#fff",
   },
   dateToggle: {
     color: "white",
     display: "inline-block",
     paddingLeft: "10px",
-    marginTop: "1.5rem"
+    marginTop: "1.5rem",
   },
-  inline:{
+  inline: {
     display: "inline",
-  }
+  },
 };
 
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
-<<<<<<< Updated upstream
-    this.state = { search: "",
-                 redirect: false,
-                     open: false,
-                    check1: false,
-                    check2: false,
-                    check3: false,
-                    check4: false,
-                    limit: 0,
-                     type: undefined,
-                     order: "default",
-                     dateStart: undefined,
-                     dateEnd: undefined,
-                     Invalid: false,
-                     total: 0,
-                     valueStartDate: undefined,
-                     valueEndDate: undefined,
-                  };
-=======
     this.state = {
       search: "",
       redirect: false,
       open: false,
-      num: 0,
-      check: false,
+      check1: false,
+      check2: false,
+      check3: false,
+      check4: false,
       limit: 0,
       type: undefined,
       order: "default",
+      dateStart: undefined,
+      dateEnd: undefined,
+      Invalid: false,
+      total: 0,
+      valueStartDate: undefined,
+      valueEndDate: undefined,
     };
->>>>>>> Stashed changes
   }
 
   //handles search button click functionality
   onClick = () => {
-<<<<<<< Updated upstream
     //callback function, sends the user search string as well as the various advance search options they have selected
-    this.props.searchData(this.state.search, this.state.limit, this.state.type, this.state.order, this.state.dateStart, this.state.dateEnd);
-    //redirects to search page
-=======
     this.props.searchData(
       this.state.search,
-      this.state.num,
       this.state.limit,
       this.state.type,
-      this.state.order
+      this.state.order,
+      this.state.dateStart,
+      this.state.dateEnd
     );
->>>>>>> Stashed changes
+    //redirects to search page
     this.setState({ redirect: true });
   };
 
   //Query's for the total number of public assets
   getTotal = async () => {
     const response = await axios.get("/api/search/public");
-    this.setState({total: response.data.count});
-  }
+    this.setState({ total: response.data.count });
+  };
 
   //Limit Check
   onCheck1(event) {
-<<<<<<< Updated upstream
-    if(event.target.checked == false){
-      this.setState({limit: 0, check1: false});
-    }
-    if(event.target.checked == true){
-      this.setState({check1: true});
-=======
     if (event.target.checked == false) {
-      this.setState({ num: 0, limit: 0, check1: false });
+      this.setState({ limit: 0, check1: false });
     }
     if (event.target.checked == true) {
-      this.setState({ num: 1, check1: true });
->>>>>>> Stashed changes
+      this.setState({ check1: true });
     }
   }
 
   //Asset Type Check
   onCheck2(event) {
-<<<<<<< Updated upstream
-    if(event.target.checked == false){
-      this.setState({type: undefined, check2: false});
-    }
-    if(event.target.checked == true){
-      this.setState({check2: true});
-=======
     if (event.target.checked == false) {
-      this.setState({ num: 0, type: undefined, check2: false });
+      this.setState({ type: undefined, check2: false });
     }
     if (event.target.checked == true) {
-      this.setState({ num: 1, check2: true });
->>>>>>> Stashed changes
+      this.setState({ check2: true });
     }
   }
 
   //Order Check
   onCheck3(event) {
-<<<<<<< Updated upstream
-    if(event.target.checked == false){
-      this.setState({order: "default", check3: false});
+    if (event.target.checked == false) {
+      this.setState({ order: "default", check3: false });
     }
-    if(event.target.checked == true){
-      this.setState({check3: true});
+    if (event.target.checked == true) {
+      this.setState({ check3: true });
     }
   }
 
   //Creation Date/Time Check
   onCheck4(event) {
-    if(event.target.checked == false){
-      this.setState({dateStart: undefined, dateEnd: undefined, valueStartDate: undefined, valueEndDate: undefined, check4: false});
+    if (event.target.checked == false) {
+      this.setState({
+        dateStart: undefined,
+        dateEnd: undefined,
+        valueStartDate: undefined,
+        valueEndDate: undefined,
+        check4: false,
+      });
     }
-    if(event.target.checked == true){
-      this.setState({check4: true});
+    if (event.target.checked == true) {
+      this.setState({ check4: true });
     }
   }
 
   //Handles limit type value
-  limitSelect(event){
+  limitSelect(event) {
     //gets total number of public assets
     this.getTotal();
 
     //checks if user selected limit value is between the total number of assets and zero
-    if(event.target.value >= this.state.total || event.target.value <= 0 ){
-      this.setState({Invalid: true});
-    }else{
-      this.setState({limit: event.target.value, Invalid: false});
+    if (event.target.value >= this.state.total || event.target.value <= 0) {
+      this.setState({ Invalid: true });
+    } else {
+      this.setState({ limit: event.target.value, Invalid: false });
     }
   }
 
   //Handles asset type value
-  typeSelect(event){
-    this.setState({type: event.target.value});
-  }
-
-  //Handles asset order value
-  orderSelect(event){
-    this.setState({order: event.target.value});
-=======
-    if (event.target.checked == false) {
-      this.setState({ num: 0, order: "default", check3: false });
-    }
-    if (event.target.checked == true) {
-      this.setState({ num: 1, check3: true });
-    }
-  }
-
-  limitSelect(event) {
-    //console.log("The thing: ", event.target.value);
-    this.setState({ limit: event.target.value });
-  }
-
   typeSelect(event) {
-    //console.log("The thing: ", event.target.value);
     this.setState({ type: event.target.value });
   }
 
+  //Handles asset order value
   orderSelect(event) {
-    //console.log("The thing: ", event.target.value);
     this.setState({ order: event.target.value });
->>>>>>> Stashed changes
   }
 
   //Handles start create date value
-  dateStartSelect(date){
-    this.setState({dateStart: date.unix(), valueStartDate: date});
+  dateStartSelect(date) {
+    this.setState({ dateStart: date.unix(), valueStartDate: date });
   }
   //Handles end create date value
-  dateEndSelect(date){
-    this.setState({dateEnd: date.unix(), valueEndDate: date});
+  dateEndSelect(date) {
+    this.setState({ dateEnd: date.unix(), valueEndDate: date });
   }
 
   //toggles advanced search drawer
   toggle = () => {
-<<<<<<< Updated upstream
-    this.setState({open: !this.state.open, redirect: true });
-  }
-=======
-    let toggler = this.state.open;
-    toggler = !toggler;
-    this.setState({ open: toggler });
+    this.setState({ open: !this.state.open, redirect: true });
   };
->>>>>>> Stashed changes
 
   //Handles search-string value
   handleChange(event) {
@@ -267,10 +219,7 @@ class NavigationBar extends React.Component {
   };
 
   render() {
-<<<<<<< Updated upstream
     const { classes } = this.props;
-=======
->>>>>>> Stashed changes
     return (
       <header>
         <Navbar
@@ -321,54 +270,62 @@ class NavigationBar extends React.Component {
                   aria-controls="example-collapse-text"
                   aria-expanded={this.state.open}
                   variant="danger"
-                  style={{marginLeft:"10px"}}
+                  style={{ marginLeft: "10px" }}
                 >
                   Advanced
                 </Button>
               </Link>
-<<<<<<< Updated upstream
-=======
-              <Button
-                onClick={this.toggle}
-                aria-controls="example-collapse-text"
-                aria-expanded={this.state.open}
-                variant="danger"
-                style={{ marginLeft: "10px" }}
-              >
-                Advanced
-              </Button>
-              <Navbar.Collapse in={this.state.open}>
-                <NavDropdown title="" id="basic-nav-dropdown">
+            </Form>
+          </Navbar.Collapse>
+        </Navbar>
+        <div>
+          <Drawer
+            anchor="left"
+            open={this.state.open}
+            ModalProps={{ onBackdropClick: this.toggle }}
+            classes={{ paper: classes.paper, root: classes.root }}
+          >
+            <div className={classes.list}>
+              <List>
+                <div className={classes.title}>
+                  <Typography variant="h3" gutterBottom>
+                    Advanced Search
+                  </Typography>
+                </div>
+                <Divider />
+                <div className={classes.input}>
                   <InputGroup>
                     <InputGroup.Prepend>
                       <InputGroup.Text>Limit</InputGroup.Text>
                       <InputGroup.Checkbox
+                        checked={this.state.check1}
                         onChange={this.onCheck1.bind(this)}
                       ></InputGroup.Checkbox>
                     </InputGroup.Prepend>
                     <Form.Control
-                      onChange={this.limitSelect.bind(this)}
-                      as="select"
+                      as="input"
+                      type="number"
                       disabled={!this.state.check1}
-                    >
-                      <option value={1}>1</option>
-                      <option value={2}>2</option>
-                      <option value={3}>3</option>
-                      <option value={4}>4</option>
-                      <option value={5}>5</option>
-                    </Form.Control>
+                      value={this.state.limit}
+                      isInvalid={this.state.Invalid}
+                      onChange={this.limitSelect.bind(this)}
+                    ></Form.Control>
                   </InputGroup>
+                </div>
+                <div className={classes.input}>
                   <InputGroup>
                     <InputGroup.Prepend>
                       <InputGroup.Text>Type</InputGroup.Text>
                       <InputGroup.Checkbox
+                        checked={this.state.check2}
                         onChange={this.onCheck2.bind(this)}
                       ></InputGroup.Checkbox>
                     </InputGroup.Prepend>
                     <Form.Control
-                      onChange={this.typeSelect.bind(this)}
                       as="select"
                       disabled={!this.state.check2}
+                      value={this.state.type}
+                      onChange={this.typeSelect.bind(this)}
                     >
                       <option value={-2}>Material</option>
                       <option value={0}>Texture</option>
@@ -384,17 +341,21 @@ class NavigationBar extends React.Component {
                       <option value={49}>Mesh</option>
                     </Form.Control>
                   </InputGroup>
+                </div>
+                <div className={classes.input}>
                   <InputGroup>
                     <InputGroup.Prepend>
                       <InputGroup.Text>Order</InputGroup.Text>
                       <InputGroup.Checkbox
+                        checked={this.state.check3}
                         onChange={this.onCheck3.bind(this)}
                       ></InputGroup.Checkbox>
                     </InputGroup.Prepend>
                     <Form.Control
-                      onChange={this.orderSelect.bind(this)}
                       as="select"
                       disabled={!this.state.check3}
+                      value={this.state.order}
+                      onChange={this.orderSelect.bind(this)}
                     >
                       <option value="CREATE_ASC">Create Time Ascending</option>
                       <option value="CREATE_DESC">
@@ -408,92 +369,23 @@ class NavigationBar extends React.Component {
                       </option>
                     </Form.Control>
                   </InputGroup>
-                </NavDropdown>
-              </Navbar.Collapse>
->>>>>>> Stashed changes
-            </Form>
-          </Navbar.Collapse>
-        </Navbar>
-        <div>
-          <Drawer anchor="left" open={this.state.open} ModalProps={{ onBackdropClick: this.toggle }} classes={{paper: classes.paper, root: classes.root}}>
-            <div className={classes.list}>
-              <List>
-                <div className={classes.title}>
-                  <Typography variant="h3" gutterBottom>
-                  Advanced Search
-                  </ Typography>
-                </div>
-                <Divider />
-                <div className={classes.input}>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text>Limit</InputGroup.Text>
-                      <InputGroup.Checkbox checked={this.state.check1} onChange={this.onCheck1.bind(this)}></InputGroup.Checkbox>
-                    </InputGroup.Prepend>
-                      <Form.Control
-                        as="input"
-                        type="number"
-                        disabled={!this.state.check1}
-                        value={this.state.limit}
-                        isInvalid={this.state.Invalid}
-                        onChange={this.limitSelect.bind(this)}>
-                      </Form.Control>
-                  </InputGroup>
-                </div>
-                <div className={classes.input}>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text>Type</InputGroup.Text>
-                      <InputGroup.Checkbox checked={this.state.check2} onChange={this.onCheck2.bind(this)}></InputGroup.Checkbox>
-                    </InputGroup.Prepend>
-                      <Form.Control
-                        as="select"
-                        disabled={!this.state.check2}
-                        value={this.state.type}
-                        onChange={this.typeSelect.bind(this)}>
-                        <option value={-2}>Material</option>
-                        <option value={0}>Texture</option>
-                        <option value={1}>Sound</option>
-                        <option value={2}>Calling Card</option>
-                        <option value={3}>Landmark</option>
-                        <option value={5}>Clothing</option>
-                        <option value={6}>Object</option>
-                        <option value={7}>Notecard</option>
-                        <option value={10}>Script</option>
-                        <option value={13}>Body Part</option>
-                        <option value={21}>Gesture</option>
-                        <option value={49}>Mesh</option>
-                      </Form.Control>
-                  </InputGroup>
-                </div>
-                <div className={classes.input}>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text>Order</InputGroup.Text>
-                      <InputGroup.Checkbox checked={this.state.check3} onChange={this.onCheck3.bind(this)}></InputGroup.Checkbox>
-                    </InputGroup.Prepend>
-                      <Form.Control
-                        as="select"
-                        disabled={!this.state.check3}
-                        value={this.state.order}
-                        onChange={this.orderSelect.bind(this)}>
-                        <option value="CREATE_ASC">Create Time Ascending</option>
-                        <option value="CREATE_DESC">Create Time Descending</option>
-                        <option value="NAME_ASC">Name Ascending</option>
-                        <option value="NAME_DESC">Name Descending</option>
-                        <option value="ACCESS_ASC">Access Time Ascending</option>
-                        <option value="ACCESS_DESC">Access Time Descending</option>
-                      </Form.Control>
-                  </InputGroup>
                 </div>
                 <div className={classes.dateToggle}>
-                  <Typography className={classes.inline} variant="h5" >
-                  Creation Date
-                  </ Typography>
-                  <Switch style={{display: "inline"}} color="primary" checked={this.state.check4} onChange={this.onCheck4.bind(this)}/>
+                  <Typography className={classes.inline} variant="h5">
+                    Creation Date
+                  </Typography>
+                  <Switch
+                    style={{ display: "inline" }}
+                    color="primary"
+                    checked={this.state.check4}
+                    onChange={this.onCheck4.bind(this)}
+                  />
                 </div>
                 <div className={classes.dateInput}>
-                  <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+                  <MuiPickersUtilsProvider
+                    libInstance={moment}
+                    utils={MomentUtils}
+                  >
                     <DateTimePicker
                       label="Start Creation Date"
                       ampm={false}
@@ -507,7 +399,10 @@ class NavigationBar extends React.Component {
                   </MuiPickersUtilsProvider>
                 </div>
                 <div className={classes.dateInput}>
-                  <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+                  <MuiPickersUtilsProvider
+                    libInstance={moment}
+                    utils={MomentUtils}
+                  >
                     <DateTimePicker
                       label="End Creation Date"
                       ampm={false}
