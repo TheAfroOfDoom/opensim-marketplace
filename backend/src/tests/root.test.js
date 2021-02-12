@@ -14,6 +14,8 @@ describe("Test the root path", () => {
   });
   test("Test database connection", async () => {
     const response = await request(app).get("/api/connection");
-    expect(response.text).toBe("Connection has been established successfully.");
+    expect(response.text).toBe(
+      '{"message":"Connection has been established successfully."}'
+    );
   });
 });

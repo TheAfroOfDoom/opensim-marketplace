@@ -3,13 +3,12 @@ import React from "react";
 import "./Navbar.css";
 import Navbar from "react-bootstrap/Navbar";
 import Cookies from "js-cookie";
-import { Nav, Form, Button, Collapse, NavDropdown, InputGroup } from "react-bootstrap";
+import { Nav, Form, Button, InputGroup } from "react-bootstrap";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
-import { withStyles, ThemeProvider } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { DateTimePicker,  MuiPickersUtilsProvider } from '@material-ui/pickers'
-import { Container, Grid, Drawer, Divider, List, Typography, TextField, Switch, createMuiTheme } from "@material-ui/core";
-import Moment from "react-moment";
+import { Drawer, Divider, List, Typography, Switch, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 
@@ -61,14 +60,15 @@ class NavigationBar extends React.Component {
     super(props);
     this.state = { search: "",
                  redirect: false,
-                     open: false,
+                     drawerOpen: false,
+                     logoutOpen: false,
                     check1: false,
                     check2: false,
                     check3: false,
                     check4: false,
                     limit: 0,
                      type: undefined,
-                     order: "default",
+                     order: "",
                      dateStart: undefined,
                      dateEnd: undefined,
                      Invalid: false,
@@ -94,40 +94,40 @@ class NavigationBar extends React.Component {
 
   //Limit Check
   onCheck1(event) {
-    if(event.target.checked == false){
+    if(event.target.checked === false){
       this.setState({limit: 0, check1: false});
     }
-    if(event.target.checked == true){
+    if(event.target.checked === true){
       this.setState({check1: true});
     }
   }
 
   //Asset Type Check
   onCheck2(event) {
-    if(event.target.checked == false){
+    if(event.target.checked === false){
       this.setState({type: undefined, check2: false});
     }
-    if(event.target.checked == true){
+    if(event.target.checked === true){
       this.setState({check2: true});
     }
   }
 
   //Order Check
   onCheck3(event) {
-    if(event.target.checked == false){
+    if(event.target.checked === false){
       this.setState({order: "default", check3: false});
     }
-    if(event.target.checked == true){
+    if(event.target.checked === true){
       this.setState({check3: true});
     }
   }
 
   //Creation Date/Time Check
   onCheck4(event) {
-    if(event.target.checked == false){
+    if(event.target.checked === false){
       this.setState({dateStart: undefined, dateEnd: undefined, valueStartDate: undefined, valueEndDate: undefined, check4: false});
     }
-    if(event.target.checked == true){
+    if(event.target.checked === true){
       this.setState({check4: true});
     }
   }
@@ -136,7 +136,6 @@ class NavigationBar extends React.Component {
   limitSelect(event){
     //gets total number of public assets
     this.getTotal();
-
     //checks if user selected limit value is between the total number of assets and zero
     if(event.target.value >= this.state.total || event.target.value <= 0 ){
       this.setState({Invalid: true});
@@ -166,9 +165,12 @@ class NavigationBar extends React.Component {
 
   //toggles advanced search drawer
   toggle = () => {
-    this.setState({open: !this.state.open, redirect: true });
+    this.setState({drawerOpen: !this.state.drawerOpen, redirect: true });
   }
 
+  Confirmation = () => {
+    this.setState({logoutOpen: !this.state.logoutOpen});
+  }
   //Handles search-string value
   handleChange(event) {
     let fleldVal = event.target.value;
@@ -182,6 +184,7 @@ class NavigationBar extends React.Component {
       //if logged in removes cookie
       console.log("Logging Out");
       Cookies.remove("uuid");
+      this.setState({logoutOpen: false});
       //callback function setting loggedIn state to false
       this.props.handleLogin(false);
     } else {
@@ -205,6 +208,7 @@ class NavigationBar extends React.Component {
                 className="d-inline-block align-top"
                 src="minilogo.png"
                 style={{ height: 30, width: 30 }}
+                alt=""
               />{" "}
               OpenSim Marketplace
             </Navbar.Brand>
@@ -215,9 +219,28 @@ class NavigationBar extends React.Component {
             <Link to="/inventory">
               <Navbar.Brand>Inventory</Navbar.Brand>
             </Link>
-            <Link to="/login" onClick={this.Logout}>
-              <Navbar.Brand>Logout</Navbar.Brand>
-            </Link>
+
+            <Button onClick={this.Confirmation} style={{marginRight:"10px"}}>Logout</Button>
+            <Dialog
+              open={this.state.logoutOpen}
+              onClose={this.Confirmation}
+              fullWidth={false}
+              maxWidth="xs"
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Are You Sure You Want To Logout?"}</DialogTitle>
+              <DialogActions>
+                <Button onClick={this.Confirmation} variant="danger">
+                  Cancel
+                </Button>
+                <Link to="/login">
+                  <Button onClick={this.Logout} variant="primary">
+                    Logout
+                  </Button>
+                </Link>
+              </DialogActions>
+            </Dialog>
             <Form inline onSubmit={this.onClick}>
               <Form.Control
                 type="text"
@@ -235,7 +258,7 @@ class NavigationBar extends React.Component {
                 <Button
                   onClick={this.toggle}
                   aria-controls="example-collapse-text"
-                  aria-expanded={this.state.open}
+                  aria-expanded={this.state.drawerOpen}
                   variant="danger"
                   style={{marginLeft:"10px"}}
                 >
@@ -246,7 +269,7 @@ class NavigationBar extends React.Component {
           </Navbar.Collapse>
         </Navbar>
         <div>
-          <Drawer anchor="left" open={this.state.open} ModalProps={{ onBackdropClick: this.toggle }} classes={{paper: classes.paper, root: classes.root}}>
+          <Drawer anchor="left" open={this.state.drawerOpen} ModalProps={{ onBackdropClick: this.toggle }} classes={{paper: classes.paper, root: classes.root}}>
             <div className={classes.list}>
               <List>
                 <div className={classes.title}>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import "./InventoryCard.css";
 
-import Cookies from "js-cookie";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
@@ -13,9 +12,13 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
+
+
 
 export default function InventoryCard(props) {
   const [imgData, setImgData] = useState(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let fetchData = async (id) => {
@@ -32,6 +35,8 @@ export default function InventoryCard(props) {
     };
     fetchData(props.data.assetID);
   }, []);
+
+
   console.log(props.data);
   return (
     <Card
@@ -77,11 +82,28 @@ export default function InventoryCard(props) {
               className="view-button"
               variant="contained"
               color="secondary"
-              onClick={() => props.remove(props.data.assetID)}
+              onClick={() => setOpen(!open)}
             >
               Remove
             </Button>
-
+            <Dialog
+              open={open}
+              onClose={() => setOpen(!open)}
+              fullWidth={false}
+              maxWidth="xs"
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Are You Sure You Want To Remove This Item?"}</DialogTitle>
+              <DialogActions>
+                <Button onClick={() => setOpen(!open)} variant="contained" color="secondary">
+                  Cancel
+                </Button>
+                <Button onClick={() => props.remove(props.data.assetID)} variant="contained">
+                  Remove
+                </Button>
+              </DialogActions>
+            </Dialog>
             {props.data.isCreator ? (
               props.isPublic(props.data) ? (
                 <Button

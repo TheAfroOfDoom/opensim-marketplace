@@ -16,11 +16,10 @@ router.get("/get", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    /*
+
     if (!(await isUserLoggedIn(uuid))) {
       throw new Error("Unauthorized");
     }
-    */
 
     // Get assetID param
     const { assetID } = req.query;

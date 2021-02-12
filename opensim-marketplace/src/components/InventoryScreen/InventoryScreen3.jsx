@@ -9,7 +9,6 @@ import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
-import Typography from "@material-ui/core/Typography";
 import MuiAlert from "@material-ui/lab/Alert";
 import {
   Accordion,
@@ -235,37 +234,6 @@ export default class LoginScreen extends React.Component {
     this.setState({ open: false });
   };
 
-  constructFolders = (data) => {
-    return (
-      <Accordion>
-        <Accordion style={{ marginLeft: "5%" }}>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography component="h2" variant="h5">
-              {data.folderName}
-            </Typography>
-          </AccordionSummary>
-          {data.folders.map((obj) => {
-            return this.constructFolders(obj);
-          })}
-          {data.items.map((obj) => {
-            return (
-              <Container style={{ marginTop: 5, marginBottom: 5 }}>
-                <InventoryCard
-                  data={obj}
-                  assetType={this.getAssetType(obj.assetType)}
-                />
-              </Container>
-            );
-          })}
-        </Accordion>
-      </Accordion>
-    );
-  };
-
   render() {
     if (this.state.data == null) {
       return (
@@ -285,60 +253,8 @@ export default class LoginScreen extends React.Component {
               This is a success message!
             </Alert>
           </Snackbar>
-          <Container style={{ marginTop: "5%", marginBottom: "5%" }}>
-            <Accordion
-              style={{
-                marginLeft: "5%",
-                marginRight: "5%",
-              }}
-              expanded
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMore />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography component="h2" variant="h4">
-                  {this.state.data.folderName}
-                </Typography>
-              </AccordionSummary>
-              {this.state.data.folders.map((obj) => {
-                return this.constructFolders(obj);
-              })}
-              {this.state.data.items.map((obj) => {
-                return (
-                  <Container style={{ marginTop: 5, marginBottom: 5 }}>
-                    <InventoryCard
-                      data={obj}
-                      assetType={this.getAssetType(obj.assetType)}
-                      remove={this.removeItem}
-                      private={this.privateItem}
-                    />
-                  </Container>
-                );
-              })}
-            </Accordion>
-          </Container>
         </div>
       );
     }
   }
 }
-
-/*
-ITEM
-
-
-<Accordion style={{ marginLeft: "5%" }}>
-  <AccordionSummary
-    expandIcon={<ExpandMore />}
-    aria-controls="panel1a-content"
-    id="panel1a-header"
-    style={{
-      backgroundColor: "red",
-    }}
-  >
-    <Typography>{obj.InventoryName}</Typography>
-  </AccordionSummary>
-</Accordion>
- */

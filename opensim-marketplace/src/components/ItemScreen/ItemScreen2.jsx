@@ -132,14 +132,11 @@ export default class ItemScreen extends React.Component {
     if (this.state.data == null) {
       return <div data-testid="items" />;
     } else {
-      const { itemInfo } = this.state.data;
-      const { userInfo } = this.state.data;
-      const { invInfo } = this.state.data;
+      const { itemInfo, userInfo, invInfo } = this.state.data;
       console.log(invInfo.inInventory);
       return (
         <body className="page">
-          <div>
-            <img />
+          <div>    
             <div className="container">
               <div className="left-column">
                 <Image

@@ -15,6 +15,7 @@ import SearchScreen from "./components/Search/SearchScreen";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
+import ErrorScreen from "./components/HomeScreen/ErrorScreen";
 
 class App extends React.Component {
   constructor() {
@@ -42,7 +43,7 @@ class App extends React.Component {
   }
 
   handleSearchChange = (data, lim, type, order, sdate, edate) => {
-    this.setState({ data2: data, limit: lim, type: type, order: order, Sdate: sdate , Edate: edate});
+    this.setState({ data2: data, limit: lim, type: type, order: order, Sdate: sdate, Edate: edate});
   };
 
 
@@ -77,7 +78,6 @@ class App extends React.Component {
                   searchData={this.handleSearchChange}
                   data={this.state.loggedIn}
                   handleLogin={this.handleLogin}
-
                 />
                 <Route path="/login">
                   <Redirect to="/" />
@@ -90,6 +90,8 @@ class App extends React.Component {
                 <Route exact path="/">
                   <HomeScreen searchData={this.handleSearchChange} />
                 </Route>
+                <Route path="/404" component={ErrorScreen} />
+                <Redirect to="/404" />
               </div>
             )
           ) : (
@@ -110,6 +112,8 @@ class App extends React.Component {
               <Route exact path="/">
                 <HomeScreen searchData={this.handleSearchChange} />
               </Route>
+              <Route path="/404" component={ErrorScreen} />
+              <Redirect to="/404" />
             </div>
           )}
         </Router>

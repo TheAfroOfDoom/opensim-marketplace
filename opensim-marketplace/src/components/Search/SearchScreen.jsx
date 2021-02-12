@@ -1,6 +1,5 @@
 import React from "react";
 import { Pagination } from "react-bootstrap";
-import { Form, Button, InputGroup } from "react-bootstrap";
 
 import "./SearchScreen.css";
 import _ from "lodash";
@@ -8,9 +7,8 @@ import axios from "axios";
 import NoResults from "./NoResults";
 import SearchCard from "./SearchCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Box from '@material-ui/core/Box';
 import { withStyles } from '@material-ui/core/styles';
-import { Container, Grid, Drawer, Divider, List, Typography } from "@material-ui/core";
+import { Container, Grid } from "@material-ui/core";
 
 const styles = {
   root: {
@@ -43,7 +41,7 @@ class SearchScreen extends React.Component {
   }
 
   getSearch = async () =>{
-    if(this.props.data != null && this.props.data != this.state.previous && this.state.loading != true){
+    if(this.props.data !== null && this.props.data !== this.state.previous && this.state.loading !== true){
 
       this.setState({loading: true});
       let limit = this.props.limitNumber;
@@ -179,7 +177,7 @@ class SearchScreen extends React.Component {
   endSet = (length) => {
     if (
       this.state.end < length &&
-      this.state.active != length - 1 &&
+      this.state.active !== length - 1 &&
       this.state.end - this.state.start === 9
     ) {
       this.setState({ start: this.state.start + (length - this.state.end) });
@@ -190,7 +188,7 @@ class SearchScreen extends React.Component {
 
   firstSet = () => {
     if (
-      (this.state.start != 0 || this.state.active != 0) &&
+      (this.state.start !== 0 || this.state.active !== 0) &&
       this.state.end - this.state.start === 9
     ) {
       this.setState({ start: 0 });

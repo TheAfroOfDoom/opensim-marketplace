@@ -193,9 +193,6 @@ describe("App", () => {
         fireEvent.click(screen.getByText(/View In Inventory/i));
       });
   });
-
-
-
 });
 
 

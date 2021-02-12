@@ -35,17 +35,9 @@ export default class HomeScreen extends React.Component {
     this.state = { data: null, redirect: false };
   }
 
-  searchRedirect = async (assetType) => {
-    try {
-      const response = await axios.get("/api/search/public", {
-        params: { assetType: assetType },
-      });
-      console.log(response);
-      this.props.searchData(response.data);
-      this.setState({ redirect: true });
-    } catch (err) {
-      console.log(err.message);
-    }
+  searchRedirect = (assetType) => {
+    this.props.searchData("", 0, assetType, "", undefined, undefined);
+    this.setState({ redirect: true });
   };
 
   async componentDidMount() {

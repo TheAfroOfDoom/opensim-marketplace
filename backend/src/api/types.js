@@ -19,4 +19,29 @@ assetTypes = {
   SETTING: 56,
 };
 
-module.exports = { assetTypes };
+folderTypes = {
+  USER_DEFINED: -1,
+  TEXTURES: 0,
+  SOUNDS: 1,
+  CALLING_CARDS: 2,
+  LANDMARKS: 3,
+  CLOTHING: 5,
+  OBJECTS: 6,
+  NOTECARDS: 7,
+  MY_INVENTORY: 8,
+  MY_INVENTORY_OLD: 9,
+  SCRIPTS: 10,
+  BODY_PARTS: 13,
+  TRASH: 14,
+  PHOTO_ALBUM: 15,
+  LOST_AND_FOUND: 16,
+  ANIMATIONS: 20,
+  GESTURES: 21,
+  FAVORITES: 23,
+  CURRENT_OUTFIT: 46,
+  OUTFITS: 47,
+  MESHES: 49,
+  MY_SUITCASE: 100,
+};
+
+module.exports = { assetTypes, folderTypes };

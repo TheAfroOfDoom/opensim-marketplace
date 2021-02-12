@@ -4,7 +4,7 @@ const db = require("../config/database");
 const InventoryFolders = db.define(
   "inventoryfolders",
   {
-    folderNamme: {
+    folderName: {
       type: Sequelize.STRING(64),
     },
     type: {
