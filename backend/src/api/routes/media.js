@@ -23,7 +23,7 @@ router.get("/get", async (req, res) => {
 
     // Get assetID param
     const { assetID } = req.query;
-    console.log(req.query);
+    //console.log(req.query);
     if (!(await isAssetInDatabase(assetID))) {
       throw new Error("Invalid ID");
     }
@@ -50,7 +50,7 @@ router.get("/get", async (req, res) => {
           { marketplace_icon: JSON.stringify(j2k) },
           { where: { id: assetID } }
         );
-
+        console.log("Help me");
         //Assets.update({ marketplace_icon: j2k }, { where: { id: assetID } });
 
         return res.send({ data: j2k });
@@ -59,8 +59,6 @@ router.get("/get", async (req, res) => {
         return res.send({ data: null });
       }
     } else {
-      console.log(asset);
-      console.log(asset.marketplace_icon);
       return res.send({
         data: JSON.parse(asset.dataValues.marketplace_icon),
       });

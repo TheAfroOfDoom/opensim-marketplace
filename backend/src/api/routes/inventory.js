@@ -6,6 +6,8 @@ const InventoryFolders = require("../../models/InventoryFolders");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
+const axios = require("axios");
+const qs = require("qs");
 const { isUserLoggedIn, isAssetInDatabase } = require("../util.js");
 
 /**
@@ -111,26 +113,67 @@ router.post("/add", async (req, res) => {
     // Get assetID param
     const { assetID } = req.body;
 
-    let asset = await Assets.findOne({
-      attributes: ["id"],
-      where: { id: assetID },
-    });
-    if (_.isEmpty(asset)) throw new Error("Invalid ID");
+    if (!(await isAssetInDatabase(assetID))) {
+      throw new Error("Invalid ID");
+    }
 
     //Run SP
     const info = await sequelize.query(
-      `CALL marketplaceDownloadAsset(:userID, :assetID, @error);`,
+      `CALL marketplaceDownloadAsset(:userID, :assetID, @error, @inventoryID);`,
       {
         replacements: { userID: uuid, assetID: assetID },
       }
     );
 
-    //Querry error code
-    const [sel] = await sequelize.query("SELECT @error AS error;", {
-      type: sequelize.QueryTypes.SELECT,
+    //Query error code
+    const [sel] = await sequelize.query(
+      "SELECT @error as error, @inventoryID as inventoryID;",
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    console.log("Add Error: " + JSON.stringify(sel));
+
+    /*REFRESH FIRESTORM USING IARs*/
+
+    let asset = await Assets.findOne({
+      attributes: ["name"],
+      where: { id: assetID },
     });
-    console.log("Add Error: " + sel.error);
-    return res.status(200).send({ error: sel.error === 1 ? true : false });
+
+    await setTimeout(async function () {
+      let x = await axios({
+        method: "post",
+        url: "http://25.1.197.128:9000/SessionCommand/",
+        data: qs.stringify({
+          ID: "c1bc078b-3aa7-42ca-9cf9-96de78b44569",
+          COMMAND: `save iar --noassets Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123`,
+        }),
+        headers: {
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      });
+      setTimeout(async function () {
+        let y = await axios({
+          method: "post",
+          url: "http://25.1.197.128:9000/SessionCommand/",
+          data: qs.stringify({
+            ID: "c1bc078b-3aa7-42ca-9cf9-96de78b44569",
+            COMMAND: `load iar -m Wifi Admin "Marketplace Downloads" kenny123`,
+          }),
+          headers: {
+            "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+          },
+        });
+        setTimeout(async function () {
+          await InventoryItems.destroy({
+            where: { inventoryID: sel.inventoryID },
+          });
+        }, 500);
+      }, 500);
+    }, 500);
+
+    return res.status(200).send({ error: false });
   } catch (e) {
     console.error(e);
     if (e.message === "Unauthorized") {
@@ -442,7 +485,7 @@ function constructFolders(folders, items, parentFolderID) {
     )
   );
 
-  console.log(localFolders);
+  //console.log(localFolders);
 
   for (let i = 0; i < localFolders.length; i++) {
     localFolders[i].dataValues["folders"] = constructFolders(

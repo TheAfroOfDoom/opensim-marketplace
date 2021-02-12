@@ -16,6 +16,7 @@ import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
 import ErrorScreen from "./components/HomeScreen/ErrorScreen";
+import Map from "./components/Map/Map";
 
 class App extends React.Component {
   constructor() {
@@ -43,9 +44,15 @@ class App extends React.Component {
   }
 
   handleSearchChange = (data, lim, type, order, sdate, edate) => {
-    this.setState({ data2: data, limit: lim, type: type, order: order, Sdate: sdate, Edate: edate});
+    this.setState({
+      data2: data,
+      limit: lim,
+      type: type,
+      order: order,
+      Sdate: sdate,
+      Edate: edate,
+    });
   };
-
 
   checkStatus = () => {
     console.log(Cookies.get("uuid"));
@@ -84,7 +91,15 @@ class App extends React.Component {
                 </Route>
                 <Route path="/inventory" component={InventoryScreen} />
                 <Route path="/search">
-                  <SearchScreen data={this.state.data2} startDate={this.state.Sdate} endDate={this.state.Edate} limitNumber={this.state.limit} typeAsset={this.state.type} orderType={this.state.order} activeDefault={0} />
+                  <SearchScreen
+                    data={this.state.data2}
+                    startDate={this.state.Sdate}
+                    endDate={this.state.Edate}
+                    limitNumber={this.state.limit}
+                    typeAsset={this.state.type}
+                    orderType={this.state.order}
+                    activeDefault={0}
+                  />
                 </Route>
                 <Route path="/item/:assetId" component={ItemScreen} />
                 <Route exact path="/">
@@ -92,6 +107,7 @@ class App extends React.Component {
                 </Route>
                 <Route path="/404" component={ErrorScreen} />
                 <Redirect to="/404" />
+                <Route exact path="/map" component={MapScreen} />
               </div>
             )
           ) : (
@@ -106,7 +122,15 @@ class App extends React.Component {
               </Route>
               <Route path="/inventory" component={InventoryScreen} />
               <Route path="/search">
-                <SearchScreen data={this.state.data2} startDate={this.state.Sdate} endDate={this.state.Edate} limitNumber={this.state.limit} typeAsset={this.state.type} orderType={this.state.order} activeDefault={0} />
+                <SearchScreen
+                  data={this.state.data2}
+                  startDate={this.state.Sdate}
+                  endDate={this.state.Edate}
+                  limitNumber={this.state.limit}
+                  typeAsset={this.state.type}
+                  orderType={this.state.order}
+                  activeDefault={0}
+                />
               </Route>
               <Route path="/item/:assetId" component={ItemScreen} />
               <Route exact path="/">
@@ -114,6 +138,7 @@ class App extends React.Component {
               </Route>
               <Route path="/404" component={ErrorScreen} />
               <Redirect to="/404" />
+              <Route exact path="/map" component={MapScreen} />
             </div>
           )}
         </Router>

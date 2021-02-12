@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import Moment from "react-moment";
 import "./ItemScreen.css";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import _ from "lodash";
 
 // Material UI Components
@@ -36,7 +36,7 @@ let sound_default = "Images/Sound_Default.png";
 export default class ItemScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: null, dataString: "", imgData: null };
+    this.state = { data: null, dataString: "", imgData: null, redirect: false };
   }
 
   async componentDidMount() {
@@ -77,6 +77,7 @@ export default class ItemScreen extends React.Component {
     const response = await axios.post("/api/inventory/add", {
       assetID: this.props.match.params.assetId,
     });
+    this.setState({ redirect: true });
   };
 
   getAssetType = (assetType) => {
@@ -275,11 +276,9 @@ export default class ItemScreen extends React.Component {
                       </div>
                       <div className="right-column-two">
                         {!invInfo.inInventory ? (
-                          <Link to={`/inventory#${itemInfo.name}`}>
-                            <Button variant="outlined" onClick={this.handleAdd}>
-                              Add to Inventory
-                            </Button>
-                          </Link>
+                          <Button variant="outlined" onClick={this.handleAdd}>
+                            Add to Inventory
+                          </Button>
                         ) : (
                           <Link to={`/inventory#${itemInfo.name}`}>
                             <Button variant="contained" color="primary">
@@ -294,6 +293,11 @@ export default class ItemScreen extends React.Component {
               </Grid>
             </Grid>
           </Grid>
+          {this.state.redirect ? (
+            <Redirect to={`/inventory#${itemInfo.name}`} />
+          ) : (
+            <div />
+          )}
         </Container>
       );
     }
