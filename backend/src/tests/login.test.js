@@ -54,9 +54,9 @@ describe("Test the /api/login path", () => {
 
   test("Test GET with correct user and password", async () => {
     const response = await request(app).get("/api/login").query({
-      firstName: "Ryan",
-      lastName: "Strongman",
-      password: "2EvXhxnn",
+      firstName: "Wifi",
+      lastName: "Admin",
+      password: "kenny123",
     });
     expect(response.statusCode).toBe(201);
   });

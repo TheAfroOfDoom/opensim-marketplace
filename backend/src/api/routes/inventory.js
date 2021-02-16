@@ -8,7 +8,11 @@ const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
 const axios = require("axios");
 const qs = require("qs");
-const { isUserLoggedIn, isAssetInDatabase } = require("../util.js");
+const {
+  isUserLoggedIn,
+  isAssetInDatabase,
+  regionConsoles,
+} = require("../util.js");
 
 /**
  * @swagger
@@ -141,39 +145,42 @@ router.post("/add", async (req, res) => {
       where: { id: assetID },
     });
 
-    await setTimeout(async function () {
-      let x = await axios({
-        method: "post",
-        url: "http://25.1.197.128:9000/SessionCommand/",
-        data: qs.stringify({
-          ID: "c1bc078b-3aa7-42ca-9cf9-96de78b44569",
-          COMMAND: `save iar --noassets Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123`,
-        }),
-        headers: {
-          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
-        },
-      });
-      setTimeout(async function () {
-        let y = await axios({
+    const consoleID = regionConsoles[9000].consoleID;
+
+    if (sel.error !== 1)
+      await setTimeout(async function () {
+        let x = await axios({
           method: "post",
           url: "http://25.1.197.128:9000/SessionCommand/",
           data: qs.stringify({
-            ID: "c1bc078b-3aa7-42ca-9cf9-96de78b44569",
-            COMMAND: `load iar -m Wifi Admin "Marketplace Downloads" kenny123`,
+            ID: consoleID,
+            COMMAND: `save iar --noassets Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123`,
           }),
           headers: {
             "content-type": "application/x-www-form-urlencoded;charset=utf-8",
           },
         });
         setTimeout(async function () {
-          await InventoryItems.destroy({
-            where: { inventoryID: sel.inventoryID },
+          let y = await axios({
+            method: "post",
+            url: "http://25.1.197.128:9000/SessionCommand/",
+            data: qs.stringify({
+              ID: consoleID,
+              COMMAND: `load iar -m Wifi Admin "Marketplace Downloads" kenny123`,
+            }),
+            headers: {
+              "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+            },
           });
+          setTimeout(async function () {
+            await InventoryItems.destroy({
+              where: { inventoryID: sel.inventoryID },
+            });
+          }, 500);
         }, 500);
       }, 500);
-    }, 500);
 
-    return res.status(200).send({ error: false });
+    return res.status(200).send({ error: sel.error });
   } catch (e) {
     console.error(e);
     if (e.message === "Unauthorized") {
@@ -412,12 +419,14 @@ router.get("/test", async (req, res) => {
         "assetType",
         "InventoryName",
         "InvType",
+        "creationDate",
+        "InventoryID",
         "parentFolderID",
       ],
       include: [
         {
           model: Assets,
-          attributes: ["public"],
+          attributes: ["public", "CreatorID"],
           required: true,
           on: {
             col1: sequelize.where(
