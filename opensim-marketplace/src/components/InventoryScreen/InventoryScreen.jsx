@@ -98,6 +98,7 @@ export default class LoginScreen extends React.Component {
   getInventory = async () => {
     try {
       const response = await axios.get("/api/inventory");
+      //console.log(response.data);
       let test = response.data.sort((one, two) => {
         //console.log(response.data);
         if (one.isCreator && !two.isCreator) {
@@ -126,11 +127,11 @@ export default class LoginScreen extends React.Component {
 
   uploadItem = async (assetID) => {
     try {
-      //console.log(assetID);
+      console.log(assetID);
       const response = await axios.post("/api/inventory/upload", {
         assetID: assetID,
       });
-      this.getInventory();
+      this.getFolder();
       this.setState({ open: true });
     } catch (error) {
       alert("Upload: " + error);
@@ -139,10 +140,11 @@ export default class LoginScreen extends React.Component {
 
   privateItem = async (assetID) => {
     try {
+      console.log(assetID);
       const response = await axios.post("/api/inventory/private", {
         assetID: assetID,
       });
-      this.getInventory();
+      this.getFolder();
     } catch (error) {
       alert("Un-Upload: " + error);
     }
@@ -312,8 +314,9 @@ export default class LoginScreen extends React.Component {
                     <InventoryCard
                       data={obj}
                       assetType={this.getAssetType(obj.assetType)}
-                      remove={this.removeItem}
                       private={this.privateItem}
+                      remove={this.removeItem}
+                      upload={this.uploadItem}
                     />
                   </Container>
                 );

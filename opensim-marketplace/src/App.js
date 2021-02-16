@@ -16,7 +16,7 @@ import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
 import ErrorScreen from "./components/HomeScreen/ErrorScreen";
-import Map from "./components/Map/Map";
+import MapScreen from "./components/Map/MapScreen";
 
 class App extends React.Component {
   constructor() {
@@ -105,7 +105,7 @@ class App extends React.Component {
                 <Route exact path="/">
                   <HomeScreen searchData={this.handleSearchChange} />
                 </Route>
-                <Route path="/404" component={ErrorScreen} />
+                <Route exact path="/404" component={ErrorScreen} />
                 <Redirect to="/404" />
                 <Route exact path="/map" component={MapScreen} />
               </div>
@@ -136,8 +136,9 @@ class App extends React.Component {
               <Route exact path="/">
                 <HomeScreen searchData={this.handleSearchChange} />
               </Route>
-              <Route path="/404" component={ErrorScreen} />
-              <Redirect to="/404" />
+              <Route exact path="/404" component={ErrorScreen}>
+                <Redirect to="/404" />
+              </Route>
               <Route exact path="/map" component={MapScreen} />
             </div>
           )}

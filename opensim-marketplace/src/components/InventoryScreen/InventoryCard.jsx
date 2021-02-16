@@ -23,11 +23,11 @@ export default function InventoryCard(props) {
   useEffect(() => {
     let fetchData = async (id) => {
       try {
-        console.log(id);
+        //console.log(id);
         let response = await axios.get("/api/media/get", {
           params: { assetID: id },
         });
-        console.log(response);
+        //console.log(response);
         setImgData(response.data.data);
       } catch (e) {
         console.log(e);
@@ -37,7 +37,7 @@ export default function InventoryCard(props) {
   }, []);
 
 
-  console.log(props.data);
+  //console.log(props.data.isCreator);
   return (
     <Card
       className="root"
@@ -99,18 +99,18 @@ export default function InventoryCard(props) {
                 <Button onClick={() => setOpen(!open)} variant="contained" color="secondary">
                   Cancel
                 </Button>
-                <Button onClick={() => props.remove(props.data.assetID)} variant="contained">
+                <Button onClick={() => {props.remove(props.data.assetID); setOpen(!open)}} variant="contained">
                   Remove
                 </Button>
               </DialogActions>
             </Dialog>
             {props.data.isCreator ? (
-              props.isPublic(props.data) ? (
+              props.data.assets[0].public && props.data.isCreator ? (
                 <Button
                   className="view-button"
                   variant="outlined"
                   color="secondary"
-                  onClick={() => props.private(props.data.assetID)}
+                  onClick={() => {console.log(props);}}
                 >
                   Make Private
                 </Button>

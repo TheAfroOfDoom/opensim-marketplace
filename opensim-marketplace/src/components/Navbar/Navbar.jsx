@@ -302,11 +302,13 @@ class NavigationBar extends React.Component {
                     <InputGroup.Prepend>
                       <InputGroup.Text>Limit</InputGroup.Text>
                       <InputGroup.Checkbox
+                        data-testid="switch1"
                         checked={this.state.check1}
                         onChange={this.onCheck1.bind(this)}
                       ></InputGroup.Checkbox>
                     </InputGroup.Prepend>
                     <Form.Control
+                      data-testid="num-input"
                       as="input"
                       type="number"
                       disabled={!this.state.check1}
@@ -321,14 +323,16 @@ class NavigationBar extends React.Component {
                     <InputGroup.Prepend>
                       <InputGroup.Text>Type</InputGroup.Text>
                       <InputGroup.Checkbox
+                        data-testid="switch2"
                         checked={this.state.check2}
                         onChange={this.onCheck2.bind(this)}
                       ></InputGroup.Checkbox>
                     </InputGroup.Prepend>
                     <Form.Control
+                      data-testid="select1"
                       as="select"
                       disabled={!this.state.check2}
-                      value={this.state.type}
+
                       onChange={this.typeSelect.bind(this)}
                     >
                       <option value={-2}>Material</option>
@@ -351,11 +355,13 @@ class NavigationBar extends React.Component {
                     <InputGroup.Prepend>
                       <InputGroup.Text>Order</InputGroup.Text>
                       <InputGroup.Checkbox
+                        data-testid="switch3"
                         checked={this.state.check3}
                         onChange={this.onCheck3.bind(this)}
                       ></InputGroup.Checkbox>
                     </InputGroup.Prepend>
                     <Form.Control
+                      data-testid="select2"
                       as="select"
                       disabled={!this.state.check3}
                       value={this.state.order}
@@ -391,6 +397,7 @@ class NavigationBar extends React.Component {
                     utils={MomentUtils}
                   >
                     <DateTimePicker
+                      data-testid="date"
                       label="Start Creation Date"
                       ampm={false}
                       showTodayButton={true}

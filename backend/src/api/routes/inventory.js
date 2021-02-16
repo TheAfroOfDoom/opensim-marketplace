@@ -413,11 +413,12 @@ router.get("/test", async (req, res) => {
         "InventoryName",
         "InvType",
         "parentFolderID",
+        "creationDate",
       ],
       include: [
         {
           model: Assets,
-          attributes: ["public"],
+          attributes: ["public", "CreatorID"],
           required: true,
           on: {
             col1: sequelize.where(
