@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import "./InventoryCard.css";
 
-import Cookies from "js-cookie";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
@@ -13,18 +12,22 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
+
+
 
 export default function InventoryCard(props) {
   const [imgData, setImgData] = useState(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let fetchData = async (id) => {
       try {
-        console.log(id);
+        //console.log(id);
         let response = await axios.get("/api/media/get", {
           params: { assetID: id },
         });
-        console.log(response);
+        //console.log(response);
         setImgData(response.data.data);
       } catch (e) {
         console.log(e);
@@ -32,7 +35,9 @@ export default function InventoryCard(props) {
     };
     fetchData(props.data.assetID);
   }, []);
-  console.log(props.data);
+
+
+  //console.log(props.data.isCreator);
   return (
     <Card
       className="root"
@@ -77,18 +82,35 @@ export default function InventoryCard(props) {
               className="view-button"
               variant="contained"
               color="secondary"
-              onClick={() => props.remove(props.data.assetID)}
+              onClick={() => setOpen(!open)}
             >
               Remove
             </Button>
-
+            <Dialog
+              open={open}
+              onClose={() => setOpen(!open)}
+              fullWidth={false}
+              maxWidth="xs"
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Are You Sure You Want To Remove This Item?"}</DialogTitle>
+              <DialogActions>
+                <Button onClick={() => setOpen(!open)} variant="contained" color="secondary">
+                  Cancel
+                </Button>
+                <Button onClick={() => {props.remove(props.data.assetID); setOpen(!open)}} variant="contained">
+                  Remove
+                </Button>
+              </DialogActions>
+            </Dialog>
             {props.data.isCreator ? (
-              props.isPublic(props.data) ? (
+              props.data.assets[0].public && props.data.isCreator ? (
                 <Button
                   className="view-button"
                   variant="outlined"
                   color="secondary"
-                  onClick={() => props.private(props.data.assetID)}
+                  onClick={() => {console.log(props);}}
                 >
                   Make Private
                 </Button>

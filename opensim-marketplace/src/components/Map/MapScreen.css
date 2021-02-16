@@ -12,5 +12,7 @@
 
 .ccontainer {
   height: calc(100vh - 59px);
+  width:80%;
+  float:right;
   overflow: hidden;
 }

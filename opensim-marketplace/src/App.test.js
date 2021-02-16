@@ -3,6 +3,13 @@ import { HashRouter as Router, Route, Redirect, Link} from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import mockedAxios from "axios";
 import Cookies from "js-cookie";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  MapConsumer,
+} from "react-leaflet";
 
 import App from "./App";
 import NavigationBar from "./components/Navbar/Navbar";
@@ -11,6 +18,7 @@ import SearchScreen from "./components/Search/SearchScreen";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
+import MapScreen from "./components/Map/MapScreen"
 import userEvent from "@testing-library/user-event";
 
 import {
@@ -27,27 +35,27 @@ jest.mock("axios");
 
 describe("App", () => {
   test("Render App (Redirect Sign In Path)", () => {
-    const { getByText } = render(<App />);
+    const { getByText, getByDisplayValue, getByPlaceholderText } = render(<App />);
     expect(getByText(/Sign In/i)).toBeInTheDocument();
-    fireEvent.change(screen.getByPlaceholderText("First name"), {
-      target: { value: "Jonas" },
+    fireEvent.change(screen.getByPlaceholderText("First Name"), {
+      target: { value: "wifi" },
     });
-    expect(getByText(/first/i)).toBeInTheDocument();
-    fireEvent.change(screen.getByPlaceholderText("Last name"), {
-      target: { value: "Wojtas" },
+    expect(screen.getByDisplayValue(/wifi/i)).toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText("Last Name"), {
+      target: { value: "admin" },
     });
-    expect(getByText(/last/i)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/admin/i)).toBeInTheDocument();
     fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "password" },
+      target: { value: "kenny123" },
     });
-    expect(getByText(/password/i)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/kenny123/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button"));
 
   });
 
   test("Failure Render App (Not Logged in)", () => {
     const { getByTestId } = render(<App />);
-    expect(getByTestId("main")).toBeInTheDocument();
+    expect(getByTestId("main")).not.toBeInTheDocument();
   });
 
   test("Render App (Logged In Render) NavigationBar", () => {
@@ -59,36 +67,6 @@ describe("App", () => {
         <NavigationBar />
       </Router>
     );
-    const linkElement = getByText(/OpenSim Marketplace/i);
-    expect(linkElement).toBeInTheDocument();
-  });
-
-  test("Render NavigationBar Advanced Search", () => {
-    Cookies.get = jest
-      .fn()
-      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
-    const { getByText } = render(
-      <Router>
-        <NavigationBar />
-      </Router>
-    );
-    fireEvent.click(screen.getByText(/Advanced/i));
-    const linkElement = getByText(/Limit/i);
-    expect(linkElement).toBeInTheDocument();
-  });
-
-  test("Render NavigationBar Search Box", () => {
-    Cookies.get = jest
-      .fn()
-      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
-    const { getByText } = render(
-      <Router>
-        <NavigationBar />
-      </Router>
-    );
-    fireEvent.change(screen.getByPlaceholderText(/search/i), {
-      target: { value: "Rocks" },
-    });
     const linkElement = getByText(/OpenSim Marketplace/i);
     expect(linkElement).toBeInTheDocument();
   });
@@ -193,9 +171,6 @@ describe("App", () => {
         fireEvent.click(screen.getByText(/View In Inventory/i));
       });
   });
-
-
-
 });
 
 
@@ -220,7 +195,7 @@ describe("Home Screen", () => {
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
     const { getByText, getByTestId } = render(<HomeScreen />);
-    expect(getByTestId("Redirect")).toBeInTheDocument();
+    expect(getByTestId("Redirect")).not.toBeInTheDocument();
   });
 
   test("Render App (Logged In Render) HomeScreen", async () => {
@@ -247,4 +222,110 @@ describe("Home Screen", () => {
     //expect(getByText(/Recently Updated Items/i)).toBeInTheDocument();
   });
 
+});
+
+
+describe("Map Screen", () => {
+  test("Map", async () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+
+    const { getByText, getByTestId } = render(<MapScreen />);
+    expect(getByTestId("map")).toBeInTheDocument();
+    //expect(getByText(/Current Location/i)).toBeInTheDocument();
+  });
+});
+
+
+describe("Navigation Bar", () => {
+  test("Render NavigationBar Advanced Search", () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+    const { getByText } = render(
+      <Router>
+        <NavigationBar />
+      </Router>
+    );
+    fireEvent.click(screen.getByText(/Advanced/i));
+    const linkElement = getByText(/Limit/i);
+    expect(linkElement).toBeInTheDocument();
+  });
+
+  test("Render NavigationBar Advanced Search (type)", () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+    const { getByText, getByTestId, getByDisplayValue } = render(
+      <Router>
+        <NavigationBar />
+      </Router>
+    );
+    fireEvent.click(screen.getByText(/Advanced/i));
+    fireEvent.click(screen.getByTestId(/switch2/i));
+    fireEvent.change(screen.getByTestId(/select1/i), {
+      target: { value: 6 }
+    });
+    const linkElement = screen.getByDisplayValue(/Object/i);
+    expect(linkElement).toBeInTheDocument();
+  });
+
+  test("Render NavigationBar Advanced Search (order)", () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+    const { getByText, getByTestId, getByDisplayValue } = render(
+      <Router>
+        <NavigationBar />
+      </Router>
+    );
+    fireEvent.click(screen.getByText(/Advanced/i));
+    fireEvent.click(screen.getByTestId(/switch3/i));
+    fireEvent.change(screen.getByTestId(/select2/i), {
+      target: { value: "NAME_ASC" }
+    });
+    const linkElement = screen.getByDisplayValue(/Name Ascending/i);
+    expect(linkElement).toBeInTheDocument();
+  });
+
+  test("Render NavigationBar Advanced Search (limit)", async () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+      mockedAxios.get.mockResolvedValueOnce({
+        count: 12,
+      });
+    const { getByText, getByTestId, getByDisplayValue } = render(
+      <Router>
+        <NavigationBar />
+      </Router>
+    );
+      wait(() => {
+        fireEvent.click(screen.getByText(/Advanced/i));
+        fireEvent.click(screen.getByTestId(/switch1/i));
+        fireEvent.change(screen.getByDisplayValue(/0/i), {
+          target: { value: 2 }
+        });
+        const linkElement = getByDisplayValue(/2/i);
+        expect(linkElement).toBeInTheDocument();
+      });
+    //fireEvent.click(screen.getByTestId(/date/i));
+  });
+
+  test("Render NavigationBar Search Box", () => {
+    Cookies.get = jest
+      .fn()
+      .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
+    const { getByText } = render(
+      <Router>
+        <NavigationBar />
+      </Router>
+    );
+    fireEvent.change(screen.getByPlaceholderText(/search/i), {
+      target: { value: "Rocks" },
+    });
+    const linkElement = getByText(/OpenSim Marketplace/i);
+    expect(linkElement).toBeInTheDocument();
+  });
 });

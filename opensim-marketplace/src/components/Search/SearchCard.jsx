@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 //Import Material Components
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardActions from "@material-ui/core/CardActions";
-import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
 import Button from "@material-ui/core/Button";
 
 //Import Other Libraries
@@ -85,7 +81,6 @@ export default function SearchCard(props) {
   }, []);
 
   const classes = useStyles();
-  const theme = useTheme();
 
   return (
     <Card className={classes.root} elevation={10}>

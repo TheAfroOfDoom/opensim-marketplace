@@ -422,6 +422,7 @@ router.get("/test", async (req, res) => {
         "creationDate",
         "InventoryID",
         "parentFolderID",
+        "creationDate",
       ],
       include: [
         {

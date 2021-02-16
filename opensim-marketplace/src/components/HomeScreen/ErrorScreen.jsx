@@ -1,10 +1,9 @@
 import React from "react";
-import "./SearchScreen.css";
-
+import "../Search/SearchScreen.css";
 
 import { Paper, Container, Grid, Typography } from "@material-ui/core";
 
-export default function NoResults() {
+export default function ErrorScreen() {
   return (
     <Container maxWidth="sm">
       <Grid container justify="center" direction="row">
@@ -22,12 +21,12 @@ export default function NoResults() {
           >
             <Grid item container justify="center">
               <Typography component="h1" variant="h4">
-                No results
+                404 Error
               </Typography>
             </Grid>
             <Grid item container justify="center">
               <Typography component="h1" variant="h6">
-                Please try again
+                Something went wrong
               </Typography>
             </Grid>
           </Paper>

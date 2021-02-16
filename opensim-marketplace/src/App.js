@@ -15,6 +15,7 @@ import SearchScreen from "./components/Search/SearchScreen";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
+import ErrorScreen from "./components/HomeScreen/ErrorScreen";
 import MapScreen from "./components/Map/MapScreen";
 
 class App extends React.Component {
@@ -104,6 +105,8 @@ class App extends React.Component {
                 <Route exact path="/">
                   <HomeScreen searchData={this.handleSearchChange} />
                 </Route>
+                <Route exact path="/404" component={ErrorScreen} />
+                <Redirect to="/404" />
                 <Route exact path="/map" component={MapScreen} />
               </div>
             )
@@ -132,6 +135,9 @@ class App extends React.Component {
               <Route path="/item/:assetId" component={ItemScreen} />
               <Route exact path="/">
                 <HomeScreen searchData={this.handleSearchChange} />
+              </Route>
+              <Route exact path="/404" component={ErrorScreen}>
+                <Redirect to="/404" />
               </Route>
               <Route exact path="/map" component={MapScreen} />
             </div>

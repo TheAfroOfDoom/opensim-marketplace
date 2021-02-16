@@ -8,7 +8,6 @@ import _ from "lodash";
 // Material UI Components
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
@@ -152,7 +151,7 @@ export default class ItemScreen extends React.Component {
       return <div data-testid="items" />;
     } else {
       const { itemInfo, userInfo, invInfo } = this.state.data;
-      console.log(itemInfo, userInfo, invInfo, this.state.imgData);
+      //console.log(itemInfo, userInfo, invInfo, this.state.imgData);
       return (
         <Container>
           <Grid container justify="center" direction="row">
