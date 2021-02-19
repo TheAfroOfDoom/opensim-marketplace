@@ -75,4 +75,36 @@ router.get("/get", async (req, res) => {
   }
 });
 
+router.post("/set", async (req, res) => {
+  try {
+    //Check if user is logged in
+    const { uuid } = req.cookies;
+
+    if (!(await isUserLoggedIn(uuid))) {
+      //throw new Error("Unauthorized");
+    }
+
+    let { assetID, imgData } = req.body;
+
+    if (!(await isAssetInDatabase(assetID))) {
+      throw new Error("Invalid ID");
+    }
+
+    //Check if image data is valid base64 image data
+    const regex = /^data:image\/jpeg;base64,(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/gm;
+    if (!regex.test(imgData.data)) {
+      throw new Error("Data is not in base64");
+    }
+
+    Assets.update(
+      { marketplace_icon: JSON.stringify(imgData) },
+      { where: { id: assetID } }
+    );
+    res.sendStatus(204);
+  } catch (e) {
+    console.log(e);
+    res.status(400).json(e);
+  }
+});
+
 module.exports = router;
