@@ -260,6 +260,8 @@ export default class LoginScreen extends React.Component {
                   data={obj}
                   assetType={this.getAssetType(obj.assetType)}
                   remove={this.removeItem.bind(this)}
+                  private={this.privateItem.bind(this)}
+                  upload={this.uploadItem.bind(this)}
                 />
               </Container>
             );

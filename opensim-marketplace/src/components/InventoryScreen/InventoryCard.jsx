@@ -110,7 +110,7 @@ export default function InventoryCard(props) {
                   className="view-button"
                   variant="outlined"
                   color="secondary"
-                  onClick={() => {console.log(props);}}
+                  onClick={() => {props.private(props.data.assetID);}}
                 >
                   Make Private
                 </Button>

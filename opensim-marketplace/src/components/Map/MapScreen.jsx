@@ -11,7 +11,8 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { withStyles } from '@material-ui/core/styles';
-import { Container, Grid, Paper, Typography, TextField, List, Divider, Drawer, Button, FormControl } from "@material-ui/core";
+import TextFieldMui from "@material-ui/core/TextField";
+import { Container, Grid, Paper, Typography, List, Divider, Drawer, Button, FormControl } from "@material-ui/core";
 import L from "leaflet";
 
 const styles = {
@@ -43,6 +44,44 @@ const styles = {
     //marginLeft: 10,
   },
 }
+
+const styles_textfield = muiTheme => ({
+  label: {
+    "&$erroredLabel": {
+      color: "white"
+    }
+  },
+  erroredLabel: {},
+  underline: {
+    "&$error:after": {
+      borderBottomColor: "white"
+    },
+  },
+  error: {}
+});
+
+const TextField = withStyles(styles_textfield)(function TextField({ classes, ...props }) {
+  return (
+    <TextFieldMui
+      InputLabelProps={{
+        classes: {
+          root: classes.label,
+          focused: classes.focusedLabel,
+          error: classes.erroredLabel
+        }
+      }}
+      InputProps={{
+        classes: {
+          root: classes.underline,
+          error: classes.error
+        }
+      }}
+      {...props}
+    />
+  );
+});
+
+
 
 class map extends React.Component {
   constructor(props) {
@@ -205,10 +244,10 @@ class map extends React.Component {
                   this.tileTolatlong(this.state.currentPos)}
               </Typography>
               <div className={classes.coordright}>
-                <TextField label="X Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(0, value)}}/>
+                <TextField error={{}} label="X Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(0, value)}}/>
               </div>
               <div className={classes.coordleft}>
-                <TextField label="Y Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(1, value)}}/>
+                <TextField error={{}} label="Y Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(1, value)}}/>
               </div>
               <Button onClick={() => this.handleCoordSubmit(this.state.map)}>Move To</Button>
 
