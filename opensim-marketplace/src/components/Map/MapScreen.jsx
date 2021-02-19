@@ -10,15 +10,30 @@ import {
   MapConsumer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { withStyles } from '@material-ui/core/styles';
 import TextFieldMui from "@material-ui/core/TextField";
-import { Container, Grid, Paper, Typography, List, Divider, Drawer, Button, FormControl } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import {
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  List,
+  Divider,
+  Drawer,
+  Button,
+  FormControl,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from "@material-ui/core";
 import L from "leaflet";
 
 const styles = {
   paper: {
     background: "#343a40",
-    height: 'calc(100% - 50px)',
+    height: "calc(100% - 50px)",
     top: 60,
     width: "20%",
   },
@@ -27,23 +42,23 @@ const styles = {
     textAlign: "center",
   },
   coords: {
-    display:"flex",
+    display: "flex",
   },
   coordright: {
     paddingLeft: 10,
     paddingRight: 10,
     width: "50%",
-    float:"left",
+    float: "left",
     //marginLeft: 10,
   },
   coordleft: {
     paddingLeft: 10,
     paddingRight: 10,
     width: "50%",
-    float:"right",
+    float: "right",
     //marginLeft: 10,
   },
-}
+};
 
 const styles_textfield = muiTheme => ({
   label: {
@@ -91,11 +106,38 @@ class map extends React.Component {
       zoom: 17,
       map: null,
       input_x: null,
-      input_y: null
+      input_y: null,
+      cOpen: false,
+      cAll: false,
+      message: "",
     };
     this.handleClick = this.handleClick.bind(this);
   }
 
+  confirmationOpen = () => {
+    this.setState(() => ({
+      cOpen: !this.state.cOpen,
+    }));
+  };
+  confirmationAll = () => {
+    this.setState(() => ({
+      cAll: !this.state.cAll,
+    }));
+  };
+  txtChange = (e) => {
+    console.log(e.target.value);
+    this.setState({
+      message: e.target.value,
+    });
+  };
+  handleShutdown = (event) => {
+    event.preventDefault();
+    this.confirmationOpen();
+  };
+  handleShutdownAll = (event) => {
+    event.preventDefault();
+    this.confirmationAll();
+  };
   handleClick(e) {
     this.setState({ currentPos: e.latlng });
     //console.log(e);
@@ -128,28 +170,28 @@ class map extends React.Component {
     });
   }
 
-  centerMap = (map) =>{
-    if(map){
-      map.panTo(this.latlongToTile(1000,1000));
+  centerMap = (map) => {
+    if (map) {
+      map.panTo(this.latlongToTile(1000, 1000));
     }
-  }
+  };
 
-  handleCoordChange(axis, coord){
+  handleCoordChange(axis, coord) {
     console.log("coord: ", coord);
 
-    if(axis === 0){
-      this.setState({ input_x: coord});
+    if (axis === 0) {
+      this.setState({ input_x: coord });
     }
-    if(axis === 1){
-      this.setState({ input_y: coord});
+    if (axis === 1) {
+      this.setState({ input_y: coord });
     }
   }
 
   handleCoordSubmit = (map) => {
-    if(map && this.state.input_x != null && this.state.input_y != null){
+    if (map && this.state.input_x != null && this.state.input_y != null) {
       map.panTo(this.latlongToTile(this.state.input_x, this.state.input_y));
     }
-  }
+  };
 
   latlongToTile(lat, long) {
     return [lat * 0.000976 * 2, long * 0.000977 * 2];
@@ -218,40 +260,141 @@ class map extends React.Component {
             open={true}
             classes={{ paper: classes.paper }}
           >
-            <List>
-            <div className={classes.title}>
-              <Typography variant="h3" gutterBottom>
-                Map
-              </Typography>
-            </div>
-            <Divider />
-            <div className={classes.title}>
-              <Typography variant="h6" gutterBottom>
-                Center Position: (1000, 1000)
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Return to center
-              </Typography>
-              <Button onClick={() => this.centerMap(this.state.map)}>Center</Button>
-            </div>
-            <Divider />
-            <div className={classes.title}>
-              <Typography variant="h6" gutterBottom>
-                Coordinate Control
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Current Location {this.state.currentPos &&
-                  this.tileTolatlong(this.state.currentPos)}
-              </Typography>
-              <div className={classes.coordright}>
-                <TextField error={{}} label="X Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(0, value)}}/>
-              </div>
-              <div className={classes.coordleft}>
-                <TextField error={{}} label="Y Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(1, value)}}/>
-              </div>
-              <Button onClick={() => this.handleCoordSubmit(this.state.map)}>Move To</Button>
 
-            </div>
+            <List>
+              <div className={classes.title}>
+                <Typography variant="h3" gutterBottom>
+                  Map
+                </Typography>
+              </div>
+              <Divider />
+              <div className={classes.title}>
+                <Typography variant="h6" gutterBottom>
+                  Center Position: (1000, 1000)
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Return to center
+                </Typography>
+                <Button onClick={() => this.centerMap(this.state.map)}>
+                  Center
+                </Button>
+              </div>
+              <Divider />
+              <div className={classes.title}>
+                <Typography variant="h6" gutterBottom>
+                  Coordinate Control
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Current Location{" "}
+                  {this.state.currentPos &&
+                    this.tileTolatlong(this.state.currentPos)}
+                </Typography>
+                <div className={classes.coordright}>
+                  <TextField
+                    error={{}}
+                    label="X Coordinate"
+                    type="number"
+                    onChange={(event) => {
+                      const { value } = event.target;
+                      this.handleCoordChange(0, value);
+                    }}
+                  />
+                </div>
+                <div className={classes.coordleft}>
+                  <TextField
+                    error={{}}
+                    label="Y Coordinate"
+                    type="number"
+                    onChange={(event) => {
+                      const { value } = event.target;
+                      this.handleCoordChange(1, value);
+                    }}
+                  />
+                </div>
+                <Button onClick={() => this.handleCoordSubmit(this.state.map)}>
+                  Move To
+                </Button>
+                <div>
+                  <Typography variant="h6" gutterBottom>
+                    Region Controls
+                  </Typography>
+                  <div>
+                    <Button onClick={this.confirmationOpen}>
+                      Shut down region (x, y)
+                    </Button>
+                    <Dialog
+                      open={this.state.cOpen}
+                      onClose={this.confirmationOpen}
+                      fullWidth={false}
+                      maxWidth="s"
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <form onSubmit={this.handleShutdown}>
+                        <DialogTitle id="alert-dialog-title">
+                          {"Are You Sure You Want To Shutdown This Region?"}
+                        </DialogTitle>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Message to online users:"
+                          fullWidth
+                          onChange={this.txtChange}
+                          value={this.state.message}
+                        />
+                        <DialogActions>
+                          <Button
+                            onClick={this.confirmationOpen}
+                            variant="danger"
+                          >
+                            Cancel
+                          </Button>
+
+                          <Button type="submit">Shutdown</Button>
+                        </DialogActions>
+                      </form>
+                    </Dialog>
+                    <Button onClick={this.confirmationAll}>
+                      Shut Down All Regions
+                    </Button>
+
+                    <Dialog
+                      open={this.state.cAll}
+                      onClose={this.confirmationAll}
+                      fullWidth={false}
+                      maxWidth="s"
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <DialogTitle id="alert-dialog-title">
+                        {"Are You Sure You Want To Shutdown All Regions?"}
+                      </DialogTitle>
+                      <form onSubmit={this.handleShutdownAll}>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Message to online users:"
+                          fullWidth
+                          onChange={this.txtChange}
+                          value={this.state.message}
+                        />
+                        <DialogActions>
+                          <Button
+                            onClick={this.confirmationAll}
+                            variant="danger"
+                          >
+                            Cancel
+                          </Button>
+
+                          <Button type="submit">Shutdown</Button>
+                        </DialogActions>
+                      </form>
+                    </Dialog>
+                  </div>
+                </div>
+              </div>
             </List>
           </Drawer>
         </div>
