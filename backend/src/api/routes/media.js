@@ -17,8 +17,6 @@ router.get("/get", async (req, res) => {
     //Check if user is authenticated
     const { uuid } = req.cookies;
 
-    console.log(req.cookies);
-
     if (!(await isUserLoggedIn(uuid))) {
       throw new Error("Unauthorized");
     }

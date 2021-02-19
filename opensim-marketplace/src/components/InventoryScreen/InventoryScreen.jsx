@@ -41,7 +41,13 @@ function Alert(props) {
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: null, setOpen: null, open: null };
+    this.state = {
+      data: null,
+      setOpen: null,
+      open: null,
+      message: "",
+      severity: "error",
+    };
   }
 
   getFolder = async () => {
@@ -98,7 +104,6 @@ export default class LoginScreen extends React.Component {
   getInventory = async () => {
     try {
       const response = await axios.get("/api/inventory");
-      //console.log(response.data);
       let test = response.data.sort((one, two) => {
         //console.log(response.data);
         if (one.isCreator && !two.isCreator) {
@@ -114,39 +119,67 @@ export default class LoginScreen extends React.Component {
     }
   };
 
-  removeItem = async (assetID) => {
+  removeItem = async (assetID, inventoryName) => {
     try {
       const response = await axios.post("/api/inventory/remove", {
         assetID: assetID,
       });
       this.getFolder();
+      this.setState({
+        open: true,
+        message: `${inventoryName} is now removed`,
+        severity: "success",
+      });
     } catch (error) {
-      alert("Remove: " + error);
+      //alert("Remove: " + error);
+      this.setState({
+        open: true,
+        message: `Error removing ${inventoryName}`,
+        severity: "error",
+      });
     }
   };
 
-  uploadItem = async (assetID) => {
+  uploadItem = async (assetID, inventoryName) => {
     try {
-      console.log(assetID);
+      //console.log(assetID);
       const response = await axios.post("/api/inventory/upload", {
         assetID: assetID,
       });
       this.getFolder();
-      this.setState({ open: true });
+      this.setState({
+        open: true,
+        message: `${inventoryName} is now public`,
+        severity: "success",
+      });
     } catch (error) {
-      alert("Upload: " + error);
+      //alert("Upload: " + error);
+      this.setState({
+        open: true,
+        message: `Error making ${inventoryName} public`,
+        severity: "error",
+      });
     }
   };
 
-  privateItem = async (assetID) => {
+  privateItem = async (assetID, inventoryName) => {
     try {
-      console.log(assetID);
       const response = await axios.post("/api/inventory/private", {
         assetID: assetID,
       });
       this.getFolder();
+      this.setState({
+        open: true,
+        message: `${inventoryName} is now private`,
+        severity: "success",
+      });
     } catch (error) {
-      alert("Un-Upload: " + error);
+      //alert("Un-Upload: " + error);
+      this.setState({
+        open: true,
+        message: `Error making ${inventoryName} private`,
+        severity: "error",
+      });
     }
   };
 
@@ -239,7 +272,7 @@ export default class LoginScreen extends React.Component {
 
   constructFolders = (data) => {
     return (
-      <Accordion>
+      <Accordion key={data.folderID}>
         <Accordion style={{ marginLeft: "5%" }}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
@@ -255,11 +288,16 @@ export default class LoginScreen extends React.Component {
           })}
           {data.items.map((obj) => {
             return (
-              <Container style={{ marginTop: 5, marginBottom: 5 }}>
+              <Container
+                style={{ marginTop: 5, marginBottom: 5 }}
+                key={obj.assetID}
+              >
                 <InventoryCard
                   data={obj}
                   assetType={this.getAssetType(obj.assetType)}
                   remove={this.removeItem.bind(this)}
+                  private={this.privateItem.bind(this)}
+                  upload={this.uploadItem.bind(this)}
                 />
               </Container>
             );
@@ -284,8 +322,11 @@ export default class LoginScreen extends React.Component {
             autoHideDuration={6000}
             onClose={this.handleSnackClose}
           >
-            <Alert onClose={this.handleSnackClose} severity="success">
-              This is a success message!
+            <Alert
+              onClose={this.handleSnackClose}
+              severity={this.state.severity}
+            >
+              {this.state.message}
             </Alert>
           </Snackbar>
           <Container style={{ marginTop: "5%", marginBottom: "5%" }}>
@@ -310,13 +351,13 @@ export default class LoginScreen extends React.Component {
               })}
               {this.state.data.items.map((obj) => {
                 return (
-                  <Container style={{ marginTop: 5, marginBottom: 5 }}>
+                  <Container
+                    style={{ marginTop: 5, marginBottom: 5 }}
+                    key={obj.assetID}
+                  >
                     <InventoryCard
                       data={obj}
                       assetType={this.getAssetType(obj.assetType)}
-                      private={this.privateItem}
-                      remove={this.removeItem}
-                      upload={this.uploadItem}
                     />
                   </Container>
                 );

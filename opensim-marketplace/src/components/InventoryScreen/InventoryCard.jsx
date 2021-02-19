@@ -12,9 +12,13 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
-
-
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@material-ui/core";
 
 export default function InventoryCard(props) {
   const [imgData, setImgData] = useState(null);
@@ -35,7 +39,6 @@ export default function InventoryCard(props) {
     };
     fetchData(props.data.assetID);
   }, []);
-
 
   //console.log(props.data.isCreator);
   return (
@@ -94,12 +97,24 @@ export default function InventoryCard(props) {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">{"Are You Sure You Want To Remove This Item?"}</DialogTitle>
+              <DialogTitle id="alert-dialog-title">
+                {"Are You Sure You Want To Remove This Item?"}
+              </DialogTitle>
               <DialogActions>
-                <Button onClick={() => setOpen(!open)} variant="contained" color="secondary">
+                <Button
+                  onClick={() => setOpen(!open)}
+                  variant="contained"
+                  color="secondary"
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => {props.remove(props.data.assetID); setOpen(!open)}} variant="contained">
+                <Button
+                  onClick={() => {
+                    props.remove(props.data.assetID, props.data.InventoryName);
+                    setOpen(!open);
+                  }}
+                  variant="contained"
+                >
                   Remove
                 </Button>
               </DialogActions>
@@ -110,7 +125,9 @@ export default function InventoryCard(props) {
                   className="view-button"
                   variant="outlined"
                   color="secondary"
-                  onClick={() => {console.log(props);}}
+                  onClick={() => {
+                    props.private(props.data.assetID, props.data.InventoryName);
+                  }}
                 >
                   Make Private
                 </Button>
@@ -119,7 +136,9 @@ export default function InventoryCard(props) {
                   className="view-button"
                   variant="outlined"
                   color="primary"
-                  onClick={() => props.upload(props.data.assetID)}
+                  onClick={() =>
+                    props.upload(props.data.assetID, props.data.InventoryName)
+                  }
                 >
                   Make Public
                 </Button>

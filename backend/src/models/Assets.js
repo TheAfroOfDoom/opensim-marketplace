@@ -5,25 +5,77 @@ const Assets = db.define(
   "assets",
   {
     name: {
-      type: Sequelize.STRING(64),
+      type: DataTypes.STRING(64),
       allowNull: false,
     },
-    description: { type: Sequelize.STRING(64), allowNull: false },
-    assetType: { type: Sequelize.INTEGER, allowNull: false },
-    local: { type: Sequelize.BOOLEAN, allowNull: false },
-    temporary: { type: Sequelize.BOOLEAN, allowNull: false },
-    data: { type: Sequelize.BLOB, allowNull: false },
-    id: { type: Sequelize.UUID, allowNull: false, primaryKey: true },
-    create_time: { type: Sequelize.INTEGER },
-    access_time: { type: Sequelize.INTEGER },
-    asset_flags: { type: Sequelize.INTEGER, allowNull: false },
-    CreatorID: { type: Sequelize.UUID, allowNull: false },
-    public: { type: Sequelize.BOOLEAN },
-    marketplace_icon: { type: Sequelize.BLOB },
+    description: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+    },
+    assetType: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+    },
+    local: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+    },
+    temporary: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+    },
+    data: {
+      type: DataTypes.BLOB,
+      allowNull: false,
+    },
+    id: {
+      type: DataTypes.CHAR(36),
+      allowNull: false,
+      defaultValue: "00000000-0000-0000-0000-000000000000",
+      primaryKey: true,
+    },
+    create_time: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    access_time: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    asset_flags: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    CreatorID: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+      defaultValue: "",
+    },
+    public: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    marketplace_icon: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+    },
   },
   {
-    timestamps: false,
     freezeTableName: true,
+    tableName: "assets",
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [{ name: "id" }],
+      },
+    ],
   }
 );
 

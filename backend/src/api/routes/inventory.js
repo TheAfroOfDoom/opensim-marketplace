@@ -408,6 +408,8 @@ router.get("/test", async (req, res) => {
       where: {
         agentID: uuid,
       },
+
+      order: [["folderName", "ASC"]],
       attributes: ["folderName", "folderID", "agentID", "parentFolderID"],
     });
 

@@ -5,78 +5,121 @@ const InventoryItems = db.define(
   "inventoryitems",
   {
     assetID: {
-      type: Sequelize.UUID,
+      type: DataTypes.STRING(36),
+      allowNull: true,
     },
     assetType: {
-      type: Sequelize.INTEGER(11).UNSIGNED,
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
-    InventoryName: {
-      type: Sequelize.STRING(64),
+    inventoryName: {
+      type: DataTypes.STRING(64),
+      allowNull: true,
     },
-    InventoryDescription: {
-      type: Sequelize.STRING(64),
+    inventoryDescription: {
+      type: DataTypes.STRING(128),
+      allowNull: true,
     },
-    InventoryNextPermissions: {
-      type: Sequelize.INTEGER(10).UNSIGNED,
+    inventoryNextPermissions: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
     },
-    InventoryCurrentPermissions: {
-      type: Sequelize.INTEGER(10).UNSIGNED,
+    inventoryCurrentPermissions: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
     },
-    InvType: {
-      type: Sequelize.INTEGER(11),
+    invType: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     creatorID: {
-      type: Sequelize.UUID,
-    },
-    InventoryBasePermissions: {
-      type: Sequelize.INTEGER(10).UNSIGNED,
+      type: DataTypes.STRING(255),
       allowNull: false,
+      defaultValue: "00000000-0000-0000-0000-000000000000",
     },
-    InventoryEveryOnePermissions: {
-      type: Sequelize.INTEGER(10).UNSIGNED,
+    inventoryBasePermissions: {
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      defaultValue: 0,
+    },
+    inventoryEveryOnePermissions: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
     },
     salePrice: {
-      type: Sequelize.INTEGER(11),
+      type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     saleType: {
-      type: Sequelize.INTEGER(4),
+      type: DataTypes.TINYINT,
       allowNull: false,
+      defaultValue: 0,
     },
     creationDate: {
-      type: Sequelize.INTEGER(11),
+      type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     groupID: {
-      type: Sequelize.UUID,
+      type: DataTypes.STRING(36),
       allowNull: false,
+      defaultValue: "00000000-0000-0000-0000-000000000000",
     },
     groupOwned: {
-      type: Sequelize.INTEGER(4),
+      type: DataTypes.TINYINT,
       allowNull: false,
+      defaultValue: 0,
     },
     flags: {
-      type: Sequelize.INTEGER(11),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      defaultValue: 0,
     },
-    InventoryID: {
-      type: Sequelize.UUID,
+    inventoryID: {
+      type: DataTypes.CHAR(36),
       allowNull: false,
+      defaultValue: "00000000-0000-0000-0000-000000000000",
       primaryKey: true,
     },
     avatarID: {
-      type: Sequelize.UUID,
+      type: DataTypes.CHAR(36),
+      allowNull: true,
     },
     parentFolderID: {
-      type: Sequelize.UUID,
+      type: DataTypes.CHAR(36),
+      allowNull: true,
     },
-    InventoryGroupPermissions: {
-      type: Sequelize.INTEGER(10).UNSIGNED,
+    inventoryGroupPermissions: {
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      defaultValue: 0,
     },
   },
-  { timestamps: false, freezeTableName: true }
+  {
+    freezeTableName: true,
+    tableName: "inventoryitems",
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [{ name: "inventoryID" }],
+      },
+      {
+        name: "inventoryitems_avatarid",
+        using: "BTREE",
+        fields: [{ name: "avatarID" }],
+      },
+      {
+        name: "inventoryitems_parentFolderid",
+        using: "BTREE",
+        fields: [{ name: "parentFolderID" }],
+      },
+    ],
+  }
 );
 
 module.exports = InventoryItems;

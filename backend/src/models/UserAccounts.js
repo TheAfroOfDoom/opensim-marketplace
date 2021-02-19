@@ -5,22 +5,54 @@ const UserAccounts = db.define(
   "useraccounts",
   {
     PrincipalID: {
-      type: Sequelize.UUID,
+      type: DataTypes.CHAR(36),
       allowNull: false,
-      primaryKey: true,
+      primaryKey: true, // IS NOT PK BUT QUERY REQUIRES ONE. THIS IS THE CLOSEST
     },
-    ScopeID: { type: Sequelize.UUID, allowNull: false },
-    FirstName: { type: Sequelize.STRING(64), allowNull: false },
-    LastName: { type: Sequelize.STRING(64), allowNull: false },
-    Email: { type: Sequelize.STRING(64) },
-    ServiceURLs: { type: Sequelize.TEXT },
-    Created: { type: Sequelize.STRING(36) },
-    UserLevel: { type: Sequelize.INTEGER, allowNull: false },
-    UserFlags: { type: Sequelize.INTEGER, allowNull: false },
-    UserTitle: { type: Sequelize.STRING(64), allowNull: false },
-    active: { type: Sequelize.INTEGER, allowNull: false },
+    ScopeID: {
+      type: DataTypes.CHAR(36),
+      allowNull: false,
+    },
+    FirstName: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+    },
+    LastName: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+    },
+    Email: {
+      type: DataTypes.STRING(64),
+      allowNull: true,
+    },
+    ServiceURLs: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    Created: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    UserLevel: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    UserFlags: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    UserTitle: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+      defaultValue: "",
+    },
   },
-  { timestamps: false, freezeTableName: true }
+  {
+    freezeTableName: true,
+    timestamps: false,
+  }
 );
 
 module.exports = UserAccounts;

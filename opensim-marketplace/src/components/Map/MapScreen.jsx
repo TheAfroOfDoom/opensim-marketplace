@@ -10,14 +10,25 @@ import {
   MapConsumer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { withStyles } from '@material-ui/core/styles';
-import { Container, Grid, Paper, Typography, TextField, List, Divider, Drawer, Button, FormControl } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import {
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  TextField,
+  List,
+  Divider,
+  Drawer,
+  Button,
+  FormControl,
+} from "@material-ui/core";
 import L from "leaflet";
 
 const styles = {
   paper: {
     background: "#343a40",
-    height: 'calc(100% - 50px)',
+    height: "calc(100% - 50px)",
     top: 60,
     width: "20%",
   },
@@ -26,23 +37,23 @@ const styles = {
     textAlign: "center",
   },
   coords: {
-    display:"flex",
+    display: "flex",
   },
   coordright: {
     paddingLeft: 10,
     paddingRight: 10,
     width: "50%",
-    float:"left",
+    float: "left",
     //marginLeft: 10,
   },
   coordleft: {
     paddingLeft: 10,
     paddingRight: 10,
     width: "50%",
-    float:"right",
+    float: "right",
     //marginLeft: 10,
   },
-}
+};
 
 class map extends React.Component {
   constructor(props) {
@@ -52,7 +63,7 @@ class map extends React.Component {
       zoom: 17,
       map: null,
       input_x: null,
-      input_y: null
+      input_y: null,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -89,28 +100,36 @@ class map extends React.Component {
     });
   }
 
-  centerMap = (map) =>{
-    if(map){
-      map.panTo(this.latlongToTile(1000,1000));
+  centerMap = (map) => {
+    if (map) {
+      map.panTo(this.latlongToTile(1000, 1000));
     }
-  }
+  };
 
-  handleCoordChange(axis, coord){
+  handleCoordChange(axis, coord) {
     console.log("coord: ", coord);
 
-    if(axis === 0){
-      this.setState({ input_x: coord});
+    if (axis === 0) {
+      this.setState({ input_x: coord });
     }
-    if(axis === 1){
-      this.setState({ input_y: coord});
+    if (axis === 1) {
+      this.setState({ input_y: coord });
     }
   }
 
-  handleCoordSubmit = (map) => {
-    if(map && this.state.input_x != null && this.state.input_y != null){
-      map.panTo(this.latlongToTile(this.state.input_x, this.state.input_y));
+  handleCoordSubmit = (event) => {
+    event.preventDefault();
+    //console.log("Pressed button");
+    const { map } = this.state;
+    if (map && this.state.input_x != null && this.state.input_y != null) {
+      map.panTo(
+        this.latlongToTile(
+          this.state.input_x * Math.pow(2, 17 - this.state.zoom),
+          this.state.input_y * Math.pow(2, 17 - this.state.zoom)
+        )
+      );
     }
-  }
+  };
 
   latlongToTile(lat, long) {
     return [lat * 0.000976 * 2, long * 0.000977 * 2];
@@ -180,39 +199,57 @@ class map extends React.Component {
             classes={{ paper: classes.paper }}
           >
             <List>
-            <div className={classes.title}>
-              <Typography variant="h3" gutterBottom>
-                Map
-              </Typography>
-            </div>
-            <Divider />
-            <div className={classes.title}>
-              <Typography variant="h6" gutterBottom>
-                Center Position: (1000, 1000)
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Return to center
-              </Typography>
-              <Button onClick={() => this.centerMap(this.state.map)}>Center</Button>
-            </div>
-            <Divider />
-            <div className={classes.title}>
-              <Typography variant="h6" gutterBottom>
-                Coordinate Control
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Current Location {this.state.currentPos &&
-                  this.tileTolatlong(this.state.currentPos)}
-              </Typography>
-              <div className={classes.coordright}>
-                <TextField label="X Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(0, value)}}/>
+              <div className={classes.title}>
+                <Typography variant="h3" gutterBottom>
+                  Map
+                </Typography>
               </div>
-              <div className={classes.coordleft}>
-                <TextField label="Y Coordinate" type="number" onChange={(event) => {const { value } = event.target; this.handleCoordChange(1, value)}}/>
+              <Divider />
+              <div className={classes.title}>
+                <Typography variant="h6" gutterBottom>
+                  Center Position: (1000, 1000)
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Return to center
+                </Typography>
+                <Button onClick={() => this.centerMap(this.state.map)}>
+                  Center
+                </Button>
               </div>
-              <Button onClick={() => this.handleCoordSubmit(this.state.map)}>Move To</Button>
-
-            </div>
+              <Divider />
+              <div className={classes.title}>
+                <Typography variant="h6" gutterBottom>
+                  Coordinate Control
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Current Location{" "}
+                  {this.state.currentPos &&
+                    this.tileTolatlong(this.state.currentPos)}
+                </Typography>
+                <form onSubmit={this.handleCoordSubmit}>
+                  <div className={classes.coordright}>
+                    <TextField
+                      label="X Coordinate"
+                      type="number"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        this.handleCoordChange(0, value);
+                      }}
+                    />
+                  </div>
+                  <div className={classes.coordleft}>
+                    <TextField
+                      label="Y Coordinate"
+                      type="number"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        this.handleCoordChange(1, value);
+                      }}
+                    />
+                  </div>
+                  <Button type="submit">Move To</Button>
+                </form>
+              </div>
             </List>
           </Drawer>
         </div>
