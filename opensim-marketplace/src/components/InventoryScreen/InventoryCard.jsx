@@ -12,13 +12,19 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
-
-
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@material-ui/core";
 
 export default function InventoryCard(props) {
   const [imgData, setImgData] = useState(null);
   const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     let fetchData = async (id) => {
@@ -35,7 +41,6 @@ export default function InventoryCard(props) {
     };
     fetchData(props.data.assetID);
   }, []);
-
 
   //console.log(props.data.isCreator);
   return (
@@ -86,6 +91,7 @@ export default function InventoryCard(props) {
             >
               Remove
             </Button>
+
             <Dialog
               open={open}
               onClose={() => setOpen(!open)}
@@ -94,12 +100,24 @@ export default function InventoryCard(props) {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">{"Are You Sure You Want To Remove This Item?"}</DialogTitle>
+              <DialogTitle id="alert-dialog-title">
+                {"Are You Sure You Want To Remove This Item?"}
+              </DialogTitle>
               <DialogActions>
-                <Button onClick={() => setOpen(!open)} variant="contained" color="secondary">
+                <Button
+                  onClick={() => setOpen(!open)}
+                  variant="contained"
+                  color="secondary"
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => {props.remove(props.data.assetID); setOpen(!open)}} variant="contained">
+                <Button
+                  onClick={() => {
+                    props.remove(props.data.assetID, props.data.InventoryName);
+                    setOpen(!open);
+                  }}
+                  variant="contained"
+                >
                   Remove
                 </Button>
               </DialogActions>
@@ -110,7 +128,9 @@ export default function InventoryCard(props) {
                   className="view-button"
                   variant="outlined"
                   color="secondary"
-                  onClick={() => {props.private(props.data.assetID);}}
+                  onClick={() => {
+                    props.private(props.data.assetID, props.data.InventoryName);
+                  }}
                 >
                   Make Private
                 </Button>
@@ -119,7 +139,9 @@ export default function InventoryCard(props) {
                   className="view-button"
                   variant="outlined"
                   color="primary"
-                  onClick={() => props.upload(props.data.assetID)}
+                  onClick={() =>
+                    props.upload(props.data.assetID, props.data.InventoryName)
+                  }
                 >
                   Make Public
                 </Button>
@@ -127,6 +149,62 @@ export default function InventoryCard(props) {
             ) : (
               <div />
             )}
+            <Button
+              className="edit-button"
+              variant="contained"
+              color="primary"
+              onClick={() => setEdit(!edit)}
+            >
+              Edit
+            </Button>
+            <Dialog
+              open={edit}
+              onClose={() => setEdit(!edit)}
+              fullWidth={true}
+              maxWidth="sm"
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Edit Asset"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Change Name
+                </DialogContentText>
+                <TextField
+                  label=""
+                  type="text"
+                  value={props.data.InventoryName}
+                />
+                <DialogContentText style={{marginTop: "10px"}}>
+                  Change Image
+                </DialogContentText>
+                <input
+                  accept="image/*"
+                  id="contained-button-file"
+                  style={{display: "none"}}
+                  multiple
+                  type="file"
+                />
+                <label htmlFor="contained-button-file">
+                  <Button variant="contained" color="primary" component="span">
+                    Upload
+                  </Button>
+                </label>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => setEdit(!edit)}
+                  variant="contained"
+                  color="secondary">
+                  Cancel
+                </Button>
+                <Button>
+                  Save Changes
+                </Button>
+              </DialogActions>
+            </Dialog>
           </CardActions>
         </div>
       </div>

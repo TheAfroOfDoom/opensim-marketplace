@@ -66,7 +66,7 @@ router.get("/get", async (req, res) => {
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
-      return res.send(401);
+      return res.sendStatus(401);
     } else if (e.message === "Invalid ID") {
       return res.status(400).json({ statusCode: 400, message: "Invalid ID" });
     } else {

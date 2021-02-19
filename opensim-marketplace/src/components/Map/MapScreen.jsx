@@ -187,9 +187,17 @@ class map extends React.Component {
     }
   }
 
-  handleCoordSubmit = (map) => {
+  handleCoordSubmit = (event) => {
+    event.preventDefault();
+    //console.log("Pressed button");
+    const { map } = this.state;
     if (map && this.state.input_x != null && this.state.input_y != null) {
-      map.panTo(this.latlongToTile(this.state.input_x, this.state.input_y));
+      map.panTo(
+        this.latlongToTile(
+          this.state.input_x * Math.pow(2, 17 - this.state.zoom),
+          this.state.input_y * Math.pow(2, 17 - this.state.zoom)
+        )
+      );
     }
   };
 
@@ -311,7 +319,7 @@ class map extends React.Component {
                     }}
                   />
                 </div>
-                <Button onClick={() => this.handleCoordSubmit(this.state.map)}>
+                <Button onClick={() => this.handleCoordSubmit}>
                   Move To
                 </Button>
                 <div>

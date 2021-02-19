@@ -1,48 +1,54 @@
 const { Sequelize, Model, DataTypes } = require("sequelize");
 const db = require("../config/database");
 
-const Auth = db.define(
-  "auth",
+const OSGroupsInvites = db.define(
+  "os_groups_invites",
   {
-    UUID: {
+    InviteID: {
       type: DataTypes.CHAR(36),
       allowNull: false,
+      defaultValue: "",
       primaryKey: true,
     },
-    passwordHash: {
-      type: DataTypes.CHAR(32),
+    GroupID: {
+      type: DataTypes.CHAR(36),
       allowNull: false,
       defaultValue: "",
     },
-    passwordSalt: {
-      type: DataTypes.CHAR(32),
+    RoleID: {
+      type: DataTypes.CHAR(36),
       allowNull: false,
       defaultValue: "",
     },
-    webLoginKey: {
+    PrincipalID: {
       type: DataTypes.STRING(255),
       allowNull: false,
       defaultValue: "",
     },
-    accountType: {
-      type: DataTypes.STRING(32),
+    TMStamp: {
+      type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: "UserAccount",
     },
   },
   {
     freezeTableName: true,
-    tableName: "auth",
+    tableName: "os_groups_invites",
     timestamps: false,
     indexes: [
       {
         name: "PRIMARY",
         unique: true,
         using: "BTREE",
-        fields: [{ name: "UUID" }],
+        fields: [{ name: "InviteID" }],
+      },
+      {
+        name: "PrincipalGroup",
+        unique: true,
+        using: "BTREE",
+        fields: [{ name: "GroupID" }, { name: "PrincipalID" }],
       },
     ],
   }
 );
 
-module.exports = Auth;
+module.exports = OSGroupsInvites;

@@ -1,9 +1,12 @@
-const Assets = require("../models/Assets");
-const UserAccounts = require("../models/UserAccounts");
+const Assets = require("../models/Assets.js");
+const UserAccounts = require("../models/UserAccounts.js");
 const _ = require("lodash");
 const { createCanvas } = require("canvas");
+
 const openjpeg = require("../openjpeg.js");
 const cache = require("../config/cache.js");
+const ConsoleSession = require("./consoleSession.js");
+const { regionUser, regionPass } = require("../config");
 
 async function isUserLoggedIn(uuid) {
   if (uuid === undefined || uuid === null) {
@@ -136,6 +139,25 @@ function objectFilter(obj, predicate) {
   return result;
 }
 
+const regionConsoles = [];
+
+setConsole = (port) => {
+  console.log("Creating new port");
+  regionConsoles[port] = new ConsoleSession(port);
+};
+
+closeConsole = async (port) => {
+  try {
+    await regionConsoles[8002].closeConsole();
+    await regionConsoles[9000].closeConsole();
+  } catch (e) {
+    console.log(e.message);
+  }
+};
+
+uuidRegex =
+  "[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}";
+
 module.exports = {
   isUserLoggedIn,
   isAssetInDatabase,
@@ -144,4 +166,8 @@ module.exports = {
   getCacheItem: getCacheItem,
   convertImage,
   objectFilter,
+  regionConsoles,
+  setConsole,
+  closeConsole,
+  uuidRegex,
 };

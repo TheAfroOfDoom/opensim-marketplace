@@ -52,6 +52,8 @@ app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+// Endpoints
+
 app.use("/api/connection", require("./api/routes/connection"));
 
 app.use("/api/login", require("./api/routes/login"));
