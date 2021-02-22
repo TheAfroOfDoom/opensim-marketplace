@@ -164,7 +164,7 @@ class map extends React.Component {
           >
             <TileLayer
               //attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="http://25.1.197.128:8002/map-{z}-{x}{y}-objects.jpg"
+              url="http://25.5.144.194:8002/map-{z}-{x}{y}-objects.jpg"
               zoomReverse={true}
               tileSize={256}
             />

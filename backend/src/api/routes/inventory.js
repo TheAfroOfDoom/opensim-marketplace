@@ -151,10 +151,10 @@ router.post("/add", async (req, res) => {
       await setTimeout(async function () {
         let x = await axios({
           method: "post",
-          url: "http://25.1.197.128:9000/SessionCommand/",
+          url: "http://25.5.144.194:9000/SessionCommand/",
           data: qs.stringify({
             ID: consoleID,
-            COMMAND: `save iar --noassets Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123`,
+            COMMAND: `save iar --noassets Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123 marketplace_add/${uuid}_add.iar`,
           }),
           headers: {
             "content-type": "application/x-www-form-urlencoded;charset=utf-8",
@@ -163,10 +163,10 @@ router.post("/add", async (req, res) => {
         setTimeout(async function () {
           let y = await axios({
             method: "post",
-            url: "http://25.1.197.128:9000/SessionCommand/",
+            url: "http://25.5.144.194:9000/SessionCommand/",
             data: qs.stringify({
               ID: consoleID,
-              COMMAND: `load iar -m Wifi Admin "Marketplace Downloads" kenny123`,
+              COMMAND: `load iar -m Wifi Admin "Marketplace Downloads" kenny123 marketplace_add/${uuid}_add.iar`,
             }),
             headers: {
               "content-type": "application/x-www-form-urlencoded;charset=utf-8",

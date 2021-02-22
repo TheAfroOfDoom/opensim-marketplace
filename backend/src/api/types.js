@@ -44,4 +44,18 @@ folderTypes = {
   MY_SUITCASE: 100,
 };
 
-module.exports = { assetTypes, folderTypes };
+regionFlags = {
+  DEFAULT_REGION: 1,
+  FALLBACK_REGION: 2,
+  REGION_ONLINE: 4,
+  NO_DIRECT_LOGIN: 8,
+  PERSISTENT: 16,
+  LOCKED_OUT: 32,
+  NO_MOVE: 64,
+  RESERVATION: 128,
+  AUTHENTICATE: 256,
+  HYPERLINK: 512,
+  DEFAULT_HG_REGION: 1024,
+};
+
+module.exports = { assetTypes, folderTypes, regionFlags };
