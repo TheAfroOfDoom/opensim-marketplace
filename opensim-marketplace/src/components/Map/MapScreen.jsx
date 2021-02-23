@@ -22,6 +22,11 @@ import {
   Drawer,
   Button,
   FormControl,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
 } from "@material-ui/core";
 import L from "leaflet";
 
@@ -64,10 +69,37 @@ class map extends React.Component {
       map: null,
       input_x: null,
       input_y: null,
+      cOpen: false,
+      cAll: false,
+      message: "",
     };
     this.handleClick = this.handleClick.bind(this);
   }
 
+  confirmationOpen = () => {
+    this.setState(() => ({
+      cOpen: !this.state.cOpen,
+    }));
+  };
+  confirmationAll = () => {
+    this.setState(() => ({
+      cAll: !this.state.cAll,
+    }));
+  };
+  txtChange = (e) => {
+    console.log(e.target.value);
+    this.setState({
+      message: e.target.value,
+    });
+  };
+  handleShutdown = (event) => {
+    event.preventDefault();
+    this.confirmationOpen();
+  };
+  handleShutdownAll = (event) => {
+    event.preventDefault();
+    this.confirmationAll();
+  };
   handleClick(e) {
     this.setState({ currentPos: e.latlng });
     //console.log(e);
@@ -226,29 +258,109 @@ class map extends React.Component {
                   {this.state.currentPos &&
                     this.tileTolatlong(this.state.currentPos)}
                 </Typography>
-                <form onSubmit={this.handleCoordSubmit}>
-                  <div className={classes.coordright}>
-                    <TextField
-                      label="X Coordinate"
-                      type="number"
-                      onChange={(event) => {
-                        const { value } = event.target;
-                        this.handleCoordChange(0, value);
-                      }}
-                    />
+                <div className={classes.coordright}>
+                  <TextField
+                    label="X Coordinate"
+                    type="number"
+                    onChange={(event) => {
+                      const { value } = event.target;
+                      this.handleCoordChange(0, value);
+                    }}
+                  />
+                </div>
+                <div className={classes.coordleft}>
+                  <TextField
+                    label="Y Coordinate"
+                    type="number"
+                    onChange={(event) => {
+                      const { value } = event.target;
+                      this.handleCoordChange(1, value);
+                    }}
+                  />
+                </div>
+                <Button onClick={() => this.handleCoordSubmit(this.state.map)}>
+                  Move To
+                </Button>
+                <div>
+                  <Typography variant="h6" gutterBottom>
+                    Region Controls
+                  </Typography>
+                  <div>
+                    <Button onClick={this.confirmationOpen}>
+                      Shut down region (x, y)
+                    </Button>
+                    <Dialog
+                      open={this.state.cOpen}
+                      onClose={this.confirmationOpen}
+                      fullWidth={false}
+                      maxWidth="s"
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <form onSubmit={this.handleShutdown}>
+                        <DialogTitle id="alert-dialog-title">
+                          {"Are You Sure You Want To Shutdown This Region?"}
+                        </DialogTitle>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Message to online users:"
+                          fullWidth
+                          onChange={this.txtChange}
+                          value={this.state.message}
+                        />
+                        <DialogActions>
+                          <Button
+                            onClick={this.confirmationOpen}
+                            variant="danger"
+                          >
+                            Cancel
+                          </Button>
+
+                          <Button type="submit">Shutdown</Button>
+                        </DialogActions>
+                      </form>
+                    </Dialog>
+                    <Button onClick={this.confirmationAll}>
+                      Shut Down All Regions
+                    </Button>
+
+                    <Dialog
+                      open={this.state.cAll}
+                      onClose={this.confirmationAll}
+                      fullWidth={false}
+                      maxWidth="s"
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <DialogTitle id="alert-dialog-title">
+                        {"Are You Sure You Want To Shutdown All Regions?"}
+                      </DialogTitle>
+                      <form onSubmit={this.handleShutdownAll}>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Message to online users:"
+                          fullWidth
+                          onChange={this.txtChange}
+                          value={this.state.message}
+                        />
+                        <DialogActions>
+                          <Button
+                            onClick={this.confirmationAll}
+                            variant="danger"
+                          >
+                            Cancel
+                          </Button>
+
+                          <Button type="submit">Shutdown</Button>
+                        </DialogActions>
+                      </form>
+                    </Dialog>
                   </div>
-                  <div className={classes.coordleft}>
-                    <TextField
-                      label="Y Coordinate"
-                      type="number"
-                      onChange={(event) => {
-                        const { value } = event.target;
-                        this.handleCoordChange(1, value);
-                      }}
-                    />
-                  </div>
-                  <Button type="submit">Move To</Button>
-                </form>
+                </div>
               </div>
             </List>
           </Drawer>
