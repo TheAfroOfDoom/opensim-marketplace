@@ -262,6 +262,30 @@ export default class LoginScreen extends React.Component {
     this.getFolder();
   }
 
+  handleImageChange = async (assetId, imageOBJ, name) => {
+    console.log("New Name" + name);
+    try {
+      //console.log(assetID);
+      const response = await axios.post("/api/media/set", {
+        assetID: assetId,
+        imgData: imageOBJ,
+      });
+      this.getFolder();
+      this.setState({
+        open: true,
+        message: `Asset Successfully edited`,
+        severity: "success",
+      });
+    }catch (error) {
+      //alert("Un-Upload: " + error);
+      this.setState({
+        open: true,
+        message: `Error Saving Edit Changes to Asset please try again`,
+        severity: "error",
+      });
+    }
+  }
+
   handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -298,6 +322,7 @@ export default class LoginScreen extends React.Component {
                   remove={this.removeItem.bind(this)}
                   private={this.privateItem.bind(this)}
                   upload={this.uploadItem.bind(this)}
+                  image={this.handleImageChange}
                 />
               </Container>
             );

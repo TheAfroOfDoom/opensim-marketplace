@@ -25,7 +25,9 @@ export default function InventoryCard(props) {
   const [imgData, setImgData] = useState(null);
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
-
+  const [image, setImage] = useState(null);
+  const [imgObj, setImageObj] = useState(null);
+  const [name, setName] = useState(props.data.InventoryName);
   useEffect(() => {
     let fetchData = async (id) => {
       try {
@@ -42,7 +44,21 @@ export default function InventoryCard(props) {
     fetchData(props.data.assetID);
   }, []);
 
-  //console.log(props.data.isCreator);
+  const handleimagefile = (event) => {
+    setImage(URL.createObjectURL(event.target.files[0]));
+  }
+
+  const onImageLoad = ({target:img}) => {
+    console.log(img.naturalHeight, img.naturalWidth, img);
+    let canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    setImageObj({width: img.naturalWidth, height: img.naturalHeight, data: canvas.toDataURL("image/jpeg")});
+    console.log(canvas.toDataURL("image/jpeg").toString());
+  }
+
+
+
   return (
     <Card
       className="root"
@@ -175,7 +191,8 @@ export default function InventoryCard(props) {
                 <TextField
                   label=""
                   type="text"
-                  value={props.data.InventoryName}
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
                 />
                 <DialogContentText style={{marginTop: "10px"}}>
                   Change Image
@@ -183,15 +200,12 @@ export default function InventoryCard(props) {
                 <input
                   accept="image/*"
                   id="contained-button-file"
-                  style={{display: "none"}}
                   multiple
                   type="file"
+                  onChange={handleimagefile}
                 />
-                <label htmlFor="contained-button-file">
-                  <Button variant="contained" color="primary" component="span">
-                    Upload
-                  </Button>
-                </label>
+                <img onLoad={onImageLoad} src={image}/>
+
               </DialogContent>
               <DialogActions>
                 <Button
@@ -200,7 +214,10 @@ export default function InventoryCard(props) {
                   color="secondary">
                   Cancel
                 </Button>
-                <Button>
+                <Button onClick={() => {
+                  props.image(props.data.assetID, imgObj, name);
+                  setEdit(!edit);
+                }}>
                   Save Changes
                 </Button>
               </DialogActions>
