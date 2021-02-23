@@ -8,11 +8,13 @@ const UserAccounts = require("../../models/UserAccounts");
 const _ = require("lodash");
 const axios = require("axios");
 const qs = require("qs");
+const path = require("path");
 const {
   isUserLoggedIn,
   isAssetInDatabase,
   regionConsoles,
 } = require("../util.js");
+fs = require("fs");
 
 /**
  * @swagger
@@ -475,6 +477,51 @@ router.get("/test", async (req, res) => {
       return res.sendStatus(401);
     } else if (e.message === "Forbidden") {
       return res.sendStatus(403);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
+    } else {
+      return res.sendStatus(400);
+    }
+  }
+});
+
+router.get("/test2", async (req, res) => {
+  try {
+    //Check if user is authenticated
+    const { uuid } = req.cookies;
+    /*
+    if (!(await isUserLoggedIn(uuid))) {
+      throw new Error("Unauthorized");
+    }
+    */
+    let filename = "f577aa90-7db9-4a77-afc2-6daee8916c3e_add.iar";
+    let file = path.resolve(
+      __dirname,
+      `../../../../../bin/marketplace_add/${filename}`
+    );
+
+    res.download(file);
+    //let filename = "test.txt";
+    /*
+    fs.readFile(
+      path.resolve(__dirname, `../../../../../bin/marketplace_add/${filename}`),
+      (err, data) => {
+        if (err) {
+          return console.log(err);
+        }
+        console.log(data);
+        fs.writeFile("test.iar", data, (err) => {
+          if (err) return console.log(err);
+          console.log("Adding to test.iar");
+        });
+      }
+    );
+    */
+    //res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.send(401);
     } else if (e.message === "Invalid ID") {
       return res.status(400).send("Invalid ID");
     } else {
