@@ -10,13 +10,13 @@ import {
   MapConsumer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import TextFieldMui from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 import {
   Container,
   Grid,
   Paper,
   Typography,
-  TextField,
   List,
   Divider,
   Drawer,
@@ -59,6 +59,44 @@ const styles = {
     //marginLeft: 10,
   },
 };
+
+const styles_textfield = muiTheme => ({
+  label: {
+    "&$erroredLabel": {
+      color: "white"
+    }
+  },
+  erroredLabel: {},
+  underline: {
+    "&$error:after": {
+      borderBottomColor: "white"
+    },
+  },
+  error: {}
+});
+
+const TextField = withStyles(styles_textfield)(function TextField({ classes, ...props }) {
+  return (
+    <TextFieldMui
+      InputLabelProps={{
+        classes: {
+          root: classes.label,
+          focused: classes.focusedLabel,
+          error: classes.erroredLabel
+        }
+      }}
+      InputProps={{
+        classes: {
+          root: classes.underline,
+          error: classes.error
+        }
+      }}
+      {...props}
+    />
+  );
+});
+
+
 
 class map extends React.Component {
   constructor(props) {
@@ -230,6 +268,7 @@ class map extends React.Component {
             open={true}
             classes={{ paper: classes.paper }}
           >
+
             <List>
               <div className={classes.title}>
                 <Typography variant="h3" gutterBottom>
@@ -260,6 +299,7 @@ class map extends React.Component {
                 </Typography>
                 <div className={classes.coordright}>
                   <TextField
+                    error={{}}
                     label="X Coordinate"
                     type="number"
                     onChange={(event) => {
@@ -270,6 +310,7 @@ class map extends React.Component {
                 </div>
                 <div className={classes.coordleft}>
                   <TextField
+                    error={{}}
                     label="Y Coordinate"
                     type="number"
                     onChange={(event) => {
@@ -278,7 +319,7 @@ class map extends React.Component {
                     }}
                   />
                 </div>
-                <Button onClick={() => this.handleCoordSubmit(this.state.map)}>
+                <Button onClick={() => this.handleCoordSubmit}>
                   Move To
                 </Button>
                 <div>
