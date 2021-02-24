@@ -35,3 +35,7 @@
   align-self: flex-end;
   margin-bottom: auto;
 }
+
+.MuiAccordionSummary-content {
+  justify-content: space-between;
+}

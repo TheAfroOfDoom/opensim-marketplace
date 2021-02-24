@@ -46,18 +46,20 @@ export default function InventoryCard(props) {
 
   const handleimagefile = (event) => {
     setImage(URL.createObjectURL(event.target.files[0]));
-  }
+  };
 
-  const onImageLoad = ({target:img}) => {
+  const onImageLoad = ({ target: img }) => {
     console.log(img.naturalHeight, img.naturalWidth, img);
     let canvas = document.createElement("canvas");
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
-    setImageObj({width: img.naturalWidth, height: img.naturalHeight, data: canvas.toDataURL("image/jpeg")});
+    setImageObj({
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+      data: canvas.toDataURL("image/jpeg"),
+    });
     console.log(canvas.toDataURL("image/jpeg").toString());
-  }
-
-
+  };
 
   return (
     <Card
@@ -181,20 +183,16 @@ export default function InventoryCard(props) {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
-                {"Edit Asset"}
-              </DialogTitle>
+              <DialogTitle id="alert-dialog-title">{"Edit Asset"}</DialogTitle>
               <DialogContent>
-                <DialogContentText>
-                  Change Name
-                </DialogContentText>
+                <DialogContentText>Change Name</DialogContentText>
                 <TextField
                   label=""
                   type="text"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                 />
-                <DialogContentText style={{marginTop: "10px"}}>
+                <DialogContentText style={{ marginTop: "10px" }}>
                   Change Image
                 </DialogContentText>
                 <input
@@ -204,24 +202,56 @@ export default function InventoryCard(props) {
                   type="file"
                   onChange={handleimagefile}
                 />
-                <img onLoad={onImageLoad} src={image}/>
-
+                <img onLoad={onImageLoad} src={image} />
               </DialogContent>
               <DialogActions>
                 <Button
                   onClick={() => setEdit(!edit)}
                   variant="contained"
-                  color="secondary">
+                  color="secondary"
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => {
-                  props.image(props.data.assetID, imgObj, name);
-                  setEdit(!edit);
-                }}>
+                <Button
+                  onClick={() => {
+                    props.image(props.data.assetID, imgObj, name);
+                    setEdit(!edit);
+                  }}
+                >
                   Save Changes
                 </Button>
               </DialogActions>
             </Dialog>
+            <Button
+              className="view-button"
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                const res = await axios({
+                  method: "get",
+                  url: "/api/inventory/download",
+                  responseType: "blob",
+                  params: {
+                    inventorypath: props.inventorypath,
+                    assetID: props.data.assetID,
+                    inventoryName: props.data.InventoryName,
+                    isFile: true,
+                  },
+                  headers: {},
+                });
+                const url = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute(
+                  "download",
+                  `${props.data.InventoryName}.iar`
+                );
+                link.click();
+              }}
+              download
+            >
+              Download
+            </Button>
           </CardActions>
         </div>
       </div>

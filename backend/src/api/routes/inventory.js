@@ -485,22 +485,51 @@ router.get("/test", async (req, res) => {
   }
 });
 
-router.get("/test2", async (req, res) => {
+router.get("/download", async (req, res) => {
   try {
     //Check if user is authenticated
     const { uuid } = req.cookies;
-    /*
+
     if (!(await isUserLoggedIn(uuid))) {
       throw new Error("Unauthorized");
     }
-    */
-    let filename = "f577aa90-7db9-4a77-afc2-6daee8916c3e_add.iar";
-    let file = path.resolve(
-      __dirname,
-      `../../../../../bin/marketplace_add/${filename}`
-    );
 
-    res.download(file);
+    const { inventorypath, assetID, inventoryName, isFile } = req.query;
+
+    const consoleSession = regionConsoles[9000];
+
+    let command;
+    if (isFile === "true") {
+      console.log(req.query);
+      if (!(await isAssetInDatabase(assetID))) {
+        throw new Error("Invalid ID");
+      }
+      command = `save iar Wifi Admin "${inventorypath}${inventoryName}" kenny123 marketplace_add/${uuid}_dl.iar`;
+    } else {
+      console.log("Getting Folder");
+      command = `save iar Wifi Admin "${inventorypath}" kenny123 marketplace_add/${uuid}_dl.iar`;
+    }
+    // Save IAR
+    let x = await axios({
+      method: "post",
+      url: consoleSession.getFullAddress() + "/SessionCommand/",
+      data: qs.stringify({
+        ID: consoleSession.consoleID,
+        COMMAND: command,
+      }),
+      headers: {
+        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
+    });
+
+    await setTimeout(async () => {
+      let filename = `${uuid}_dl.iar`;
+      let file = path.resolve(
+        __dirname,
+        `../../../../../bin/marketplace_add/${filename}`
+      );
+      res.download(file);
+    }, 1000);
     //let filename = "test.txt";
     /*
     fs.readFile(
@@ -521,7 +550,9 @@ router.get("/test2", async (req, res) => {
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
-      return res.send(401);
+      return res.sendStatus(401);
+    } else if (e.message === "Forbidden") {
+      return res.sendStatus(403);
     } else if (e.message === "Invalid ID") {
       return res.status(400).send("Invalid ID");
     } else {

@@ -15,6 +15,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Button,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import InventoryCard from "./InventoryCard";
@@ -276,7 +277,7 @@ export default class LoginScreen extends React.Component {
         message: `Asset Successfully edited`,
         severity: "success",
       });
-    }catch (error) {
+    } catch (error) {
       //alert("Un-Upload: " + error);
       this.setState({
         open: true,
@@ -284,7 +285,7 @@ export default class LoginScreen extends React.Component {
         severity: "error",
       });
     }
-  }
+  };
 
   handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -294,7 +295,8 @@ export default class LoginScreen extends React.Component {
     this.setState({ open: false });
   };
 
-  constructFolders = (data) => {
+  constructFolders = (data, inventorypath) => {
+    let currentInventoryPath = inventorypath + data.folderName + "/";
     return (
       <Accordion key={data.folderID}>
         <Accordion style={{ marginLeft: "5%" }}>
@@ -304,11 +306,36 @@ export default class LoginScreen extends React.Component {
             id="panel1a-header"
           >
             <Typography component="h2" variant="h5">
-              {data.folderName}
+              {currentInventoryPath}
             </Typography>
+            <Button
+              className="view-button"
+              style={{ float: "right" }}
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                const res = await axios({
+                  method: "get",
+                  url: "/api/inventory/download",
+                  responseType: "blob",
+                  params: {
+                    inventorypath: currentInventoryPath,
+                    isFile: false,
+                  },
+                  headers: {},
+                });
+                const url = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `${data.folderName}.iar`);
+                link.click();
+              }}
+            >
+              Download
+            </Button>
           </AccordionSummary>
           {data.folders.map((obj) => {
-            return this.constructFolders(obj);
+            return this.constructFolders(obj, currentInventoryPath);
           })}
           {data.items.map((obj) => {
             return (
@@ -323,6 +350,7 @@ export default class LoginScreen extends React.Component {
                   private={this.privateItem.bind(this)}
                   upload={this.uploadItem.bind(this)}
                   image={this.handleImageChange}
+                  inventorypath={currentInventoryPath}
                 />
               </Container>
             );
@@ -372,7 +400,7 @@ export default class LoginScreen extends React.Component {
                 </Typography>
               </AccordionSummary>
               {this.state.data.folders.map((obj) => {
-                return this.constructFolders(obj);
+                return this.constructFolders(obj, "/");
               })}
               {this.state.data.items.map((obj) => {
                 return (
