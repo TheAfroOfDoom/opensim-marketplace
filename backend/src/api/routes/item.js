@@ -30,9 +30,9 @@ const { isUserLoggedIn, isAssetInDatabase, openjpeg } = require("../util.js");
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 

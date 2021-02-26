@@ -1,5 +1,5 @@
 const Assets = require("../models/Assets.js");
-const UserAccounts = require("../models/UserAccounts.js");
+const Tokens = require("../models/Tokens.js");
 const _ = require("lodash");
 const { createCanvas } = require("canvas");
 
@@ -8,17 +8,17 @@ const cache = require("../config/cache.js");
 const ConsoleSession = require("./consoleSession.js");
 const { regionUser, regionPass } = require("../config");
 
-async function isUserLoggedIn(uuid) {
-  if (uuid === undefined || uuid === null) {
+async function isUserLoggedIn(sid) {
+  if (sid === undefined || sid === null) {
     return false;
   }
 
-  let uuidInDatabase = await UserAccounts.findOne({
-    attributes: ["PrincipalID"],
-    where: { PrincipalID: uuid },
+  let sidInDatabase = await Tokens.findOne({
+    attributes: ["token"],
+    where: { token: sid },
   });
 
-  if (_.isEmpty(uuidInDatabase)) return false;
+  if (_.isEmpty(sidInDatabase)) return false;
   return true;
 }
 

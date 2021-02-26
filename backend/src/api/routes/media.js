@@ -15,9 +15,9 @@ const { assetTypes } = require("../types.js");
 router.get("/get", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -78,9 +78,9 @@ router.get("/get", async (req, res) => {
 router.post("/set", async (req, res) => {
   try {
     //Check if user is logged in
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       //throw new Error("Unauthorized");
     }
 

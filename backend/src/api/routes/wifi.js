@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
       throw new Error("Incorrect params");
     }
     res.set("Content-Type", "text/json");
-    res.cookie("sid", value).send("cookie returned");
+    res.cookie("sid", value).sendStatus(201);
   } catch (e) {
     console.log(e);
     if (e.message == "Incorrect params") {
@@ -69,9 +69,9 @@ router.post("/login", async (req, res) => {
 router.get("/map", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -132,9 +132,9 @@ router.get("/consoletest", async (req, res) => {
 router.get("/getregions", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 

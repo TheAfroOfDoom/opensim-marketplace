@@ -5,6 +5,7 @@ const InventoryItems = require("../../models/InventoryItems");
 const InventoryFolders = require("../../models/InventoryFolders");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
+const Tokens = require("../../models/Tokens");
 const _ = require("lodash");
 const axios = require("axios");
 const qs = require("qs");
@@ -32,9 +33,9 @@ fs = require("fs");
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -110,9 +111,9 @@ router.get("/", async (req, res) => {
 router.post("/add", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -218,9 +219,9 @@ router.post("/add", async (req, res) => {
 router.post("/remove", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -289,9 +290,9 @@ router.post("/remove", async (req, res) => {
 router.post("/upload", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -355,8 +356,8 @@ router.post("/upload", async (req, res) => {
 router.post("/private", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
-    if (!(await isUserLoggedIn(uuid))) {
+    const { sid } = req.cookies;
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -396,10 +397,17 @@ router.post("/private", async (req, res) => {
 
 router.get("/test", async (req, res) => {
   try {
-    const { uuid } = req.cookies;
-    if (!(await isUserLoggedIn(uuid))) {
+    const { sid } = req.cookies;
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
+
+    let uuidFromToken = await Tokens.findOne({
+      attributes: ["uuid"],
+      where: { token: sid },
+    });
+
+    let uuid = uuidFromToken.dataValues.uuid;
 
     // Give relations
     InventoryItems.hasMany(Assets);
@@ -427,6 +435,7 @@ router.get("/test", async (req, res) => {
         "InventoryID",
         "parentFolderID",
         "creationDate",
+        "inventoryID",
       ],
       include: [
         {
@@ -488,9 +497,9 @@ router.get("/test", async (req, res) => {
 router.get("/download", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -504,10 +513,10 @@ router.get("/download", async (req, res) => {
       if (!(await isAssetInDatabase(assetID))) {
         throw new Error("Invalid ID");
       }
-      command = `save iar Wifi Admin "${inventorypath}${inventoryName}" kenny123 marketplace_add/${uuid}_dl.iar`;
+      command = `save iar Wifi Admin "${inventorypath}${inventoryName}" kenny123 marketplace_add/${sid}_dl.iar`;
     } else {
       console.log("Getting Folder");
-      command = `save iar Wifi Admin "${inventorypath}" kenny123 marketplace_add/${uuid}_dl.iar`;
+      command = `save iar Wifi Admin "${inventorypath}" kenny123 marketplace_add/${sid}_dl.iar`;
     }
     // Save IAR
     let x = await axios({
@@ -523,30 +532,13 @@ router.get("/download", async (req, res) => {
     });
 
     await setTimeout(async () => {
-      let filename = `${uuid}_dl.iar`;
+      let filename = `${sid}_dl.iar`;
       let file = path.resolve(
         __dirname,
         `../../../../../bin/marketplace_add/${filename}`
       );
       res.download(file);
     }, 1000);
-    //let filename = "test.txt";
-    /*
-    fs.readFile(
-      path.resolve(__dirname, `../../../../../bin/marketplace_add/${filename}`),
-      (err, data) => {
-        if (err) {
-          return console.log(err);
-        }
-        console.log(data);
-        fs.writeFile("test.iar", data, (err) => {
-          if (err) return console.log(err);
-          console.log("Adding to test.iar");
-        });
-      }
-    );
-    */
-    //res.sendStatus(200);
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
