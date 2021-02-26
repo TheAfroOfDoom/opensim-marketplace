@@ -90,17 +90,7 @@ class App extends React.Component {
                   <Redirect to="/" />
                 </Route>
                 <Route path="/inventory" component={InventoryScreen} />
-                <Route path="/search">
-                  <SearchScreen
-                    data={this.state.data2}
-                    startDate={this.state.Sdate}
-                    endDate={this.state.Edate}
-                    limitNumber={this.state.limit}
-                    typeAsset={this.state.type}
-                    orderType={this.state.order}
-                    activeDefault={0}
-                  />
-                </Route>
+                <Route path="/search/:data" component={SearchScreen} />
                 <Route path="/item/:assetId" component={ItemScreen} />
                 <Route exact path="/">
                   <HomeScreen searchData={this.handleSearchChange} />
@@ -121,17 +111,7 @@ class App extends React.Component {
                 <Redirect to="/" />
               </Route>
               <Route path="/inventory" component={InventoryScreen} />
-              <Route path="/search">
-                <SearchScreen
-                  data={this.state.data2}
-                  startDate={this.state.Sdate}
-                  endDate={this.state.Edate}
-                  limitNumber={this.state.limit}
-                  typeAsset={this.state.type}
-                  orderType={this.state.order}
-                  activeDefault={0}
-                />
-              </Route>
+              <Route path="/search" component={SearchScreen} />
               <Route path="/item/:assetId" component={ItemScreen} />
               <Route exact path="/">
                 <HomeScreen searchData={this.handleSearchChange} />
@@ -149,3 +129,13 @@ class App extends React.Component {
 }
 
 export default App;
+
+/*<SearchScreen
+  data={this.state.data2}
+  startDate={this.state.Sdate}
+  endDate={this.state.Edate}
+  limitNumber={this.state.limit}
+  typeAsset={this.state.type}
+  orderType={this.state.order}
+  activeDefault={0}
+/>*/

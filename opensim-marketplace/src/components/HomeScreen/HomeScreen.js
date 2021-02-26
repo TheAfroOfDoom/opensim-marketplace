@@ -43,7 +43,6 @@ export default class HomeScreen extends React.Component {
   async componentDidMount() {
     try {
       const response = await axios.get("/api/search/public", { limit: 16 });
-      console.log(response);
       this.setState({
         data: response.data.data,
       });
@@ -61,7 +60,6 @@ and item carousel with recently updated items
     let dataarr = this.state.data;
     let sorted = null;
     if (dataarr != null) {
-      console.log(dataarr);
       sorted = dataarr.splice(0, 17).sort((first, second) => {
         if (first.create_time < second.create_time) return 1;
         if (first.create_time > second.create_time) return -1;

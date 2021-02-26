@@ -124,7 +124,7 @@ router.get("/", async (req, res) => {
 
     return res.send(await getAssets(params));
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     }
@@ -193,7 +193,6 @@ router.get("/public", async (req, res) => {
     //Check if user is authenticated
     const { sid } = req.cookies;
 
-    console.log(sid);
     if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
@@ -213,7 +212,7 @@ router.get("/public", async (req, res) => {
       startAccessed,
       endAccessed,
     } = req.query;
-
+    console.log("Req props");
     // Check if there is a valid search string
     if (searchString === undefined) {
       searchString = "";
@@ -370,7 +369,6 @@ function getTimeParams({
     }
     // 0 0
   }
-  console.log(where);
   return where;
 }
 

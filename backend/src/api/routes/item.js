@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const sequelize = require("../../config/database");
 const Assets = require("../../models/Assets");
+const Tokens = require("../../models/Tokens");
 const UserAccounts = require("../../models/UserAccounts");
 const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
@@ -67,6 +68,13 @@ router.get("/", async (req, res) => {
       ],
       where: { id: id },
     });
+
+    let uuidFromToken = await Tokens.findOne({
+      attributes: ["uuid"],
+      where: { token: sid },
+    });
+
+    let uuid = uuidFromToken.dataValues.uuid;
 
     let j2k;
     //If there is an asset

@@ -91,6 +91,7 @@ class NavigationBar extends React.Component {
   //handles search button click functionality
   onClick = () => {
     //callback function, sends the user search string as well as the various advance search options they have selected
+    /*
     this.props.searchData(
       this.state.search,
       this.state.limit,
@@ -99,8 +100,9 @@ class NavigationBar extends React.Component {
       this.state.dateStart,
       this.state.dateEnd
     );
+    */
     //redirects to search page
-    this.setState({ redirect: true });
+    //this.setState({ redirect: true });
   };
 
   //Query's for the total number of public assets
@@ -125,7 +127,7 @@ class NavigationBar extends React.Component {
       this.setState({ type: undefined, check2: false });
     }
     if (event.target.checked == true) {
-      this.setState({ check2: true });
+      this.setState({ type: -2, check2: true });
     }
   }
 
@@ -199,6 +201,28 @@ class NavigationBar extends React.Component {
     let fleldVal = event.target.value;
     this.setState({ search: fleldVal });
   }
+
+  urlString = () => {
+    const baseURL = "/search?";
+    console.log(this.state);
+    let url = baseURL;
+    const { search, limit, type, order, dateStart, dateEnd } = this.state;
+    const variables = {
+      search,
+      limit,
+      type,
+      order,
+      dateStart,
+      dateEnd,
+    };
+
+    let variableList = [];
+    for (const [key, value] of Object.entries(variables)) {
+      if (value !== null && value !== undefined && value !== 0 && value !== "")
+        variableList.push(`${key}=${value}`);
+    }
+    return (url += variableList.join("&"));
+  };
 
   //Handles logout functionality
   Logout = () => {
@@ -279,12 +303,12 @@ class NavigationBar extends React.Component {
                 onChange={this.handleChange.bind(this)}
                 onSubmit={this.onClick}
               />
-              <Link to="/search">
+              <Link to={this.urlString}>
                 <Button type="submit" onClick={this.onClick} variant="success">
                   Search
                 </Button>
               </Link>
-              <Link to="/search">
+              <Link to={this.urlString}>
                 <Button
                   onClick={this.toggle}
                   aria-controls="example-collapse-text"
@@ -445,7 +469,7 @@ class NavigationBar extends React.Component {
             </div>
           </Drawer>
         </div>
-        {this.state.redirect ? <Redirect to="/search" /> : <div />}
+        {this.state.redirect ? <Redirect to={this.urlString} /> : <div />}
       </header>
     );
   }
