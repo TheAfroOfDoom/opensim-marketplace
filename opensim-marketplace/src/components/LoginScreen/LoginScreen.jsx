@@ -46,12 +46,11 @@ export default class LoginScreen extends React.Component {
       });
 
       if (response.status === 201) {
-        console.log("Password worked");
         this.setState({ loginSuccess: true });
         this.props.handleLogin(true);
       }
     } catch (err) {
-      console.log("Login Failed: " + err.message);
+      console.error("Login Failed: " + err.message);
       this.setState({ loginFail: true });
     }
   };

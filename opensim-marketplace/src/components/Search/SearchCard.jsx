@@ -67,14 +67,12 @@ export default function SearchCard(props) {
   useEffect(() => {
     let fetchData = async (id) => {
       try {
-        console.log(id);
         let response = await axios.get("/api/media/get", {
           params: { assetID: id },
         });
-        console.log(response);
         setImgData(response.data.data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     };
     fetchData(props.obj.id);

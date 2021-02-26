@@ -7,21 +7,21 @@ import axios from "axios";
 import NoResults from "./NoResults";
 import SearchCard from "./SearchCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 import { Container, Grid } from "@material-ui/core";
 
 const styles = {
   root: {
-    marginTop:"30px"
+    marginTop: "30px",
   },
   list: {
-    width: 250
+    width: 250,
   },
   fullList: {
-    width: "auto"
+    width: "auto",
   },
   paper: {
-    background: "#343a40"
+    background: "#343a40",
   },
   title: {
     color: "white",
@@ -30,20 +30,54 @@ const styles = {
   input: {
     paddingLeft: "10px",
     paddingRight: "10px",
-    marginTop: "1.5rem"
-  }
+    marginTop: "1.5rem",
+  },
 };
 
 class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: null, active: this.props.activeDefault, start: 0, end: 9, loading:false };
+    this.state = {
+      data: null,
+      active: 0,
+      start: 0,
+      end: 9,
+      loading: true,
+    };
   }
 
-  getSearch = async () =>{
-    if(this.props.data !== null && this.props.data !== this.state.previous && this.state.loading !== true){
+  getSearch = async () => {
+    try {
+      this.setState({ loading: true });
+      const urlParams = new URLSearchParams(this.props.location.search);
+      let response = await axios.get("/api/search/public", {
+        params: {
+          order: urlParams.get("order"),
+          limit: urlParams.get("limit"),
+          assetType: urlParams.get("type"),
+          startCreated: urlParams.get("dateStart"),
+          endCreated: urlParams.get("dateEnd"),
+          searchString: urlParams.get("search"),
+          offset: this.state.offset || 0,
+        },
+      });
 
-      this.setState({loading: true});
+      this.setState({
+        data: response.data,
+        previous: this.props.location.search,
+        loading: false,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    /*
+    if (
+      this.props.data !== null &&
+      this.props.data !== this.state.previous &&
+      this.state.loading !== true
+    ) {
+
+      this.setState({ loading: true });
       let limit = this.props.limitNumber;
       let type = this.props.typeAsset;
       let order = this.props.orderType;
@@ -52,34 +86,42 @@ class SearchScreen extends React.Component {
 
       console.log("dateStart: ", dateStart);
       console.log("dateEnd: ", dateEnd);
-      if(limit === 0){
+      if (limit === 0) {
         limit = 24;
       }
+
       let response = await axios.get("/api/search/public", {
-          params: {
-            order: order,
-            limit: limit,
-            assetType: type,
-            startCreated: dateStart,
-            endCreated: dateEnd,
-            searchString: this.props.data,
+        params: {
+          order: order,
+          limit: limit,
+          assetType: type,
+          startCreated: dateStart,
+          endCreated: dateEnd,
+          searchString: this.props.data,
+        },
+      });
 
-          },
-        });
-
-      this.setState({data: response.data.data, previous: this.props.data, loading:false});
+      this.setState({
+        data: response.data.data,
+        previous: this.props.data,
+        loading: false,
+      });
     }
+    */
   };
 
   componentDidMount() {
     this.getSearch();
   }
-  componentDidUpdate(){
-    this.getSearch();
+  componentDidUpdate() {
+    if (this.state.previous !== this.props.location.search) {
+      this.getSearch();
+    }
   }
 
   handlePage = async (value) => {
-    this.setState({ active: value });
+    await this.setState({ active: value, offset: value * 24 });
+    this.getSearch();
   };
 
   getAssetType = (assetType) => {
@@ -198,12 +240,9 @@ class SearchScreen extends React.Component {
   };
 
   render() {
-
-
     let items = [];
     if (this.state.data) {
-      //console.log("Length:", this.props.data.length);
-      for (let i = 0; i < Math.ceil(this.state.data.length / 24); i++) {
+      for (let i = 0; i < Math.ceil(this.state.data.count / 24); i++) {
         items.push(
           <Pagination.Item
             key={i + 1}
@@ -216,12 +255,9 @@ class SearchScreen extends React.Component {
       }
     }
 
-    let temparray =
-      this.state.data &&
-      this.state.data.slice(
-        this.state.active * 24,
-        this.state.active * 24 + 24
-      );
+    let start = 0;
+    let end = 24;
+    let temparray = this.state.data && this.state.data.data.slice(start, end);
     if (this.state.loading) {
       return (
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -230,7 +266,7 @@ class SearchScreen extends React.Component {
           </div>
         </div>
       );
-    } else if (_.isEmpty(items) && !this.state.loading) {
+    } else if (_.isEmpty(this.state.data.data) && !this.state.loading) {
       return (
         <div>
           <div>
@@ -243,7 +279,7 @@ class SearchScreen extends React.Component {
         <div>
           <Container maxWidth={false} style={{ marginTop: "30px" }}>
             <Grid container direction="row" alignItems="center" spacing={3}>
-              {this.state.data &&
+              {this.state.data.data &&
                 temparray.map((obj, index) => {
                   return (
                     <Grid item xs={12} md={6} lg={4} xl={3}>

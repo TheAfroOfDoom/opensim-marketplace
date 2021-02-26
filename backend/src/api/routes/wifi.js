@@ -6,6 +6,7 @@ const xml = require("xml");
 const qs = require("qs");
 const jsdom = require("jsdom");
 const Regions = require("../../models/Regions");
+const Tokens = require("../../models/Tokens");
 const { JSDOM } = jsdom;
 const { regionConsoles, setConsole, uuidRegex } = require("../util");
 
@@ -54,8 +55,16 @@ router.post("/login", async (req, res) => {
     if (value === undefined) {
       throw new Error("Incorrect params");
     }
-    res.set("Content-Type", "text/json");
-    res.cookie("sid", value).sendStatus(201);
+    let token = await Tokens.findOne({
+      where: { token: value },
+      attributes: ["validity"],
+    });
+
+    let validity = Date.parse(token.dataValues.validity.toString());
+
+    let validityDate = new Date(validity);
+    console.log("Date: " + validityDate.toUTCString());
+    res.cookie("sid", value, { maxAge: 30 * 60 * 1000 }).sendStatus(201);
   } catch (e) {
     console.log(e);
     if (e.message == "Incorrect params") {
@@ -69,9 +78,9 @@ router.post("/login", async (req, res) => {
 router.get("/map", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -132,9 +141,9 @@ router.get("/consoletest", async (req, res) => {
 router.get("/getregions", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 

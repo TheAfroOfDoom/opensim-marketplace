@@ -25,7 +25,7 @@ const { assetTypes } = require("../types.js");
  *       - application/json
  *     parameters:
  *       - in: cookie
- *         name: uuid
+ *         name: sid
  *         type: string
  *         description: User access token
  *       - in: query
@@ -69,9 +69,9 @@ const { assetTypes } = require("../types.js");
 router.get("/", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
 
@@ -124,7 +124,7 @@ router.get("/", async (req, res) => {
 
     return res.send(await getAssets(params));
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     if (e.message === "Unauthorized") {
       return res.sendStatus(401);
     }
@@ -147,7 +147,7 @@ router.get("/", async (req, res) => {
  *       - application/json
  *     parameters:
  *       - in: cookie
- *         name: uuid
+ *         name: sid
  *         type: string
  *         description: User access token
  *       - in: query
@@ -191,10 +191,9 @@ router.get("/", async (req, res) => {
 router.get("/public", async (req, res) => {
   try {
     //Check if user is authenticated
-    const { uuid } = req.cookies;
+    const { sid } = req.cookies;
 
-    console.log(uuid);
-    if (!(await isUserLoggedIn(uuid))) {
+    if (!(await isUserLoggedIn(sid))) {
       throw new Error("Unauthorized");
     }
     // Give relations
@@ -213,7 +212,7 @@ router.get("/public", async (req, res) => {
       startAccessed,
       endAccessed,
     } = req.query;
-
+    console.log("Req props");
     // Check if there is a valid search string
     if (searchString === undefined) {
       searchString = "";
@@ -370,7 +369,6 @@ function getTimeParams({
     }
     // 0 0
   }
-  console.log(where);
   return where;
 }
 

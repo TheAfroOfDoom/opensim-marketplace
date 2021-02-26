@@ -68,8 +68,7 @@ export default class ItemScreen extends React.Component {
         imgData: imgResponse.data,
       });
     } catch (err) {
-      error = err;
-      console.log(error.message);
+      console.error(err.message);
     }
   }
 
