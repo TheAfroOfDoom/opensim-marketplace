@@ -11,6 +11,7 @@ const Tokens = db.define(
     token: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      primaryKey: true,
     },
     validity: {
       type: DataTypes.DATE,
