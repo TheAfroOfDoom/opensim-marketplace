@@ -6,9 +6,20 @@ import Cookies from "js-cookie";
 import { Nav, Form, Button, InputGroup } from "react-bootstrap";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
-import { withStyles } from '@material-ui/core/styles';
-import { DateTimePicker,  MuiPickersUtilsProvider } from '@material-ui/pickers'
-import { Drawer, Divider, List, Typography, Switch, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {
+  Drawer,
+  Divider,
+  List,
+  Typography,
+  Switch,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@material-ui/core";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 
@@ -56,24 +67,25 @@ const styles = {
 class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { search: "",
-                 redirect: false,
-                     drawerOpen: false,
-                     logoutOpen: false,
-                    check1: false,
-                    check2: false,
-                    check3: false,
-                    check4: false,
-                    limit: 0,
-                     type: undefined,
-                     order: "",
-                     dateStart: undefined,
-                     dateEnd: undefined,
-                     Invalid: false,
-                     total: 0,
-                     valueStartDate: undefined,
-                     valueEndDate: undefined,
-                  };
+    this.state = {
+      search: "",
+      redirect: false,
+      drawerOpen: false,
+      logoutOpen: false,
+      check1: false,
+      check2: false,
+      check3: false,
+      check4: false,
+      limit: 0,
+      type: undefined,
+      order: "",
+      dateStart: undefined,
+      dateEnd: undefined,
+      Invalid: false,
+      total: 0,
+      valueStartDate: undefined,
+      valueEndDate: undefined,
+    };
   }
 
   //handles search button click functionality
@@ -176,12 +188,12 @@ class NavigationBar extends React.Component {
 
   //toggles advanced search drawer
   toggle = () => {
-    this.setState({drawerOpen: !this.state.drawerOpen, redirect: true });
-  }
+    this.setState({ drawerOpen: !this.state.drawerOpen, redirect: true });
+  };
 
   Confirmation = () => {
-    this.setState({logoutOpen: !this.state.logoutOpen});
-  }
+    this.setState({ logoutOpen: !this.state.logoutOpen });
+  };
   //Handles search-string value
   handleChange(event) {
     let fleldVal = event.target.value;
@@ -194,8 +206,8 @@ class NavigationBar extends React.Component {
     if (this.props.data) {
       //if logged in removes cookie
       console.log("Logging Out");
-      Cookies.remove("uuid");
-      this.setState({logoutOpen: false});
+      Cookies.remove("sid");
+      this.setState({ logoutOpen: false });
       //callback function setting loggedIn state to false
       this.props.handleLogin(false);
     } else {
@@ -234,7 +246,9 @@ class NavigationBar extends React.Component {
               <Navbar.Brand>Inventory</Navbar.Brand>
             </Link>
 
-            <Button onClick={this.Confirmation} style={{marginRight:"10px"}}>Logout</Button>
+            <Button onClick={this.Confirmation} style={{ marginRight: "10px" }}>
+              Logout
+            </Button>
             <Dialog
               open={this.state.logoutOpen}
               onClose={this.Confirmation}
@@ -243,7 +257,9 @@ class NavigationBar extends React.Component {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">{"Are You Sure You Want To Logout?"}</DialogTitle>
+              <DialogTitle id="alert-dialog-title">
+                {"Are You Sure You Want To Logout?"}
+              </DialogTitle>
               <DialogActions>
                 <Button onClick={this.Confirmation} variant="danger">
                   Cancel
@@ -332,7 +348,6 @@ class NavigationBar extends React.Component {
                       data-testid="select1"
                       as="select"
                       disabled={!this.state.check2}
-
                       onChange={this.typeSelect.bind(this)}
                     >
                       <option value={-2}>Material</option>

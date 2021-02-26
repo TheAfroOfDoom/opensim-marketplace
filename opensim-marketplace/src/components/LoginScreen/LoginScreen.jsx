@@ -39,21 +39,18 @@ export default class LoginScreen extends React.Component {
     try {
       event.preventDefault();
       console.log("Submitting Credentials");
-      const response = await axios.get("/api/login", {
-        params: {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          password: this.state.password,
-        },
+      const response = await axios.post("/api/wifi/login", {
+        firstname: this.state.firstName,
+        lastname: this.state.lastName,
+        password: this.state.password,
       });
 
       if (response.status === 201) {
-        console.log("Password worked");
         this.setState({ loginSuccess: true });
         this.props.handleLogin(true);
       }
     } catch (err) {
-      console.log("Login Failed: " + err.message);
+      console.error("Login Failed: " + err.message);
       this.setState({ loginFail: true });
     }
   };

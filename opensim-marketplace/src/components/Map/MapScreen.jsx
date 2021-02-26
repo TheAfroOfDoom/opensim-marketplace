@@ -60,43 +60,44 @@ const styles = {
   },
 };
 
-const styles_textfield = muiTheme => ({
+const styles_textfield = (muiTheme) => ({
   label: {
     "&$erroredLabel": {
-      color: "white"
-    }
+      color: "white",
+    },
   },
   erroredLabel: {},
   underline: {
     "&$error:after": {
-      borderBottomColor: "white"
+      borderBottomColor: "white",
     },
   },
-  error: {}
+  error: {},
 });
 
-const TextField = withStyles(styles_textfield)(function TextField({ classes, ...props }) {
+const TextField = withStyles(styles_textfield)(function TextField({
+  classes,
+  ...props
+}) {
   return (
     <TextFieldMui
       InputLabelProps={{
         classes: {
           root: classes.label,
           focused: classes.focusedLabel,
-          error: classes.erroredLabel
-        }
+          error: classes.erroredLabel,
+        },
       }}
       InputProps={{
         classes: {
           root: classes.underline,
-          error: classes.error
-        }
+          error: classes.error,
+        },
       }}
       {...props}
     />
   );
 });
-
-
 
 class map extends React.Component {
   constructor(props) {
@@ -189,7 +190,6 @@ class map extends React.Component {
 
   handleCoordSubmit = (event) => {
     event.preventDefault();
-    //console.log("Pressed button");
     const { map } = this.state;
     if (map && this.state.input_x != null && this.state.input_y != null) {
       map.panTo(
@@ -268,7 +268,6 @@ class map extends React.Component {
             open={true}
             classes={{ paper: classes.paper }}
           >
-
             <List>
               <div className={classes.title}>
                 <Typography variant="h3" gutterBottom>
@@ -297,31 +296,31 @@ class map extends React.Component {
                   {this.state.currentPos &&
                     this.tileTolatlong(this.state.currentPos)}
                 </Typography>
-                <div className={classes.coordright}>
-                  <TextField
-                    error={{}}
-                    label="X Coordinate"
-                    type="number"
-                    onChange={(event) => {
-                      const { value } = event.target;
-                      this.handleCoordChange(0, value);
-                    }}
-                  />
-                </div>
-                <div className={classes.coordleft}>
-                  <TextField
-                    error={{}}
-                    label="Y Coordinate"
-                    type="number"
-                    onChange={(event) => {
-                      const { value } = event.target;
-                      this.handleCoordChange(1, value);
-                    }}
-                  />
-                </div>
-                <Button onClick={() => this.handleCoordSubmit}>
-                  Move To
-                </Button>
+                <form onSubmit={this.handleCoordSubmit}>
+                  <div className={classes.coordright}>
+                    <TextField
+                      error={{}}
+                      label="X Coordinate"
+                      type="number"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        this.handleCoordChange(0, value);
+                      }}
+                    />
+                  </div>
+                  <div className={classes.coordleft}>
+                    <TextField
+                      error={{}}
+                      label="Y Coordinate"
+                      type="number"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        this.handleCoordChange(1, value);
+                      }}
+                    />
+                  </div>
+                  <Button type="submit">Move To</Button>
+                </form>
                 <div>
                   <Typography variant="h6" gutterBottom>
                     Region Controls

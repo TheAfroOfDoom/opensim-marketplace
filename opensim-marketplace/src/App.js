@@ -36,7 +36,7 @@ class App extends React.Component {
 
   componentDidMount() {
     let cookies = Cookies.get();
-    if (cookies.hasOwnProperty("uuid")) {
+    if (cookies.hasOwnProperty("sid")) {
       this.setState({ loggedIn: true });
     } else {
       this.setState({ loggedIn: false });
@@ -55,11 +55,11 @@ class App extends React.Component {
   };
 
   checkStatus = () => {
-    console.log(Cookies.get("uuid"));
-    if (Cookies.get("uuid") === undefined) {
+    console.log(Cookies.get("sid"));
+    if (Cookies.get("sid") === undefined) {
       return undefined;
     } else {
-      return Cookies.get("uuid");
+      return Cookies.get("sid");
     }
   };
 
@@ -71,7 +71,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Router basename="marketplace">
-          {!Cookies.get("uuid") ? (
+          {!Cookies.get("sid") ? (
             !this.state.loggedIn ? (
               <div>
                 <Route path="/login">
