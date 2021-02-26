@@ -39,12 +39,10 @@ export default class LoginScreen extends React.Component {
     try {
       event.preventDefault();
       console.log("Submitting Credentials");
-      const response = await axios.get("/api/login", {
-        params: {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          password: this.state.password,
-        },
+      const response = await axios.post("/api/wifi/login", {
+        firstname: this.state.firstName,
+        lastname: this.state.lastName,
+        password: this.state.password,
       });
 
       if (response.status === 201) {

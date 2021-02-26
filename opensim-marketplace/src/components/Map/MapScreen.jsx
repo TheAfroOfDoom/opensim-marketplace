@@ -28,6 +28,9 @@ import {
   DialogContent,
   DialogContentText,
 } from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 import L from "leaflet";
 
 const styles = {
@@ -60,43 +63,44 @@ const styles = {
   },
 };
 
-const styles_textfield = muiTheme => ({
+const styles_textfield = (muiTheme) => ({
   label: {
     "&$erroredLabel": {
-      color: "white"
-    }
+      color: "white",
+    },
   },
   erroredLabel: {},
   underline: {
     "&$error:after": {
-      borderBottomColor: "white"
+      borderBottomColor: "white",
     },
   },
-  error: {}
+  error: {},
 });
 
-const TextField = withStyles(styles_textfield)(function TextField({ classes, ...props }) {
+const TextField = withStyles(styles_textfield)(function TextField({
+  classes,
+  ...props
+}) {
   return (
     <TextFieldMui
       InputLabelProps={{
         classes: {
           root: classes.label,
           focused: classes.focusedLabel,
-          error: classes.erroredLabel
-        }
+          error: classes.erroredLabel,
+        },
       }}
       InputProps={{
         classes: {
           root: classes.underline,
-          error: classes.error
-        }
+          error: classes.error,
+        },
       }}
       {...props}
     />
   );
 });
-
-
 
 class map extends React.Component {
   constructor(props) {
@@ -110,6 +114,7 @@ class map extends React.Component {
       cOpen: false,
       cAll: false,
       message: "",
+      time: null,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -268,7 +273,6 @@ class map extends React.Component {
             open={true}
             classes={{ paper: classes.paper }}
           >
-
             <List>
               <div className={classes.title}>
                 <Typography variant="h3" gutterBottom>
@@ -319,9 +323,7 @@ class map extends React.Component {
                     }}
                   />
                 </div>
-                <Button onClick={() => this.handleCoordSubmit}>
-                  Move To
-                </Button>
+                <Button onClick={() => this.handleCoordSubmit}>Move To</Button>
                 <div>
                   <Typography variant="h6" gutterBottom>
                     Region Controls
@@ -351,6 +353,16 @@ class map extends React.Component {
                           onChange={this.txtChange}
                           value={this.state.message}
                         />
+                        <InputLabel>Time Till Shutdown</InputLabel>
+                        <Select autoFocus>
+                          <MenuItem value="5">5 Min</MenuItem>
+                          <MenuItem value="10">10 Min</MenuItem>
+                          <MenuItem value="15">15 Min</MenuItem>
+                          <MenuItem value="30">30 Min</MenuItem>
+                          <MenuItem value="45">45 Min</MenuItem>
+                          <MenuItem value="60">1 Hour</MenuItem>
+                        </Select>
+
                         <DialogActions>
                           <Button
                             onClick={this.confirmationOpen}
@@ -388,6 +400,14 @@ class map extends React.Component {
                           onChange={this.txtChange}
                           value={this.state.message}
                         />
+                        <Select autoFocus>
+                          <MenuItem value="5">5 Min</MenuItem>
+                          <MenuItem value="10">10 Min</MenuItem>
+                          <MenuItem value="15">15 Min</MenuItem>
+                          <MenuItem value="30">30 Min</MenuItem>
+                          <MenuItem value="45">45 Min</MenuItem>
+                          <MenuItem value="60">1 Hour</MenuItem>
+                        </Select>
                         <DialogActions>
                           <Button
                             onClick={this.confirmationAll}

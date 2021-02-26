@@ -12,7 +12,6 @@ import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "#02394a",
@@ -74,14 +73,12 @@ export default function CCard(props) {
   useEffect(() => {
     let fetchData = async (id) => {
       try {
-        console.log(id);
         let response = await axios.get("/api/media/get", {
           params: { assetID: id },
         });
-        console.log(response);
         setImgData(response.data.data);
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        console.error(err);
       }
     };
     fetchData(props.obj.id);

@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
       throw new Error("Incorrect params");
     }
     res.set("Content-Type", "text/json");
-    res.cookie("sid", value).send("cookie returned");
+    res.cookie("sid", value).sendStatus(201);
   } catch (e) {
     console.log(e);
     if (e.message == "Incorrect params") {
