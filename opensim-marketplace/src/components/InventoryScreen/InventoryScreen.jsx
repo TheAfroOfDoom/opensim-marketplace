@@ -48,6 +48,8 @@ export default class LoginScreen extends React.Component {
       open: null,
       message: "",
       severity: "error",
+      chosenInventoryIDs: "",
+      folderIDs: "",
     };
   }
 
@@ -295,6 +297,21 @@ export default class LoginScreen extends React.Component {
     this.setState({ open: false });
   };
 
+  handleCheckClick = async (event) => {
+    //console.log(event.target);
+    const { chosenInventoryIDs } = this.state;
+    if (event.target.checked) {
+      await this.setState({
+        chosenInventoryIDs: chosenInventoryIDs + event.target.value,
+      });
+    } else {
+      await this.setState({
+        chosenInventoryIDs: chosenInventoryIDs.replace(event.target.value, ""),
+      });
+    }
+    console.log(this.state.chosenInventoryIDs);
+  };
+
   constructFolders = (data, inventorypath) => {
     let currentInventoryPath = inventorypath + data.folderName + "/";
     return (
@@ -343,6 +360,12 @@ export default class LoginScreen extends React.Component {
                 style={{ marginTop: 5, marginBottom: 5 }}
                 key={obj.assetID}
               >
+                <input
+                  type="checkbox"
+                  id={`asset-${obj.assetID}`}
+                  value={`${obj.inventoryID},`}
+                  onChange={this.handleCheckClick}
+                />
                 <InventoryCard
                   data={obj}
                   assetType={this.getAssetType(obj.assetType)}
@@ -382,6 +405,33 @@ export default class LoginScreen extends React.Component {
               {this.state.message}
             </Alert>
           </Snackbar>
+          <Button
+            className="view-button"
+            style={{ float: "right" }}
+            variant="contained"
+            color="primary"
+            onClick={async () => {
+              const res = await axios({
+                method: "get",
+                url: "/api/inventory/downloadMulti",
+                responseType: "blob",
+                params: {
+                  rootFolderID: this.state.data.folderID,
+                  folderIDs: this.state.folderIDs,
+                  inventoryIDs: this.state.chosenInventoryIDs,
+                  keepStructure: false,
+                },
+                headers: {},
+              });
+              const url = window.URL.createObjectURL(new Blob([res.data]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", `multi.iar`);
+              link.click();
+            }}
+          >
+            Download
+          </Button>
           <Container style={{ marginTop: "5%", marginBottom: "5%" }}>
             <Accordion
               style={{

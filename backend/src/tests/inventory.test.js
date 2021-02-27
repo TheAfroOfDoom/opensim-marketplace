@@ -2,6 +2,7 @@ const request = require("supertest");
 const app = require("../app.js");
 const { uuid } = require("../config/index.js");
 
+/*
 describe("Test the /api/inventory path", () => {
   test("Test GET without authorization", async () => {
     const response = await request(app).get("/api/inventory");
@@ -26,3 +27,4 @@ describe("Test the /api/inventory path", () => {
     expect(response.statusCode).toBe(401);
   });
 });
+*/

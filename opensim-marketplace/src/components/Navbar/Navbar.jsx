@@ -204,7 +204,6 @@ class NavigationBar extends React.Component {
 
   urlString = () => {
     const baseURL = "/search?";
-    console.log(this.state);
     let url = baseURL;
     const { search, limit, type, order, dateStart, dateEnd } = this.state;
     const variables = {

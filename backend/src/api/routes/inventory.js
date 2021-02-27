@@ -236,6 +236,13 @@ router.post("/remove", async (req, res) => {
     InventoryItems.hasMany(Assets);
     Assets.belongsTo(InventoryItems);
 
+    let uuidFromToken = await Tokens.findOne({
+      attributes: ["uuid"],
+      where: { token: sid },
+    });
+
+    let uuid = uuidFromToken.dataValues.uuid;
+
     //Destroy item
     const info = await InventoryItems.destroy({
       where: { assetID: assetID, avatarID: uuid },
@@ -306,6 +313,13 @@ router.post("/upload", async (req, res) => {
       throw new Error("Invalid ID");
     }
 
+    let uuidFromToken = await Tokens.findOne({
+      attributes: ["uuid"],
+      where: { token: sid },
+    });
+
+    let uuid = uuidFromToken.dataValues.uuid;
+
     //Check user is creator
     const [creatorID] = await Assets.findAll({
       where: { id: assetID },
@@ -372,6 +386,13 @@ router.post("/private", async (req, res) => {
       where: { id: assetID },
       attributes: ["CreatorID"],
     });
+
+    let uuidFromToken = await Tokens.findOne({
+      attributes: ["uuid"],
+      where: { token: sid },
+    });
+
+    let uuid = uuidFromToken.dataValues.uuid;
 
     console.log(creatorID.CreatorID + "-----------" + uuid);
     if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
@@ -507,6 +528,7 @@ router.get("/download", async (req, res) => {
 
     const consoleSession = regionConsoles[9000];
 
+    console.log(req.query);
     let command;
     if (isFile === "true") {
       console.log(req.query);
@@ -518,6 +540,72 @@ router.get("/download", async (req, res) => {
       console.log("Getting Folder");
       command = `save iar Wifi Admin "${inventorypath}" kenny123 marketplace_add/${sid}_dl.iar`;
     }
+    // Save IAR
+    let x = await axios({
+      method: "post",
+      url: consoleSession.getFullAddress() + "/SessionCommand/",
+      data: qs.stringify({
+        ID: consoleSession.consoleID,
+        COMMAND: command,
+      }),
+      headers: {
+        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
+    });
+
+    let filename = `${sid}_dl.iar`;
+    let file = path.resolve(
+      __dirname,
+      `../../../../../bin/marketplace_add/${filename}`
+    );
+
+    let interval = await setInterval(async () => {
+      if (fs.readFileSync(file).length !== 0) {
+        await res.download(file);
+        console.log(fs.existsSync(file));
+        clearInterval(interval);
+      }
+      console.log("File Size: " + fs.readFileSync(file).length);
+    }, 500);
+    setTimeout(() => {
+      fs.unlink(file, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }, 2000);
+  } catch (e) {
+    console.log(e);
+    if (e.message === "Unauthorized") {
+      return res.sendStatus(401);
+    } else if (e.message === "Forbidden") {
+      return res.sendStatus(403);
+    } else if (e.message === "Invalid ID") {
+      return res.status(400).send("Invalid ID");
+    } else {
+      return res.sendStatus(400);
+    }
+  }
+});
+
+router.get("/downloadMulti", async (req, res) => {
+  try {
+    //Check if user is authenticated
+    const { sid } = req.cookies;
+
+    if (!(await isUserLoggedIn(sid))) {
+      throw new Error("Unauthorized");
+    }
+
+    const { rootFolderID, folderIDs, inventoryIDs, keepStructure } = req.query;
+
+    const consoleSession = regionConsoles[9000];
+
+    let command;
+
+    console.log("Getting Folder");
+    command = `save iar Wifi Admin "MARKETPLACE_EXPORT" kenny123 marketplace_add/${sid}_dl.iar`;
+
     // Save IAR
     let x = await axios({
       method: "post",

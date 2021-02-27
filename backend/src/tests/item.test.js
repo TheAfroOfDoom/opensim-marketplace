@@ -16,7 +16,7 @@ describe("Test the /api/item path", () => {
   test("Test GET with authorization", async () => {
     const response = await request(app)
       .get("/api/item")
-      .set("Cookie", [`uuid=${uuid}`]);
+      .set("Cookie", [`sid=${uuid}`]);
     expect(response.text).toBe("Invalid ID");
   });
 
@@ -24,7 +24,7 @@ describe("Test the /api/item path", () => {
     const response = await request(app)
       .get("/api/item")
       .query({ id: "0" })
-      .set("Cookie", [`uuid=${uuid}`]);
+      .set("Cookie", [`sid=${uuid}`]);
     expect(response.text).toBe("Invalid ID");
   });
 
@@ -32,7 +32,7 @@ describe("Test the /api/item path", () => {
     const response = await request(app)
       .get("/api/item")
       .query({ id: 1 })
-      .set("Cookie", [`uuid=${uuid}`]);
+      .set("Cookie", [`sid=${uuid}`]);
     expect(response.text).toBe("Invalid ID");
   });
 
@@ -40,7 +40,7 @@ describe("Test the /api/item path", () => {
     const response = await request(app)
       .get("/api/item")
       .query({ id: { id: "00000000-0000-0000-0000-000000000000" } })
-      .set("Cookie", [`uuid=${uuid}`]);
+      .set("Cookie", [`sid=${uuid}`]);
     expect(response.text).toBe("Invalid ID");
   });
 
@@ -48,7 +48,7 @@ describe("Test the /api/item path", () => {
     const response = await request(app)
       .get("/api/item")
       .query({ id: "00000000-0000-2222-3333-000000000099" })
-      .set("Cookie", [`uuid=${uuid}`]);
+      .set("Cookie", [`sid=${uuid}`]);
     expect(response.statusCode).toBe(200);
   });
 
@@ -56,7 +56,7 @@ describe("Test the /api/item path", () => {
     const response = await request(app)
       .get("/api/item")
       .query({ assetID: "00000000-0000-0000-0000-000000000000" })
-      .set("Cookie", [`uuid=${uuid}`]);
+      .set("Cookie", [`sid=${uuid}`]);
     expect(response.text).toBe("Invalid ID");
   });
 

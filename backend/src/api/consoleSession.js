@@ -27,6 +27,7 @@ class ConsoleSession {
             data.lastIndexOf("<SessionID>") + 11,
             data.lastIndexOf("</SessionID>")
           );
+        console.log(this.port, this.consoleID);
       })
       .catch((e) => {
         console.log("Something really fucked up: " + e);
