@@ -36,6 +36,7 @@ class App extends React.Component {
 
   componentDidMount() {
     let cookies = Cookies.get();
+    console.log("Checking cookie");
     if (cookies.hasOwnProperty("sid")) {
       this.setState({ loggedIn: true });
     } else {

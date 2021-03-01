@@ -212,7 +212,6 @@ router.get("/public", async (req, res) => {
       startAccessed,
       endAccessed,
     } = req.query;
-    console.log("Req props");
     // Check if there is a valid search string
     if (searchString === undefined) {
       searchString = "";
