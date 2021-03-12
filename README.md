@@ -60,9 +60,11 @@ In the folder, install the packages:
 
 4. **Modify OpenSim `assets` table**
 
-Run both of the SQL scripts on the database your OpenSim instance uses:
-- `modifyTable.sql`: to add a new field to the `assets` table required for uploading
-- `marketplaceDownloadAsset.sql`: to add the stored procedure required for downloading.
+Run the SQL script `modifyDB.sql` on the database your OpenSim instance uses:
+- Change the first (uncommented) line's value from `USE DATABASE_NAME_EDIT_ME;` to your database/schema name (e.g. `USE opensim;`)
+- Open the script in MySQL Workbench and run it
+  - Adds 2 new columns to the assets table: `public` (`TINYINT(1) = 0`) and `marketplace_icon` (`LONGBLOB = NULL`)
+  - Adds the 3 stored procedures called by the marketplace website
 
 ## Running
 
