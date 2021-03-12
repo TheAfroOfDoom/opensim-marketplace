@@ -215,7 +215,7 @@ export default class ItemScreen extends React.Component {
                         </Typography>
                         <Typography
                           component="h5"
-                          variant="subtitle"
+                          variant="subtitle1"
                           gutterBottom
                         >
                           Modified:{" "}

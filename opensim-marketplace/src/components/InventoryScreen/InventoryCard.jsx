@@ -226,7 +226,9 @@ export default function InventoryCard(props) {
               className="view-button"
               variant="contained"
               color="primary"
-              onClick={async () => {
+              onClick={async (event) => {
+                event.preventDefault();
+                console.log(event);
                 const res = await axios({
                   method: "get",
                   url: "/api/inventory/download",

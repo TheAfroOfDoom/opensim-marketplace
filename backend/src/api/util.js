@@ -1,12 +1,15 @@
 const Assets = require("../models/Assets.js");
 const Tokens = require("../models/Tokens.js");
+const Regions = require("../models/Regions.js");
 const _ = require("lodash");
+const ini = require("ini");
+const path = require("path");
 const { createCanvas } = require("canvas");
 
 const openjpeg = require("../openjpeg.js");
 const cache = require("../config/cache.js");
 const ConsoleSession = require("./consoleSession.js");
-const { regionUser, regionPass } = require("../config");
+const { regions_ini } = require("../config");
 
 async function isUserLoggedIn(sid) {
   if (sid === undefined || sid === null) {
@@ -139,6 +142,8 @@ function objectFilter(obj, predicate) {
   return result;
 }
 
+const regionConsolePorts = new Set();
+
 const regionConsoles = [];
 
 setConsole = (port) => {
@@ -152,6 +157,17 @@ closeConsole = async (port) => {
     await regionConsoles[9000].closeConsole();
   } catch (e) {
     console.log(e.message);
+  }
+};
+
+initializeConsoles = async () => {
+  const regions = await Regions.findAll({ attributes: ["serverHttpPort"] });
+  regionConsolePorts.add(8002);
+  for (let i = 0; i < regions.length; i++) {
+    regionConsolePorts.add(regions[i].dataValues.serverHttpPort);
+  }
+  for (regionPort of regionConsolePorts) {
+    setConsole(regionPort);
   }
 };
 
@@ -170,4 +186,5 @@ module.exports = {
   setConsole,
   closeConsole,
   uuidRegex,
+  initializeConsoles,
 };

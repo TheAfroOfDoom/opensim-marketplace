@@ -212,6 +212,7 @@ router.get("/public", async (req, res) => {
       startAccessed,
       endAccessed,
     } = req.query;
+
     // Check if there is a valid search string
     if (searchString === undefined) {
       searchString = "";

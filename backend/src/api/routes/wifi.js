@@ -24,15 +24,6 @@ router.post("/login", async (req, res) => {
         throw new Error("Incorrect params");
       }
     }
-
-    /*
-    const response = await axios.post("http://25.5.144.194:8002/wifi/login", {
-      firstname: firstname,
-      lastname: lastname,
-      password: password,
-      METHOD: "login",
-    });
-    */
     console.log(req.body);
     console.log(firstname, lastname, password);
 
@@ -122,19 +113,6 @@ router.get("/map", async (req, res) => {
     } else {
       return res.sendStatus(400);
     }
-  }
-});
-
-router.get("/consoletest", async (req, res) => {
-  try {
-    if (regionConsoles[9000] == null) {
-      setConsole(9000);
-    }
-    console.log(regionConsoles[9000]);
-    res.json("Something didnt fucked up");
-  } catch (e) {
-    console.log(e);
-    res.json("something fucked up");
   }
 });
 
@@ -237,8 +215,6 @@ router.get("/getregions", async (req, res) => {
         ],
       });
     }
-
-    // Find Name
 
     res.json(response);
   } catch (e) {

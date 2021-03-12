@@ -118,7 +118,7 @@ router.post("/add", async (req, res) => {
     }
 
     // Get assetID param
-    const { assetID } = req.body;
+    const { assetID, port } = req.body;
 
     if (!(await isAssetInDatabase(assetID))) {
       throw new Error("Invalid ID");
@@ -148,13 +148,13 @@ router.post("/add", async (req, res) => {
       where: { id: assetID },
     });
 
-    const consoleID = regionConsoles[9000].consoleID;
+    const consoleSession = regionConsoles[port || 9000];
 
     if (sel.error !== 1)
       await setTimeout(async function () {
         let x = await axios({
           method: "post",
-          url: "http://25.5.144.194:9000/SessionCommand/",
+          url: `${consoleSession.getFullAddress()}/SessionCommand/`,
           data: qs.stringify({
             ID: consoleID,
             COMMAND: `save iar --noassets Wifi Admin "Marketplace Downloads/${asset.dataValues.name}" kenny123 marketplace_add/${uuid}_add.iar`,
@@ -166,7 +166,7 @@ router.post("/add", async (req, res) => {
         setTimeout(async function () {
           let y = await axios({
             method: "post",
-            url: "http://25.5.144.194:9000/SessionCommand/",
+            url: `${consoleSession.getFullAddress()}/SessionCommand/`,
             data: qs.stringify({
               ID: consoleID,
               COMMAND: `load iar -m Wifi Admin "Marketplace Downloads" kenny123 marketplace_add/${uuid}_add.iar`,
@@ -524,11 +524,9 @@ router.get("/download", async (req, res) => {
       throw new Error("Unauthorized");
     }
 
-    const { inventorypath, assetID, inventoryName, isFile } = req.query;
+    const { inventorypath, assetID, inventoryName, isFile, port } = req.query;
 
-    const consoleSession = regionConsoles[9000];
-
-    console.log(req.query);
+    const consoleSession = regionConsoles[port || 9000];
     let command;
     if (isFile === "true") {
       console.log(req.query);
@@ -541,7 +539,7 @@ router.get("/download", async (req, res) => {
       command = `save iar Wifi Admin "${inventorypath}" kenny123 marketplace_add/${sid}_dl.iar`;
     }
     // Save IAR
-    let x = await axios({
+    await axios({
       method: "post",
       url: consoleSession.getFullAddress() + "/SessionCommand/",
       data: qs.stringify({
@@ -560,18 +558,22 @@ router.get("/download", async (req, res) => {
     );
 
     let interval = await setInterval(async () => {
-      if (fs.readFileSync(file).length !== 0) {
+      if (
+        fs.readFileSync(file).length !== 0 &&
+        fs.readFileSync(file).length === previous
+      ) {
         await res.download(file);
-        console.log(fs.existsSync(file));
         clearInterval(interval);
       }
-      console.log("File Size: " + fs.readFileSync(file).length);
+      previous = fs.readFileSync(file).length;
     }, 500);
+
     setTimeout(() => {
       fs.unlink(file, (err) => {
         if (err) {
-          console.log(err);
+          return console.log(err);
         }
+        console.log("Deleting " + file);
       });
     }, 2000);
   } catch (e) {
@@ -597,9 +599,15 @@ router.get("/downloadMulti", async (req, res) => {
       throw new Error("Unauthorized");
     }
 
-    const { rootFolderID, folderIDs, inventoryIDs, keepStructure } = req.query;
+    const {
+      rootFolderID,
+      folderIDs,
+      inventoryIDs,
+      keepStructure,
+      port,
+    } = req.query;
 
-    const consoleSession = regionConsoles[9000];
+    const consoleSession = regionConsoles[port || 9000];
 
     let command;
 
@@ -680,6 +688,17 @@ function constructFolders(folders, items, parentFolderID) {
     */
   }
   return localFolders;
+}
+
+async function ReadSession(consoleSession) {
+  const { consoleID } = consoleSession;
+  const address = consoleSession.getFullAddress();
+  // Save IAR
+  const response = await axios({
+    method: "post",
+    url: address + "/ReadResponses/" + consoleID,
+  });
+  return response.data;
 }
 
 module.exports = router;
