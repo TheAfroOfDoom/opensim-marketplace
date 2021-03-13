@@ -66,6 +66,9 @@ Run the SQL script `modifyDB.sql` on the database your OpenSim instance uses:
   - Adds 2 new columns to the assets table: `public` (`TINYINT(1) = 0`) and `marketplace_icon` (`LONGBLOB = NULL`)
   - Adds the 3 stored procedures called by the marketplace website
 
+5. **Add/Modify OpenSim user `Wifi Admin` with password `kenny123`**
+    1. temporary until `save iar` via user/session IDs is implemented
+
 ## Running
 
 #### Environment Variables
