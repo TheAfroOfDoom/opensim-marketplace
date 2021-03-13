@@ -32,5 +32,6 @@ module.exports = {
   region_pass: config.region.REGION_PASS,
   opensim_address: config.opensim.OPENSIM_ADDRESS,
   opensim_port: config.opensim.OPENSIM_PORT,
+  marketplace_add_location: config.opensim.MARKETPLACE_ADD_LOCATION,
   regions_ini: config.region.INI_LOCATION,
 };

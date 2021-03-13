@@ -16,6 +16,7 @@ const {
   regionConsoles,
 } = require("../util.js");
 fs = require("fs");
+const { marketplace_add_location } = require("../../config");
 
 /**
  * @swagger
@@ -124,11 +125,19 @@ router.post("/add", async (req, res) => {
       throw new Error("Invalid ID");
     }
 
+    let uuidFromToken = await Tokens.findOne({
+      attributes: ["uuid"],
+      where: { token: sid },
+    });
+
     //Run SP
     const info = await sequelize.query(
       `CALL marketplaceDownloadAsset(:userID, :assetID, @error, @inventoryID);`,
       {
-        replacements: { userID: uuid, assetID: assetID },
+        replacements: {
+          userID: uuidFromToken.dataValues.uuid,
+          assetID: assetID,
+        },
       }
     );
 
@@ -533,11 +542,11 @@ router.get("/download", async (req, res) => {
       if (!(await isAssetInDatabase(assetID))) {
         throw new Error("Invalid ID");
       }
-      command = `save iar Wifi Admin "${inventorypath}${inventoryName}" kenny123 marketplace_add/${sid}_dl.iar`;
+      command = `save iar Wifi Admin "${inventorypath}${inventoryName}" kenny123 "${marketplace_add_location}/${sid}_dl.iar"`;
     } else {
-      console.log("Getting Folder");
-      command = `save iar Wifi Admin "${inventorypath}" kenny123 marketplace_add/${sid}_dl.iar`;
+      command = `save iar Wifi Admin "${inventorypath}" kenny123 "${marketplace_add_location}/${sid}_dl.iar"`;
     }
+    console.log(command);
     // Save IAR
     await axios({
       method: "post",
@@ -552,20 +561,20 @@ router.get("/download", async (req, res) => {
     });
 
     let filename = `${sid}_dl.iar`;
-    let file = path.resolve(
-      __dirname,
-      `../../../../../bin/marketplace_add/${filename}`
-    );
+    let file = `${marketplace_add_location}/${filename}`;
 
     let interval = await setInterval(async () => {
-      if (
-        fs.readFileSync(file).length !== 0 &&
-        fs.readFileSync(file).length === previous
-      ) {
-        await res.download(file);
-        clearInterval(interval);
-      }
-      previous = fs.readFileSync(file).length;
+      try {
+        if (
+          fs.readFileSync(file).length !== 0 &&
+          fs.readFileSync(file).length === previous
+        ) {
+          await res.download(file);
+          clearInterval(interval);
+        }
+        console.log("Length:", fs.readFileSync(file).length);
+        previous = fs.readFileSync(file).length;
+      } catch (e) {}
     }, 500);
 
     setTimeout(() => {
@@ -612,7 +621,7 @@ router.get("/downloadMulti", async (req, res) => {
     let command;
 
     console.log("Getting Folder");
-    command = `save iar Wifi Admin "MARKETPLACE_EXPORT" kenny123 marketplace_add/${sid}_dl.iar`;
+    command = `save iar Wifi Admin "MARKETPLACE_EXPORT" kenny123 ${marketplace_add_location}/${sid}_dl.iar`;
 
     // Save IAR
     let x = await axios({
@@ -629,10 +638,7 @@ router.get("/downloadMulti", async (req, res) => {
 
     await setTimeout(async () => {
       let filename = `${sid}_dl.iar`;
-      let file = path.resolve(
-        __dirname,
-        `../../../../../bin/marketplace_add/${filename}`
-      );
+      let file = `${marketplace_add_location}/${filename}`;
       res.download(file);
     }, 1000);
   } catch (e) {
