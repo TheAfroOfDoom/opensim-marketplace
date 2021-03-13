@@ -71,16 +71,23 @@ Run the SQL script `modifyDB.sql` on the database your OpenSim instance uses:
 
 ## Running
 
-#### Environment Variables
+#### CONFIG.INI
 
-Must ensure that there is a valid connection to the database. In order to connect to the database, modify the .env file in the `backend` root folder.
+Must ensure that there is a valid connection to the database. In order to connect to the database, modify the config.ini file in the `src/config` folder.
 
 - `PORT` for changing port server runs on. Default is 5000
-- `TEST_UUID` User ID for testing. **Used for testing only**
+
 - `DB_URL` for the IP of the database or location name of the database.
 - `DB_USERNAME` Username of connection
 - `DB_PASSWORD` Password of connection
 - `DB_NAME` Name of the database to connect to (Ex: 'opensim').
+- `REGION_USER` Username to open a Region Console
+- `REGION_PASS` Password to open a Region Console
+- `INI_LOCATION` Absolute Location of `Regions.ini` file
+- `OPENSIM_ADDRESS` ip address of Opensim Server
+- `OPENSIM_PORT` for the default robust port. Default is 8002
+- `MARKETPLACE_ADD-LOCATION` Absolute location of where marketplace temporary files will be created
+- `TEST_UUID` User ID for testing. **Used for testing only**
 
 #### Frontend
 
