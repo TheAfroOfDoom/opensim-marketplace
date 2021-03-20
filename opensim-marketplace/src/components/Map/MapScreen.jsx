@@ -28,10 +28,10 @@ import {
   DialogContent,
   DialogContentText,
 } from "@material-ui/core";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import L from "leaflet";
+import RegionInformation from "./RegionInformation";
 
 const styles = {
   paper: {
@@ -102,7 +102,7 @@ const TextField = withStyles(styles_textfield)(function TextField({
   );
 });
 
-class map extends React.Component {
+class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -113,15 +113,31 @@ class map extends React.Component {
       input_y: null,
       cOpen: false,
       cAll: false,
+      cancelShutdown: false,
       message: "",
-      time: null,
+      data: null,
     };
     this.handleClick = this.handleClick.bind(this);
   }
-
+  async componentDidMount() {
+    try {
+      const response = await axios.get("/api/wifi/getregions");
+      console.log(response);
+      this.setState({
+        data: response.data,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
   confirmationOpen = () => {
     this.setState(() => ({
       cOpen: !this.state.cOpen,
+    }));
+  };
+  confirmationCancel = () => {
+    this.setState(() => ({
+      cancelShutdown: !this.state.cancelShutdown,
     }));
   };
   confirmationAll = () => {
@@ -142,6 +158,10 @@ class map extends React.Component {
   handleShutdownAll = (event) => {
     event.preventDefault();
     this.confirmationAll();
+  };
+  handleCancel = (event) => {
+    event.preventDefault();
+    this.confirmationCancel();
   };
   handleClick(e) {
     this.setState({ currentPos: e.latlng });
@@ -194,7 +214,6 @@ class map extends React.Component {
 
   handleCoordSubmit = (event) => {
     event.preventDefault();
-    //console.log("Pressed button");
     const { map } = this.state;
     if (map && this.state.input_x != null && this.state.input_y != null) {
       map.panTo(
@@ -301,127 +320,136 @@ class map extends React.Component {
                   {this.state.currentPos &&
                     this.tileTolatlong(this.state.currentPos)}
                 </Typography>
-                <div className={classes.coordright}>
-                  <TextField
-                    error={{}}
-                    label="X Coordinate"
-                    type="number"
-                    onChange={(event) => {
-                      const { value } = event.target;
-                      this.handleCoordChange(0, value);
-                    }}
-                  />
-                </div>
-                <div className={classes.coordleft}>
-                  <TextField
-                    error={{}}
-                    label="Y Coordinate"
-                    type="number"
-                    onChange={(event) => {
-                      const { value } = event.target;
-                      this.handleCoordChange(1, value);
-                    }}
-                  />
-                </div>
-                <Button onClick={() => this.handleCoordSubmit}>Move To</Button>
-                <div>
-                  <Typography variant="h6" gutterBottom>
-                    Region Controls
-                  </Typography>
-                  <div>
-                    <Button onClick={this.confirmationOpen}>
-                      Shut down region (x, y)
-                    </Button>
-                    <Dialog
-                      open={this.state.cOpen}
-                      onClose={this.confirmationOpen}
-                      fullWidth={false}
-                      maxWidth="s"
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <form onSubmit={this.handleShutdown}>
-                        <DialogTitle id="alert-dialog-title">
-                          {"Are You Sure You Want To Shutdown This Region?"}
-                        </DialogTitle>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="name"
-                          label="Message to online users:"
-                          fullWidth
-                          onChange={this.txtChange}
-                          value={this.state.message}
-                        />
-                        <InputLabel>Time Till Shutdown</InputLabel>
-                        <Select autoFocus>
-                          <MenuItem value="5">5 Min</MenuItem>
-                          <MenuItem value="10">10 Min</MenuItem>
-                          <MenuItem value="15">15 Min</MenuItem>
-                          <MenuItem value="30">30 Min</MenuItem>
-                          <MenuItem value="45">45 Min</MenuItem>
-                          <MenuItem value="60">1 Hour</MenuItem>
-                        </Select>
-
-                        <DialogActions>
-                          <Button
-                            onClick={this.confirmationOpen}
-                            variant="danger"
-                          >
-                            Cancel
-                          </Button>
-
-                          <Button type="submit">Shutdown</Button>
-                        </DialogActions>
-                      </form>
-                    </Dialog>
-                    <Button onClick={this.confirmationAll}>
-                      Shut Down All Regions
-                    </Button>
-
-                    <Dialog
-                      open={this.state.cAll}
-                      onClose={this.confirmationAll}
-                      fullWidth={false}
-                      maxWidth="s"
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Are You Sure You Want To Shutdown All Regions?"}
-                      </DialogTitle>
-                      <form onSubmit={this.handleShutdownAll}>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="name"
-                          label="Message to online users:"
-                          fullWidth
-                          onChange={this.txtChange}
-                          value={this.state.message}
-                        />
-                        <Select autoFocus>
-                          <MenuItem value="5">5 Min</MenuItem>
-                          <MenuItem value="10">10 Min</MenuItem>
-                          <MenuItem value="15">15 Min</MenuItem>
-                          <MenuItem value="30">30 Min</MenuItem>
-                          <MenuItem value="45">45 Min</MenuItem>
-                          <MenuItem value="60">1 Hour</MenuItem>
-                        </Select>
-                        <DialogActions>
-                          <Button
-                            onClick={this.confirmationAll}
-                            variant="danger"
-                          >
-                            Cancel
-                          </Button>
-
-                          <Button type="submit">Shutdown</Button>
-                        </DialogActions>
-                      </form>
-                    </Dialog>
+                <form onSubmit={this.handleCoordSubmit}>
+                  <div className={classes.coordright}>
+                    <TextField
+                      error={{}}
+                      label="X Coordinate"
+                      type="number"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        this.handleCoordChange(0, value);
+                      }}
+                    />
                   </div>
+                  <div className={classes.coordleft}>
+                    <TextField
+                      error={{}}
+                      label="Y Coordinate"
+                      type="number"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        this.handleCoordChange(1, value);
+                      }}
+                    />
+                  </div>
+                  <Button type="submit">Move To</Button>
+                </form>
+
+                {this.state.data !== null ? (
+                  <RegionInformation data={this.state.data} />
+                ) : (
+                  <div />
+                )}
+
+                <div>
+                  <Button onClick={this.confirmationOpen}>
+                    Shut down region
+                  </Button>
+                  <Dialog
+                    open={this.state.cOpen}
+                    onClose={this.confirmationOpen}
+                    fullWidth={false}
+                    maxWidth="s"
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <form onSubmit={this.handleShutdown}>
+                      <DialogTitle id="alert-dialog-title">
+                        {"Are You Sure You Want To Shutdown This Region?"}
+                      </DialogTitle>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Message to online users:"
+                        fullWidth
+                        onChange={this.txtChange}
+                        value={this.state.message}
+                      />
+                      <DialogActions>
+                        <Button
+                          onClick={this.confirmationOpen}
+                          variant="danger"
+                        >
+                          Cancel
+                        </Button>
+
+                        <Button type="submit">Shutdown</Button>
+                      </DialogActions>
+                    </form>
+                  </Dialog>
+                  <Button onClick={this.confirmationAll}>
+                    Shut Down All Regions
+                  </Button>
+
+                  <Dialog
+                    open={this.state.cAll}
+                    onClose={this.confirmationAll}
+                    fullWidth={false}
+                    maxWidth="s"
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle id="alert-dialog-title">
+                      {"Are You Sure You Want To Shutdown All Regions?"}
+                    </DialogTitle>
+                    <form onSubmit={this.handleShutdownAll}>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Message to online users:"
+                        fullWidth
+                        onChange={this.txtChange}
+                        value={this.state.message}
+                      />
+                      <DialogActions>
+                        <Button onClick={this.confirmationAll} variant="danger">
+                          Cancel
+                        </Button>
+
+                        <Button type="submit">Shutdown</Button>
+                      </DialogActions>
+                    </form>
+                  </Dialog>
                 </div>
+              </div>
+              <div>
+                <button onClick={this.handleCancel}>Cancel Shutdown</button>
+                <Dialog
+                  open={this.state.cancelShutdown}
+                  onClose={this.state.cancelShutdown}
+                  fullWidth={false}
+                  maxWidth="s"
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">
+                    {"Are you sure you want to cancel the timed shutdown?"}
+                  </DialogTitle>
+                  <DialogActions>
+                    <Button
+                      onClick={this.confirmationCancel}
+                      variant="danger"
+                      alignItems="left"
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button type="submit">Stop Shutdown</Button>
+                  </DialogActions>
+                </Dialog>
               </div>
             </List>
           </Drawer>
@@ -431,4 +459,4 @@ class map extends React.Component {
   }
 }
 
-export default withStyles(styles)(map);
+export default withStyles(styles)(Map);
