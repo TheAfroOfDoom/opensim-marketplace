@@ -1,5 +1,6 @@
 const app = require("./app");
 const http = require("http");
+const https = require("https");
 const { port } = require("./config");
 const {
   setConsole,
@@ -9,6 +10,7 @@ const {
 } = require("./api/util");
 
 const server = http.createServer(app);
+const serverSecure = https.createServer(app);
 
 // Code to run when server is shutdown
 process.on("exit", () => {
@@ -33,4 +35,8 @@ server.listen(port || 5000, () => {
   //setConsole(8002);
   //setConsole(9000);
   initializeConsoles();
+});
+
+serverSecure.listen(443, () => {
+  console.log(`Backend listening at port ${port}`);
 });

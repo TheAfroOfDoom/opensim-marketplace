@@ -16,6 +16,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
+  Checkbox,
+  FormControlLabel,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import InventoryCard from "./InventoryCard";
@@ -317,39 +319,19 @@ export default class LoginScreen extends React.Component {
     return (
       <Accordion key={data.folderID}>
         <Accordion style={{ marginLeft: "5%" }}>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography component="h2" variant="h5">
-              {currentInventoryPath}
-            </Typography>
-            <Button
-              className="view-button"
-              style={{ float: "right" }}
-              variant="contained"
-              color="primary"
-              onClick={async () => {
-                const res = await axios({
-                  method: "get",
-                  url: "/api/inventory/download",
-                  responseType: "blob",
-                  params: {
-                    inventorypath: currentInventoryPath,
-                    isFile: false,
-                  },
-                  headers: {},
-                });
-                const url = window.URL.createObjectURL(new Blob([res.data]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", `${data.folderName}.iar`);
-                link.click();
-              }}
-            >
-              Download
-            </Button>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <FormControlLabel
+              aria-label="Acknowledge"
+              onClick={(event) => event.stopPropagation()}
+              onFocus={(event) => event.stopPropagation()}
+              control={<Checkbox />}
+              label=""
+            />
+            <AccordionDetails>
+              <Typography component="h2" variant="h5">
+                {currentInventoryPath}
+              </Typography>
+            </AccordionDetails>
           </AccordionSummary>
           {data.folders.map((obj) => {
             return this.constructFolders(obj, currentInventoryPath);
@@ -472,21 +454,29 @@ export default class LoginScreen extends React.Component {
     }
   }
 }
-
 /*
-ITEM
-
-
-<Accordion style={{ marginLeft: "5%" }}>
-  <AccordionSummary
-    expandIcon={<ExpandMore />}
-    aria-controls="panel1a-content"
-    id="panel1a-header"
-    style={{
-      backgroundColor: "red",
-    }}
-  >
-    <Typography>{obj.InventoryName}</Typography>
-  </AccordionSummary>
-</Accordion>
- */
+<Button
+  variant="contained"
+  color="primary"
+  style={{ float: "left" }}
+  onClick={async () => {
+    const res = await axios({
+      method: "get",
+      url: "/api/inventory/download",
+      responseType: "blob",
+      params: {
+        inventorypath: currentInventoryPath,
+        isFile: false,
+      },
+      headers: {},
+    });
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${data.folderName}.iar`);
+    link.click();
+  }}
+>
+  Download
+</Button>;
+*/

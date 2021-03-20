@@ -19,15 +19,26 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  IconButton,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+
+//Icons
+import LockIcon from "@material-ui/icons/Lock";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import GetAppIcon from "@material-ui/icons/GetApp";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 export default function InventoryCard(props) {
   const [imgData, setImgData] = useState(null);
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [image, setImage] = useState(null);
-  const [imgObj, setImageObj] = useState(null);
-  const [name, setName] = useState(props.data.InventoryName);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const MenuOpen = Boolean(anchorEl);
+
   useEffect(() => {
     let fetchData = async (id) => {
       try {
@@ -44,21 +55,44 @@ export default function InventoryCard(props) {
     fetchData(props.data.assetID);
   }, []);
 
-  const handleimagefile = (event) => {
-    setImage(URL.createObjectURL(event.target.files[0]));
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const onImageLoad = ({ target: img }) => {
-    console.log(img.naturalHeight, img.naturalWidth, img);
-    let canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    setImageObj({
-      width: img.naturalWidth,
-      height: img.naturalHeight,
-      data: canvas.toDataURL("image/jpeg"),
+  const handleRemove = () => {
+    handleMenuClose();
+    setOpen(!open);
+  };
+  const handleEdit = () => {
+    handleMenuClose();
+    setEdit(!edit);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownload = async (event) => {
+    handleMenuClose();
+    event.preventDefault();
+    console.log(event);
+    const res = await axios({
+      method: "get",
+      url: "/api/inventory/download",
+      responseType: "blob",
+      params: {
+        inventorypath: props.inventorypath,
+        assetID: props.data.assetID,
+        inventoryName: props.data.InventoryName,
+        isFile: true,
+      },
+      headers: {},
     });
-    console.log(canvas.toDataURL("image/jpeg").toString());
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${props.data.InventoryName}.iar`);
+    link.click();
   };
 
   return (
@@ -75,9 +109,22 @@ export default function InventoryCard(props) {
         )}
       </Link>
       <div className="details">
-        <Typography component="h2" variant="h3">
-          {props.data.InventoryName}
-        </Typography>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography component="h2" variant="h3">
+            {props.data.InventoryName}
+          </Typography>
+          <div style={{ marginTop: "auto", marginBottom: "auto" }}>
+            {props.data.isCreator ? (
+              props.data.assets[0].public && props.data.isCreator ? (
+                <LockOpenIcon />
+              ) : (
+                <LockIcon />
+              )
+            ) : (
+              <div />
+            )}
+          </div>
+        </div>
         <Divider className="divider" />
         <Typography component="h2" variant="h5">
           {props.assetType.type}
@@ -90,56 +137,26 @@ export default function InventoryCard(props) {
             </Moment>
           }
         </Typography>
-        <div className="actions-container">
-          <CardActions>
+
+        {EditAsset(props, edit, setEdit)}
+        {RemoveAssetPopup(props, open, setOpen)}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
             <Link to={`/item/${props.data.assetID}`}>
               <Button
                 className="view-button"
                 variant="contained"
                 color="primary"
+                style={{ marginRight: "10px" }}
               >
                 View Item
               </Button>
             </Link>
-            <Button
-              className="view-button"
-              variant="contained"
-              color="secondary"
-              onClick={() => setOpen(!open)}
-            >
-              Remove
-            </Button>
-
-            <Dialog
-              open={open}
-              onClose={() => setOpen(!open)}
-              fullWidth={false}
-              maxWidth="xs"
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Are You Sure You Want To Remove This Item?"}
-              </DialogTitle>
-              <DialogActions>
-                <Button
-                  onClick={() => setOpen(!open)}
-                  variant="contained"
-                  color="secondary"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    props.remove(props.data.assetID, props.data.InventoryName);
-                    setOpen(!open);
-                  }}
-                  variant="contained"
-                >
-                  Remove
-                </Button>
-              </DialogActions>
-            </Dialog>
             {props.data.isCreator ? (
               props.data.assets[0].public && props.data.isCreator ? (
                 <Button
@@ -167,165 +184,155 @@ export default function InventoryCard(props) {
             ) : (
               <div />
             )}
-            <Button
-              className="edit-button"
-              variant="contained"
-              color="primary"
-              onClick={() => setEdit(!edit)}
-            >
-              Edit
-            </Button>
-            <Dialog
-              open={edit}
-              onClose={() => setEdit(!edit)}
-              fullWidth={true}
-              maxWidth="sm"
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">{"Edit Asset"}</DialogTitle>
-              <DialogContent>
-                <DialogContentText>Change Name</DialogContentText>
-                <TextField
-                  label=""
-                  type="text"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                />
-                <DialogContentText style={{ marginTop: "10px" }}>
-                  Change Image
-                </DialogContentText>
-                <input
-                  accept="image/*"
-                  id="contained-button-file"
-                  multiple
-                  type="file"
-                  onChange={handleimagefile}
-                />
-                <img onLoad={onImageLoad} src={image} />
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={() => setEdit(!edit)}
-                  variant="contained"
-                  color="secondary"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    props.image(props.data.assetID, imgObj, name);
-                    setEdit(!edit);
-                  }}
-                >
-                  Save Changes
-                </Button>
-              </DialogActions>
-            </Dialog>
-            <Button
-              className="view-button"
-              variant="contained"
-              color="primary"
-              onClick={async (event) => {
-                event.preventDefault();
-                console.log(event);
-                const res = await axios({
-                  method: "get",
-                  url: "/api/inventory/download",
-                  responseType: "blob",
-                  params: {
-                    inventorypath: props.inventorypath,
-                    assetID: props.data.assetID,
-                    inventoryName: props.data.InventoryName,
-                    isFile: true,
-                  },
-                  headers: {},
-                });
-                const url = window.URL.createObjectURL(new Blob([res.data]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute(
-                  "download",
-                  `${props.data.InventoryName}.iar`
-                );
-                link.click();
-              }}
-              download
-            >
-              Download
-            </Button>
-          </CardActions>
+          </div>
+          <IconButton
+            aria-label="more"
+            aria-controls="long-menu"
+            aria-haspopup="true"
+            onClick={handleMenuClick}
+          >
+            <MoreVertIcon />
+          </IconButton>
         </div>
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={MenuOpen}
+          onClose={handleMenuClose}
+          PaperProps={{
+            style: {
+              maxHeight: 48 * 4.5,
+              width: "20ch",
+            },
+          }}
+        >
+          {props.data.isCreator ? (
+            <MenuItem onClick={handleEdit}>
+              <EditIcon style={{ marginRight: "5px" }} />
+              Edit
+            </MenuItem>
+          ) : (
+            <div />
+          )}
+          <MenuItem onClick={handleRemove}>
+            <DeleteIcon style={{ marginRight: "5px" }} />
+            Remove
+          </MenuItem>
+          <MenuItem onClick={handleDownload}>
+            <GetAppIcon style={{ marginRight: "5px" }} />
+            Download
+          </MenuItem>
+        </Menu>
       </div>
     </Card>
   );
 }
 
-/*
+function EditAsset(props, edit, setEdit) {
+  const [image, setImage] = useState(null);
+  const [imgObj, setImageObj] = useState(null);
+  const [name, setName] = useState(props.data.InventoryName);
 
-<div
-  id={`${props.obj.InventoryName.replace("Default ", "")}`}
-  key={props.obj.assetID}
->
-  <Card bsPrefix="main-card">
-    <Card.Header className="main-header">
-      {props.obj.InventoryName}{" "}
-      {props.obj.isCreator ? <i>(creator)</i> : ""}
-    </Card.Header>
-    <Card.Body as="h6">
-      <div className="main-block">
-        <div className="image-column">
-          <Image
-            className="inventory-picture"
-            src={props.assetType.pic}
-          ></Image>
-        </div>
-        <div className="text-column">
-          <Card.Text>Asset Type: {props.assetType.type}</Card.Text>
-          <Card.Text>
-            Create Time:{" "}
-            {
-              <Moment format="MM/DD/YYYY HH:mm" unix>
-                {props.obj.creationDate}
-              </Moment>
-            }
-          </Card.Text>
-          <div className="inventory-button-group">
-            <Link to={`/item/${props.obj.assetID}`}>
-              <Button variant="info">Inspect Item</Button>
-            </Link>
+  const handleimagefile = (event) => {
+    setImage(URL.createObjectURL(event.target.files[0]));
+  };
 
-            <Button
-              variant="danger"
-              onClick={this.removeItem.bind(this, props.obj.assetID)}
-            >
-              Remove
-            </Button>
+  const onImageLoad = ({ target: img }) => {
+    console.log(img.naturalHeight, img.naturalWidth, img);
+    let canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    setImageObj({
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+      data: canvas.toDataURL("image/jpeg"),
+    });
+    console.log(canvas.toDataURL("image/jpeg").toString());
+  };
 
-            {props.obj.isCreator ? (
-              this.isPublic(props.obj) ? (
-                <Button
-                  onClick={this.privateItem
-                    .bind(this, props.obj.assetID)
-                    .bind(this, props.obj.creatorID)}
-                >
-                  Make Private
-                </Button>
-              ) : (
-                <Button
-                  variant="success"
-                  onClick={this.uploadItem.bind(this, props.obj.assetID)}
-                >
-                  Make Public
-                </Button>
-              )
-            ) : (
-              <div />
-            )}
-          </div>
-        </div>
-      </div>
-    </Card.Body>
-  </Card>
-</div>
- */
+  return (
+    <Dialog
+      open={edit}
+      onClose={() => setEdit(!edit)}
+      fullWidth={true}
+      maxWidth="sm"
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Edit Asset"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>Change Name</DialogContentText>
+        <TextField
+          label=""
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <DialogContentText style={{ marginTop: "10px" }}>
+          Change Image
+        </DialogContentText>
+        <input
+          accept="image/*"
+          id="contained-button-file"
+          multiple
+          type="file"
+          onChange={handleimagefile}
+        />
+        <img onLoad={onImageLoad} src={image} />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => setEdit(!edit)}
+          variant="contained"
+          color="secondary"
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={() => {
+            props.image(props.data.assetID, imgObj, name);
+            setEdit(!edit);
+          }}
+        >
+          Save Changes
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+function RemoveAssetPopup(props, open, setOpen) {
+  return (
+    <Dialog
+      open={open}
+      onClose={() => setOpen(!open)}
+      fullWidth={false}
+      maxWidth="xs"
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        {"Are You Sure You Want To Remove This Item?"}
+      </DialogTitle>
+      <DialogActions>
+        <Button
+          onClick={() => setOpen(!open)}
+          variant="contained"
+          color="secondary"
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={() => {
+            props.remove(props.data.assetID, props.data.InventoryName);
+            setOpen(!open);
+          }}
+          variant="contained"
+        >
+          Remove
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
