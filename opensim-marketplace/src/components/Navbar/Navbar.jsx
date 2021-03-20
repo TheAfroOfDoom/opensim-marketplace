@@ -234,7 +234,7 @@ class NavigationBar extends React.Component {
       //callback function setting loggedIn state to false
       this.props.handleLogin(false);
     } else {
-      console.log("Not Logged In");
+      console.error("Not Logged In");
     }
   };
 

@@ -42,6 +42,7 @@ class App extends React.Component {
     } else {
       this.setState({ loggedIn: false });
     }
+    console.log(this.state.loggedIn);
   }
 
   handleSearchChange = (data, lim, type, order, sdate, edate) => {

@@ -47,7 +47,7 @@ export default class HomeScreen extends React.Component {
         data: response.data.data,
       });
     } catch (err) {
-      console.log(err.message);
+      console.error(err);
     }
   }
   /*

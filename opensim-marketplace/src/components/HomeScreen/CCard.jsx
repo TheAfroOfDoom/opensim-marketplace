@@ -77,8 +77,8 @@ export default function CCard(props) {
           params: { assetID: id },
         });
         setImgData(response.data.data);
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        console.error(err);
       }
     };
     fetchData(props.obj.id);
