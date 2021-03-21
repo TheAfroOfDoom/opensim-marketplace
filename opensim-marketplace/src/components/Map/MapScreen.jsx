@@ -38,7 +38,7 @@ const styles = {
     background: "#343a40",
     height: "calc(100% - 50px)",
     top: 60,
-    width: "20%",
+    width: "350px",
   },
   title: {
     color: "white",
@@ -50,16 +50,16 @@ const styles = {
   coordright: {
     paddingLeft: 10,
     paddingRight: 10,
-    width: "50%",
+    width: "45%",
     float: "left",
-    //marginLeft: 10,
+    marginLeft: "5%",
   },
   coordleft: {
     paddingLeft: 10,
     paddingRight: 10,
-    width: "50%",
+    width: "45%",
     float: "right",
-    //marginLeft: 10,
+    marginRight: "5%",
   },
 };
 
@@ -151,8 +151,8 @@ class Map extends React.Component {
       message: e.target.value,
     });
   };
-  handleShutdown = (event) => {
-    event.preventDefault();
+  handleShutdown = (name) => {
+    this.setState({ regionName: name });
     this.confirmationOpen();
   };
   handleShutdownAll = (event) => {
@@ -216,7 +216,7 @@ class Map extends React.Component {
     event.preventDefault();
     const { map } = this.state;
     if (map && this.state.input_x != null && this.state.input_y != null) {
-      map.panTo(
+      this.panOnMap(
         this.latlongToTile(
           this.state.input_x * Math.pow(2, 17 - this.state.zoom),
           this.state.input_y * Math.pow(2, 17 - this.state.zoom)
@@ -225,15 +225,30 @@ class Map extends React.Component {
     }
   };
 
+  panFromRegion = (locX, locY) => {
+    const { map } = this.state;
+    this.panOnMap(
+      this.latlongToTile(
+        locX * Math.pow(2, 17 - this.state.zoom),
+        locY * Math.pow(2, 17 - this.state.zoom)
+      )
+    );
+  };
+
+  panOnMap = (newCoords) => {
+    const { map } = this.state;
+    map.panTo(newCoords);
+  };
+
   latlongToTile(lat, long) {
     return [lat * 0.000976 * 2, long * 0.000977 * 2];
   }
 
   tileTolatlong({ lat, lng }) {
-    let truelat = Math.trunc(
+    let truelat = Math.round(
       (lat * (1 / (0.000976 * 2))) / Math.pow(2, 17 - this.state.zoom)
     );
-    let truelng = Math.trunc(
+    let truelng = Math.round(
       (lat * (1 / (0.000977 * 2))) / Math.pow(2, 17 - this.state.zoom)
     );
     return `(${truelat} ,${Math.trunc(truelng)})`;
@@ -273,14 +288,6 @@ class Map extends React.Component {
                       this.tileTolatlong(this.state.currentPos)}
                   </Typography>
                 </Paper>
-                <Paper className="coords-pane leaflet-control">
-                  <Typography component="h5" variant="h5">
-                    Other stuff
-                  </Typography>
-                  <Typography component="p" variant="p">
-                    Other stuff
-                  </Typography>
-                </Paper>
               </div>
             </div>
           </MapContainer>
@@ -293,24 +300,6 @@ class Map extends React.Component {
             classes={{ paper: classes.paper }}
           >
             <List>
-              <div className={classes.title}>
-                <Typography variant="h3" gutterBottom>
-                  Map
-                </Typography>
-              </div>
-              <Divider />
-              <div className={classes.title}>
-                <Typography variant="h6" gutterBottom>
-                  Center Position: (1000, 1000)
-                </Typography>
-                <Typography variant="h6" gutterBottom>
-                  Return to center
-                </Typography>
-                <Button onClick={() => this.centerMap(this.state.map)}>
-                  Center
-                </Button>
-              </div>
-              <Divider />
               <div className={classes.title}>
                 <Typography variant="h6" gutterBottom>
                   Coordinate Control
@@ -346,16 +335,21 @@ class Map extends React.Component {
                   <Button type="submit">Move To</Button>
                 </form>
 
+                <Divider />
+                <Typography variant="h6" gutterBottom>
+                  Regions
+                </Typography>
                 {this.state.data !== null ? (
-                  <RegionInformation data={this.state.data} />
+                  <RegionInformation
+                    data={this.state.data}
+                    pan={this.panFromRegion}
+                    shutdown={this.handleShutdown}
+                  />
                 ) : (
                   <div />
                 )}
 
                 <div>
-                  <Button onClick={this.confirmationOpen}>
-                    Shut down region
-                  </Button>
                   <Dialog
                     open={this.state.cOpen}
                     onClose={this.confirmationOpen}
@@ -366,7 +360,7 @@ class Map extends React.Component {
                   >
                     <form onSubmit={this.handleShutdown}>
                       <DialogTitle id="alert-dialog-title">
-                        {"Are You Sure You Want To Shutdown This Region?"}
+                        {`Are You Sure You Want To Shutdown ${this.state.regionName}?`}
                       </DialogTitle>
                       <TextField
                         autoFocus
@@ -389,7 +383,12 @@ class Map extends React.Component {
                       </DialogActions>
                     </form>
                   </Dialog>
-                  <Button onClick={this.confirmationAll}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={this.confirmationAll}
+                    style={{ margin: 15 }}
+                  >
                     Shut Down All Regions
                   </Button>
 
@@ -426,7 +425,7 @@ class Map extends React.Component {
                 </div>
               </div>
               <div>
-                <button onClick={this.handleCancel}>Cancel Shutdown</button>
+                <Button onClick={this.handleCancel}>Cancel Shutdown</Button>
                 <Dialog
                   open={this.state.cancelShutdown}
                   onClose={this.state.cancelShutdown}
@@ -460,3 +459,17 @@ class Map extends React.Component {
 }
 
 export default withStyles(styles)(Map);
+
+/* FOR CENTERING ON MAP
+<div className={classes.title}>
+  <Typography variant="h6" gutterBottom>
+    Center Position: (1000, 1000)
+  </Typography>
+  <Typography variant="h6" gutterBottom>
+    Return to center
+  </Typography>
+  <Button onClick={() => this.centerMap(this.state.map)}>
+    Center
+  </Button>
+</div>
+ */
