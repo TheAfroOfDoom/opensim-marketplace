@@ -8,6 +8,8 @@ import Moment from "react-moment";
 
 import CardMedia from "@material-ui/core/CardMedia";
 import Card from "@material-ui/core/Card";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
@@ -28,6 +30,7 @@ export default function InventoryCard(props) {
   const [image, setImage] = useState(null);
   const [imgObj, setImageObj] = useState(null);
   const [name, setName] = useState(props.data.InventoryName);
+
   useEffect(() => {
     let fetchData = async (id) => {
       try {
@@ -66,7 +69,14 @@ export default function InventoryCard(props) {
       className="root"
       elevation={10}
       id={`${props.data.InventoryName.replace("Default ", "")}`}
+      style={{ paddingLeft: "16px" }}
     >
+      <FormControlLabel
+        aria-label="export-checkbox"
+        control={<Checkbox />}
+        value={`${props.data.inventoryID},`}
+        onChange={async (event) => {await props.handleCheckClick(event)}}
+      />
       <Link to={`/item/${props.data.assetID}`} className="image-cover">
         {imgData === null ? (
           <CardMedia className="image" image="/Images/test.webp" />
@@ -101,49 +111,10 @@ export default function InventoryCard(props) {
                 View Item
               </Button>
             </Link>
-            <Button
-              className="view-button"
-              variant="contained"
-              color="secondary"
-              onClick={() => setOpen(!open)}
-            >
-              Remove
-            </Button>
-
-            <Dialog
-              open={open}
-              onClose={() => setOpen(!open)}
-              fullWidth={false}
-              maxWidth="xs"
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Are You Sure You Want To Remove This Item?"}
-              </DialogTitle>
-              <DialogActions>
-                <Button
-                  onClick={() => setOpen(!open)}
-                  variant="contained"
-                  color="secondary"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    props.remove(props.data.assetID, props.data.InventoryName);
-                    setOpen(!open);
-                  }}
-                  variant="contained"
-                >
-                  Remove
-                </Button>
-              </DialogActions>
-            </Dialog>
             {props.data.isCreator ? (
               props.data.assets[0].public && props.data.isCreator ? (
                 <Button
-                  className="view-button"
+                  className="market-button"
                   variant="outlined"
                   color="secondary"
                   onClick={() => {
@@ -154,7 +125,7 @@ export default function InventoryCard(props) {
                 </Button>
               ) : (
                 <Button
-                  className="view-button"
+                  className="market-button"
                   variant="outlined"
                   color="primary"
                   onClick={() =>
@@ -163,10 +134,7 @@ export default function InventoryCard(props) {
                 >
                   Make Public
                 </Button>
-              )
-            ) : (
-              <div />
-            )}
+              ),
             <Button
               className="edit-button"
               variant="contained"
@@ -175,6 +143,9 @@ export default function InventoryCard(props) {
             >
               Edit
             </Button>
+            ) : (
+              <div />
+            )}
             <Dialog
               open={edit}
               onClose={() => setEdit(!edit)}
@@ -222,38 +193,6 @@ export default function InventoryCard(props) {
                 </Button>
               </DialogActions>
             </Dialog>
-            <Button
-              className="view-button"
-              variant="contained"
-              color="primary"
-              onClick={async (event) => {
-                event.preventDefault();
-                console.log(event);
-                const res = await axios({
-                  method: "get",
-                  url: "/api/inventory/download",
-                  responseType: "blob",
-                  params: {
-                    inventorypath: props.inventorypath,
-                    assetID: props.data.assetID,
-                    inventoryName: props.data.InventoryName,
-                    isFile: true,
-                  },
-                  headers: {},
-                });
-                const url = window.URL.createObjectURL(new Blob([res.data]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute(
-                  "download",
-                  `${props.data.InventoryName}.iar`
-                );
-                link.click();
-              }}
-              download
-            >
-              Download
-            </Button>
           </CardActions>
         </div>
       </div>
