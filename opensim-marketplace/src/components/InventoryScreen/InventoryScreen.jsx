@@ -7,7 +7,9 @@ import { Spinner } from "react-bootstrap";
 import axios from "axios";
 
 import Grid from "@material-ui/core/Grid";
+import Checkbox from "@material-ui/core/Checkbox";
 import Container from "@material-ui/core/Container";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Snackbar from "@material-ui/core/Snackbar";
 import Typography from "@material-ui/core/Typography";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -50,10 +52,23 @@ export default class LoginScreen extends React.Component {
       open: null,
       message: "",
       severity: "error",
-      chosenInventoryIDs: "",
-      folderIDs: "",
     };
+    this.chosenInventoryIDs = "";
+    this.folderIDs = "";
   }
+
+  handleCheckClick = async (event) => {
+    //console.log(event.target);
+    if (event.target.checked) {
+      this.chosenInventoryIDs = this.chosenInventoryIDs + event.target.value;
+    } else {
+      this.chosenInventoryIDs = this.chosenInventoryIDs.replace(
+        event.target.value,
+        ""
+      );
+    }
+    console.log("chosenInvIDs: " + this.chosenInventoryIDs);
+  };
 
   getFolder = async () => {
     console.log("Folder retrieval started...");
@@ -299,39 +314,41 @@ export default class LoginScreen extends React.Component {
     this.setState({ open: false });
   };
 
-  handleCheckClick = async (event) => {
-    //console.log(event.target);
-    const { chosenInventoryIDs } = this.state;
-    if (event.target.checked) {
-      await this.setState({
-        chosenInventoryIDs: chosenInventoryIDs + event.target.value,
-      });
-    } else {
-      await this.setState({
-        chosenInventoryIDs: chosenInventoryIDs.replace(event.target.value, ""),
-      });
-    }
-    console.log(this.state.chosenInventoryIDs);
-  };
-
   constructFolders = (data, inventorypath) => {
     let currentInventoryPath = inventorypath + data.folderName + "/";
     return (
       <Accordion key={data.folderID}>
-        <Accordion style={{ marginLeft: "5%" }}>
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <FormControlLabel
-              aria-label="Acknowledge"
-              onClick={(event) => event.stopPropagation()}
-              onFocus={(event) => event.stopPropagation()}
-              control={<Checkbox />}
-              label=""
-            />
-            <AccordionDetails>
+        <Accordion style={{ marginLeft: "2.5%" }}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <div style={{ display: "inline-flex" }}>
+              <FormControlLabel
+                aria-label="export-checkbox"
+                onClick={(event) => event.stopPropagation()}
+                onFocus={(event) => event.stopPropagation()}
+                control={<Checkbox />}
+                onChange={(event) => {
+                  console.log("peepee");
+                  //this.setState({ test: 'sum string'})
+                  /*
+                  data.folders.map((obj) => {
+                    obj.setState({checked: event.target.checked})
+                  });
+                  //*/
+                  data.items.map((obj) => {
+                    //obj.setState({checked: event.target.checked})
+                    //console.log(obj);
+                  });
+                  //*/
+                }}
+              />
               <Typography component="h2" variant="h5">
                 {currentInventoryPath}
               </Typography>
-            </AccordionDetails>
+            </div>
           </AccordionSummary>
           {data.folders.map((obj) => {
             return this.constructFolders(obj, currentInventoryPath);
@@ -342,18 +359,13 @@ export default class LoginScreen extends React.Component {
                 style={{ marginTop: 5, marginBottom: 5 }}
                 key={obj.assetID}
               >
-                <input
-                  type="checkbox"
-                  id={`asset-${obj.assetID}`}
-                  value={`${obj.inventoryID},`}
-                  onChange={this.handleCheckClick}
-                />
                 <InventoryCard
                   data={obj}
                   assetType={this.getAssetType(obj.assetType)}
                   remove={this.removeItem.bind(this)}
                   private={this.privateItem.bind(this)}
                   upload={this.uploadItem.bind(this)}
+                  handleCheckClick={this.handleCheckClick.bind(this)}
                   image={this.handleImageChange}
                   inventorypath={currentInventoryPath}
                 />
@@ -387,38 +399,47 @@ export default class LoginScreen extends React.Component {
               {this.state.message}
             </Alert>
           </Snackbar>
-          <Button
-            className="view-button"
-            style={{ float: "right" }}
-            variant="contained"
-            color="primary"
-            onClick={async () => {
-              const res = await axios({
-                method: "get",
-                url: "/api/inventory/downloadMulti",
-                responseType: "blob",
-                params: {
-                  rootFolderID: this.state.data.folderID,
-                  folderIDs: this.state.folderIDs,
-                  inventoryIDs: this.state.chosenInventoryIDs,
-                  keepStructure: false,
-                },
-                headers: {},
-              });
-              const url = window.URL.createObjectURL(new Blob([res.data]));
-              const link = document.createElement("a");
-              link.href = url;
-              link.setAttribute("download", `multi.iar`);
-              link.click();
-            }}
-          >
-            Download
-          </Button>
           <Container style={{ marginTop: "5%", marginBottom: "5%" }}>
+            <Button
+              className="view-button"
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                // If no assets are selected, dont call stuff
+                if (!this.chosenInventoryIDs) {
+                  this.setState({
+                    open: true,
+                    message: `No assets selected`,
+                    severity: "warning",
+                  });
+                  return;
+                }
+
+                const res = await axios({
+                  method: "get",
+                  url: "/api/inventory/downloadMulti",
+                  responseType: "blob",
+                  params: {
+                    rootFolderID: this.state.data.folderID,
+                    folderIDs: this.folderIDs,
+                    inventoryIDs: this.chosenInventoryIDs,
+                    keepStructure: false,
+                  },
+                  headers: {},
+                });
+                const url = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `multi.iar`);
+                link.click();
+              }}
+            >
+              Export Selected
+            </Button>
             <Accordion
               style={{
-                marginLeft: "5%",
-                marginRight: "5%",
+                marginLeft: "2.5%",
+                marginRight: "2.5%",
               }}
               expanded
             >

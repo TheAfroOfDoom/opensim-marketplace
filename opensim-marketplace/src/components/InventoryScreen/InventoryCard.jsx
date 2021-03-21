@@ -8,6 +8,8 @@ import Moment from "react-moment";
 
 import CardMedia from "@material-ui/core/CardMedia";
 import Card from "@material-ui/core/Card";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
@@ -100,7 +102,16 @@ export default function InventoryCard(props) {
       className="root"
       elevation={10}
       id={`${props.data.InventoryName.replace("Default ", "")}`}
+      style={{ paddingLeft: "16px" }}
     >
+      <FormControlLabel
+        aria-label="export-checkbox"
+        control={<Checkbox />}
+        value={`${props.data.inventoryID},`}
+        onChange={async (event) => {
+          await props.handleCheckClick(event);
+        }}
+      />
       <Link to={`/item/${props.data.assetID}`} className="image-cover">
         {imgData === null ? (
           <CardMedia className="image" image="/Images/test.webp" />
@@ -160,7 +171,7 @@ export default function InventoryCard(props) {
             {props.data.isCreator ? (
               props.data.assets[0].public && props.data.isCreator ? (
                 <Button
-                  className="view-button"
+                  className="market-button"
                   variant="outlined"
                   color="secondary"
                   onClick={() => {
@@ -171,7 +182,7 @@ export default function InventoryCard(props) {
                 </Button>
               ) : (
                 <Button
-                  className="view-button"
+                  className="market-button"
                   variant="outlined"
                   color="primary"
                   onClick={() =>

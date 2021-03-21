@@ -148,7 +148,7 @@ router.post("/add", async (req, res) => {
         type: sequelize.QueryTypes.SELECT,
       }
     );
-    console.log("Add Error: " + JSON.stringify(sel));
+    console.log("Add to inventory error: " + JSON.stringify(sel));
 
     /*REFRESH FIRESTORM USING IARs*/
 
@@ -608,6 +608,11 @@ router.get("/downloadMulti", async (req, res) => {
       throw new Error("Unauthorized");
     }
 
+    let uuidFromToken = await Tokens.findOne({
+      attributes: ["uuid"],
+      where: { token: sid },
+    });
+
     const {
       rootFolderID,
       folderIDs,
@@ -618,10 +623,52 @@ router.get("/downloadMulti", async (req, res) => {
 
     const consoleSession = regionConsoles[port || 9000];
 
+    //Run export SP
+    info = await sequelize.query(
+      `CALL marketplaceExportAssets(
+        :rootFolderID
+      , :userID
+      , :folderIDs
+      , :inventoryIDs
+      , :keepStructure
+      , @error
+      , @temporaryFolderID
+      , @temporaryFolderName
+      );`,
+      {
+        replacements: {
+          rootFolderID: rootFolderID,
+          userID: uuidFromToken.dataValues.uuid,
+          folderIDs: folderIDs,
+          inventoryIDs: inventoryIDs,
+          keepStructure: keepStructure,
+        },
+      }
+    );
+
+    //Query outputs
+    [sel] = await sequelize.query(
+      `SELECT @error as error
+            , @temporaryFolderID as temporaryFolderID
+            , @temporaryFolderName as temporaryFolderName
+            ;`,
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    let error = sel['error'];
+    let temporaryFolderID = sel['temporaryFolderID'];
+    let temporaryFolderName = sel['temporaryFolderName'];
+    console.log(sel);
+    if(error) console.log("Export error: " + JSON.stringify(sel[0]));
+    console.log(temporaryFolderID, temporaryFolderName);
+
     let command;
 
-    console.log("Getting Folder");
-    command = `save iar Wifi Admin "MARKETPLACE_EXPORT" kenny123 ${marketplace_add_location}/${sid}_dl.iar`;
+    let filename = `${sid}_dl.iar`;
+    let file = `"${marketplace_add_location}/${filename}"`;
+    command = `save iar Wifi Admin "${temporaryFolderName}" kenny123 ${file}`;
+    console.log("Getting Folder: " + command);
 
     // Save IAR
     let x = await axios({
@@ -636,11 +683,15 @@ router.get("/downloadMulti", async (req, res) => {
       },
     });
 
-    await setTimeout(async () => {
-      let filename = `${sid}_dl.iar`;
-      let file = `${marketplace_add_location}/${filename}`;
-      res.download(file);
-    }, 1000);
+    // Prompt user for file download
+    let success = await checkFileExists(file);
+
+    if(success)    
+      await res.download(file);
+    else
+      console.log("Error accessing saved IAR file from /bin");
+    await deleteTemporaryFolder(temporaryFolderID);
+
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
@@ -694,6 +745,64 @@ function constructFolders(folders, items, parentFolderID) {
     */
   }
   return localFolders;
+}
+
+async function deleteTemporaryFolder(temporaryFolderID) {
+  // Delete temp folder in OpenSim user inventory after download finishes
+  info = await sequelize.query(
+    `CALL marketplaceDeleteFolder(
+      :temporaryFolderID
+    , @error
+    );`,
+    {
+      replacements: {
+        temporaryFolderID: temporaryFolderID
+      },
+    }
+  );
+
+  //Query outputs
+  [sel] = await sequelize.query(
+    `SELECT @error as error;`,
+    {
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  error = sel['error'];
+  if(error) console.log("Delete folder error: " + JSON.stringify(sel[0]));
+
+  return;
+}
+
+async function checkFileExists(file) {
+  let count = 0;
+  let previousLength = 0;
+  let currentLength = 0;
+  return await new Promise(resolve => {
+    const interval = setInterval(() => {
+      // Abort if count is too high
+      if(count >= 10) {
+        resolve(false);
+        clearInterval(interval);
+      }
+
+      console.log('p: ', previousLength);
+      console.log(file);
+      if(fs.existsSync(file)) {
+        currentLength = fs.readFileSync(file).length;
+        console.log('c: ', currentLength);
+        if(currentLength !== 0 &&
+          currentLength === previousLength)
+        {
+          resolve(true);
+          clearInterval(interval);
+        } else {
+          previousLength = currentLength;
+        }
+      }
+      count += 1;
+    }, 1000)
+  });
 }
 
 async function ReadSession(consoleSession) {
