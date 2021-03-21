@@ -656,18 +656,18 @@ router.get("/downloadMulti", async (req, res) => {
         type: sequelize.QueryTypes.SELECT,
       }
     );
-    let error = sel['error'];
-    let temporaryFolderID = sel['temporaryFolderID'];
-    let temporaryFolderName = sel['temporaryFolderName'];
+    let error = sel["error"];
+    let temporaryFolderID = sel["temporaryFolderID"];
+    let temporaryFolderName = sel["temporaryFolderName"];
     console.log(sel);
-    if(error) console.log("Export error: " + JSON.stringify(sel[0]));
+    if (error) console.log("Export error: " + JSON.stringify(sel[0]));
     console.log(temporaryFolderID, temporaryFolderName);
 
     let command;
 
     let filename = `${sid}_dl.iar`;
-    let file = `"${marketplace_add_location}/${filename}"`;
-    command = `save iar Wifi Admin "${temporaryFolderName}" kenny123 ${file}`;
+    let file = `${marketplace_add_location}/${filename}`;
+    command = `save iar Wifi Admin "${temporaryFolderName}" kenny123 "${file}"`;
     console.log("Getting Folder: " + command);
 
     // Save IAR
@@ -686,12 +686,9 @@ router.get("/downloadMulti", async (req, res) => {
     // Prompt user for file download
     let success = await checkFileExists(file);
 
-    if(success)    
-      await res.download(file);
-    else
-      console.log("Error accessing saved IAR file from /bin");
+    if (success) await res.download(file);
+    else console.log("Error accessing saved IAR file from /bin");
     await deleteTemporaryFolder(temporaryFolderID);
-
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {
@@ -756,20 +753,17 @@ async function deleteTemporaryFolder(temporaryFolderID) {
     );`,
     {
       replacements: {
-        temporaryFolderID: temporaryFolderID
+        temporaryFolderID: temporaryFolderID,
       },
     }
   );
 
   //Query outputs
-  [sel] = await sequelize.query(
-    `SELECT @error as error;`,
-    {
-      type: sequelize.QueryTypes.SELECT,
-    }
-  );
-  error = sel['error'];
-  if(error) console.log("Delete folder error: " + JSON.stringify(sel[0]));
+  [sel] = await sequelize.query(`SELECT @error as error;`, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  error = sel["error"];
+  if (error) console.log("Delete folder error: " + JSON.stringify(sel[0]));
 
   return;
 }
@@ -778,22 +772,20 @@ async function checkFileExists(file) {
   let count = 0;
   let previousLength = 0;
   let currentLength = 0;
-  return await new Promise(resolve => {
+  return await new Promise((resolve) => {
     const interval = setInterval(() => {
       // Abort if count is too high
-      if(count >= 10) {
+      if (count >= 10) {
         resolve(false);
         clearInterval(interval);
       }
 
-      console.log('p: ', previousLength);
+      console.log("p: ", previousLength);
       console.log(file);
-      if(fs.existsSync(file)) {
+      if (fs.existsSync(file)) {
         currentLength = fs.readFileSync(file).length;
-        console.log('c: ', currentLength);
-        if(currentLength !== 0 &&
-          currentLength === previousLength)
-        {
+        console.log("c: ", currentLength);
+        if (currentLength !== 0 && currentLength === previousLength) {
           resolve(true);
           clearInterval(interval);
         } else {
@@ -801,7 +793,7 @@ async function checkFileExists(file) {
         }
       }
       count += 1;
-    }, 1000)
+    }, 1000);
   });
 }
 

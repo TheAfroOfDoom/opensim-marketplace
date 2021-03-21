@@ -36,8 +36,7 @@ import RegionInformation from "./RegionInformation";
 const styles = {
   paper: {
     background: "#343a40",
-    height: "calc(100% - 50px)",
-    top: 60,
+    top: 50,
     width: "350px",
   },
   title: {
@@ -260,6 +259,7 @@ class Map extends React.Component {
       <div>
         <div className="ccontainer" data-testid="map">
           <MapContainer
+            style={{ top: 50 }}
             data-testid="map"
             center={this.latlongToTile(1000, 1000)}
             scrollWheelZoom={false}

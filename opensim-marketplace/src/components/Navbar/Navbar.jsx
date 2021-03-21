@@ -246,7 +246,12 @@ class NavigationBar extends React.Component {
           variant="dark"
           bg="dark"
           expand="lg"
-          style={{ paddingLeft: "10px" }}
+          style={{
+            paddingLeft: "10px",
+            position: "fixed",
+            zIndex: 1000,
+            width: "100%",
+          }}
         >
           <Link exact to="/">
             <Navbar.Brand>

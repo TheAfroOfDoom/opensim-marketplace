@@ -7,9 +7,7 @@ import { Spinner } from "react-bootstrap";
 import axios from "axios";
 
 import Grid from "@material-ui/core/Grid";
-import Checkbox from "@material-ui/core/Checkbox";
 import Container from "@material-ui/core/Container";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Snackbar from "@material-ui/core/Snackbar";
 import Typography from "@material-ui/core/Typography";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -464,6 +462,12 @@ export default class LoginScreen extends React.Component {
                     <InventoryCard
                       data={obj}
                       assetType={this.getAssetType(obj.assetType)}
+                      remove={this.removeItem.bind(this)}
+                      private={this.privateItem.bind(this)}
+                      upload={this.uploadItem.bind(this)}
+                      handleCheckClick={this.handleCheckClick.bind(this)}
+                      image={this.handleImageChange}
+                      inventorypath={"/"}
                     />
                   </Container>
                 );
