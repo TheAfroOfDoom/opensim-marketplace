@@ -315,7 +315,7 @@ export default class LoginScreen extends React.Component {
   constructFolders = (data, inventorypath) => {
     let currentInventoryPath = inventorypath + data.folderName + "/";
     return (
-      <Accordion key={data.folderID}>
+      <Accordion key={data.folderID} elevation={10}>
         <Accordion style={{ marginLeft: "2.5%" }}>
           <AccordionSummary
             expandIcon={<ExpandMore />}

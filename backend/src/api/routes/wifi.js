@@ -116,7 +116,7 @@ router.get("/map", async (req, res) => {
   }
 });
 
-router.get("/getregions", async (req, res) => {
+router.get("/region/get", async (req, res) => {
   try {
     //Check if user is authenticated
     const { sid } = req.cookies;
@@ -221,5 +221,36 @@ router.get("/getregions", async (req, res) => {
     console.log(e);
     res.status(400).json(e);
   }
+});
+
+router.post("/region/create", async (req, res) => {
+  //Check if user is authenticated
+  const { sid } = req.cookies;
+
+  if (!(await isUserLoggedIn(sid))) {
+    throw new Error("Unauthorized");
+  }
+
+  const { name, port, vport } = req.body;
+  console.log(name, port, vport);
+  // Run: .\addRegion.ps1 –GridIP x.x.x.x –RegionFolder “FolderName” –RegionName “My Region” –Port “9000” –Vport “6599” –Delay “123”
+  const consoleSession = regionConsoles[8002];
+  const gridIP = consoleSession.address;
+  const folderName = "Regions";
+  const delay = 100;
+  let command = `.\\addRegion.ps1 –GridIP ${gridIP} –RegionFolder "${folderName}" –RegionName "${name}" –Port "${port}" –Vport "${vport}" –Delay "${delay}"`;
+  console.log(command);
+  res.sendStatus(201);
+});
+
+router.post("/region/cancel", async (req, res) => {
+  //Check if user is authenticated
+  const { sid } = req.cookies;
+
+  if (!(await isUserLoggedIn(sid))) {
+    throw new Error("Unauthorized");
+  }
+
+  res.send("Test");
 });
 module.exports = router;

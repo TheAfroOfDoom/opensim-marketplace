@@ -563,28 +563,12 @@ router.get("/download", async (req, res) => {
     let filename = `${sid}_dl.iar`;
     let file = `${marketplace_add_location}/${filename}`;
 
-    let interval = await setInterval(async () => {
-      try {
-        if (
-          fs.readFileSync(file).length !== 0 &&
-          fs.readFileSync(file).length === previous
-        ) {
-          await res.download(file);
-          clearInterval(interval);
-        }
-        console.log("Length:", fs.readFileSync(file).length);
-        previous = fs.readFileSync(file).length;
-      } catch (e) {}
-    }, 500);
+    // Prompt user for file download
+    let success = await checkFileExists(file);
 
-    setTimeout(() => {
-      fs.unlink(file, (err) => {
-        if (err) {
-          return console.log(err);
-        }
-        console.log("Deleting " + file);
-      });
-    }, 2000);
+    if (success) await res.download(file);
+    else console.log("Error accessing saved IAR file from /bin");
+    await deleteTemporaryFolder(`${inventorypath}${inventoryName}`);
   } catch (e) {
     console.log(e);
     if (e.message === "Unauthorized") {

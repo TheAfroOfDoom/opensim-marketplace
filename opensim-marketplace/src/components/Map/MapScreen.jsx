@@ -105,7 +105,7 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentPos: null,
+      currentPos: { lat: 1.9519996643066406, lng: 1.9540023803710938 }, //[1000, 1000]
       zoom: 17,
       map: null,
       input_x: null,
@@ -115,12 +115,13 @@ class Map extends React.Component {
       cancelShutdown: false,
       message: "",
       data: null,
+      createOpen: false,
     };
     this.handleClick = this.handleClick.bind(this);
   }
   async componentDidMount() {
     try {
-      const response = await axios.get("/api/wifi/getregions");
+      const response = await axios.get("/api/wifi/region/get");
       console.log(response);
       this.setState({
         data: response.data,
@@ -191,6 +192,7 @@ class Map extends React.Component {
     map.on("moveend", () => {
       //console.log(map.getCenter().toString());
       this.setState({ currentPos: map.getCenter() });
+      console.log(map.getCenter());
     });
   }
 
@@ -252,6 +254,81 @@ class Map extends React.Component {
     );
     return `(${truelat} ,${Math.trunc(truelng)})`;
   }
+  CreateRegionPopup = () => {
+    return (
+      <Dialog
+        open={this.state.createOpen}
+        onClose={() => this.setState({ createOpen: !this.state.createOpen })}
+        fullWidth={false}
+        maxWidth="xs"
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            const name = event.target[0].value;
+            const port = event.target[1].value;
+            const vport = event.target[2].value;
+            axios.post("/api/wifi/region/create", { name, port, vport });
+            this.setState({ createOpen: false });
+          }}
+        >
+          <DialogTitle id="alert-dialog-title">Create New Region</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Enter the Region Name</DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Region Name"
+              fullWidth
+              required
+            />
+          </DialogContent>
+          <DialogContent>
+            <DialogContentText>
+              Enter the port the region will be on
+            </DialogContentText>
+            <TextField
+              margin="dense"
+              id="name"
+              label="Port"
+              type="number"
+              fullWidth
+              required
+            />
+          </DialogContent>
+          <DialogContent>
+            <DialogContentText>
+              Enter the Virtual port the region will be on
+            </DialogContentText>
+            <TextField
+              margin="dense"
+              id="name"
+              label="VPort"
+              type="number"
+              fullWidth
+              required
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                this.setState({ createOpen: false });
+              }}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button onClick={() => {}} color="primary" type="submit">
+              Confirm
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    );
+  };
 
   render() {
     const { classes } = this.props;
@@ -423,6 +500,7 @@ class Map extends React.Component {
                     </form>
                   </Dialog>
                 </div>
+                {this.CreateRegionPopup()}
               </div>
               <div>
                 <Button onClick={this.handleCancel}>Cancel Shutdown</Button>
@@ -451,6 +529,16 @@ class Map extends React.Component {
                 </Dialog>
               </div>
             </List>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ float: "right", margin: 5 }}
+              onClick={() => {
+                this.setState({ createOpen: true });
+              }}
+            >
+              Create new Region
+            </Button>
           </Drawer>
         </div>
       </div>
