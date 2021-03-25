@@ -38,5 +38,5 @@ server.listen(port || 5000, () => {
 });
 
 serverSecure.listen(443, () => {
-  console.log(`Backend listening at port ${port}`);
+  console.log(`Backend listening at port 443`);
 });

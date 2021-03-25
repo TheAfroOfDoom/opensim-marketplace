@@ -269,8 +269,18 @@ class Map extends React.Component {
             event.preventDefault();
             const name = event.target[0].value;
             const port = event.target[1].value;
-            const vport = event.target[2].value;
-            axios.post("/api/wifi/region/create", { name, port, vport });
+            const vport = event.target[3].value;
+            const folderName = event.target[2].value;
+            const gridIP = event.target[4].value;
+            const delay = event.target[5].value;
+            axios.post("/api/wifi/region/create", {
+              name,
+              port,
+              vport,
+              folderName,
+              gridIP,
+              delay,
+            });
             this.setState({ createOpen: false });
           }}
         >
@@ -292,7 +302,7 @@ class Map extends React.Component {
             </DialogContentText>
             <TextField
               margin="dense"
-              id="name"
+              id="port"
               label="Port"
               type="number"
               fullWidth
@@ -301,12 +311,47 @@ class Map extends React.Component {
           </DialogContent>
           <DialogContent>
             <DialogContentText>
-              Enter the Virtual port the region will be on
+              Enter the Region Folder the region will be on
+            </DialogContentText>
+            <TextField
+              margin="dense"
+              id="regionFolder"
+              label="Region Folder"
+              fullWidth
+              required
+            />
+          </DialogContent>
+          <DialogContent>
+            <DialogContentText>
+              Enter the Voice port the region will be on
             </DialogContentText>
             <TextField
               margin="dense"
               id="name"
               label="VPort"
+              type="number"
+              fullWidth
+              required
+            />
+          </DialogContent>
+          <DialogContent>
+            <DialogContentText>
+              Enter the IP Address the region will be on
+            </DialogContentText>
+            <TextField
+              margin="dense"
+              id="ip"
+              label="IP Address"
+              fullWidth
+              required
+            />
+          </DialogContent>
+          <DialogContent>
+            <DialogContentText>Enter the Delay</DialogContentText>
+            <TextField
+              margin="dense"
+              id="delay"
+              label="Delay"
               type="number"
               fullWidth
               required
@@ -528,17 +573,17 @@ class Map extends React.Component {
                   </DialogActions>
                 </Dialog>
               </div>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ float: "right", margin: 5 }}
+                onClick={() => {
+                  this.setState({ createOpen: true });
+                }}
+              >
+                Create new Region
+              </Button>
             </List>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ float: "right", margin: 5 }}
-              onClick={() => {
-                this.setState({ createOpen: true });
-              }}
-            >
-              Create new Region
-            </Button>
           </Drawer>
         </div>
       </div>
