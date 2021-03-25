@@ -14,6 +14,7 @@ const {
   isUserLoggedIn,
   isAssetInDatabase,
   regionConsoles,
+  returnError,
 } = require("../util.js");
 fs = require("fs");
 const { marketplace_add_location } = require("../../config");
@@ -78,14 +79,7 @@ router.get("/", async (req, res) => {
     }
     return res.send(inventoryInfo);
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.send(401);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -194,14 +188,7 @@ router.post("/add", async (req, res) => {
 
     return res.status(200).send({ error: sel.error });
   } catch (e) {
-    console.error(e);
-    if (e.message === "Unauthorized") {
-      return res.send(401);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -272,14 +259,7 @@ router.post("/remove", async (req, res) => {
     });
     return res.sendStatus(204);
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -313,10 +293,7 @@ router.post("/upload", async (req, res) => {
     }
 
     // Get assetID param
-    console.log(req.body);
     const { assetID } = req.body;
-
-    console.log("AssetID: " + assetID);
 
     if (!(await isAssetInDatabase(assetID))) {
       throw new Error("Invalid ID");
@@ -343,16 +320,7 @@ router.post("/upload", async (req, res) => {
     //Returns rows updated
     return res.status(200).send(info);
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    } else if (e.message === "Forbidden") {
-      return res.sendStatus(403);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -403,7 +371,6 @@ router.post("/private", async (req, res) => {
 
     let uuid = uuidFromToken.dataValues.uuid;
 
-    console.log(creatorID.CreatorID + "-----------" + uuid);
     if (creatorID.CreatorID !== uuid) throw new Error("Forbidden");
 
     //Update database
@@ -412,16 +379,7 @@ router.post("/private", async (req, res) => {
     //Returns rows updated
     return res.status(200).send(info);
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    } else if (e.message === "Forbidden") {
-      return res.sendStatus(403);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -511,16 +469,7 @@ router.get("/test", async (req, res) => {
     */
     res.send(root);
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    } else if (e.message === "Forbidden") {
-      return res.sendStatus(403);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -538,7 +487,6 @@ router.get("/download", async (req, res) => {
     const consoleSession = regionConsoles[port || 9000];
     let command;
     if (isFile === "true") {
-      console.log(req.query);
       if (!(await isAssetInDatabase(assetID))) {
         throw new Error("Invalid ID");
       }
@@ -546,7 +494,6 @@ router.get("/download", async (req, res) => {
     } else {
       command = `save iar Wifi Admin "${inventorypath}" kenny123 "${marketplace_add_location}/${sid}_dl.iar"`;
     }
-    console.log(command);
     // Save IAR
     await axios({
       method: "post",
@@ -570,16 +517,7 @@ router.get("/download", async (req, res) => {
     else console.log("Error accessing saved IAR file from /bin");
     await deleteTemporaryFolder(`${inventorypath}${inventoryName}`);
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    } else if (e.message === "Forbidden") {
-      return res.sendStatus(403);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -643,7 +581,6 @@ router.get("/downloadMulti", async (req, res) => {
     let error = sel["error"];
     let temporaryFolderID = sel["temporaryFolderID"];
     let temporaryFolderName = sel["temporaryFolderName"];
-    console.log(sel);
     if (error) console.log("Export error: " + JSON.stringify(sel[0]));
     console.log(temporaryFolderID, temporaryFolderName);
 
@@ -674,16 +611,8 @@ router.get("/downloadMulti", async (req, res) => {
     else console.log("Error accessing saved IAR file from /bin");
     await deleteTemporaryFolder(temporaryFolderID);
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    } else if (e.message === "Forbidden") {
-      return res.sendStatus(403);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    const { status, error } = returnError(e, res);
+    return res.status(status).send(error);
   }
 });
 

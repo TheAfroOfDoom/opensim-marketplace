@@ -64,14 +64,7 @@ router.get("/get", async (req, res) => {
       });
     }
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).json({ statusCode: 400, message: "Invalid ID" });
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -102,8 +95,7 @@ router.post("/set", async (req, res) => {
     );
     res.sendStatus(204);
   } catch (e) {
-    console.log(e);
-    res.status(400).json(e);
+    return returnError(e, res);
   }
 });
 

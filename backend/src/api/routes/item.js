@@ -121,14 +121,7 @@ router.get("/", async (req, res) => {
       });
     }
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.send(401);
-    } else if (e.message === "Invalid ID") {
-      return res.status(400).send("Invalid ID");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 

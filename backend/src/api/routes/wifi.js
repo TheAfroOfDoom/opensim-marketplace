@@ -58,12 +58,7 @@ router.post("/login", async (req, res) => {
     console.log("Date: " + validityDate.toUTCString());
     res.cookie("sid", value, { maxAge: 30 * 60 * 1000 }).sendStatus(201);
   } catch (e) {
-    console.log(e);
-    if (e.message == "Incorrect params") {
-      return res.status(400).send("Incorrect params");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -106,14 +101,7 @@ router.get("/map", async (req, res) => {
       });
     return res.end("data:image/jpeg;base64," + response);
   } catch (e) {
-    console.log(e);
-    if (e.message == "Unauthorized") {
-      return res.status(401).send("Unauthorized");
-    } else if (e.message == "Incorrect params") {
-      return res.status(400).send("Incorrect params");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -219,8 +207,7 @@ router.get("/region/get", async (req, res) => {
 
     res.json(response);
   } catch (e) {
-    console.log(e);
-    res.status(400).json(e);
+    return returnError(e, res);
   }
 });
 
@@ -259,19 +246,22 @@ router.post("/region/create", async (req, res) => {
 
     res.sendStatus(201);
   } catch (e) {
-    console.log(e);
-    res.sendStatus(400);
+    return returnError(e, res);
   }
 });
 
 router.post("/region/cancel", async (req, res) => {
-  //Check if user is authenticated
-  const { sid } = req.cookies;
+  try {
+    //Check if user is authenticated
+    const { sid } = req.cookies;
 
-  if (!(await isUserLoggedIn(sid))) {
-    throw new Error("Unauthorized");
+    if (!(await isUserLoggedIn(sid))) {
+      throw new Error("Unauthorized");
+    }
+
+    res.send("Test");
+  } catch (e) {
+    return returnError(e, res);
   }
-
-  res.send("Test");
 });
 module.exports = router;

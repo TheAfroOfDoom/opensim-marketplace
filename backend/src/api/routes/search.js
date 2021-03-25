@@ -124,15 +124,7 @@ router.get("/", async (req, res) => {
 
     return res.send(await getAssets(params));
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    }
-    if (e.message === "Search String must be string") {
-      return res.status(400).send("Search String must be string");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 
@@ -268,15 +260,7 @@ router.get("/public", async (req, res) => {
 
     return res.send({ data: assets, stats, count });
   } catch (e) {
-    console.log(e);
-    if (e.message === "Unauthorized") {
-      return res.sendStatus(401);
-    }
-    if (e.message === "Search String must be string") {
-      return res.status(400).send("Search String must be string");
-    } else {
-      return res.sendStatus(400);
-    }
+    return returnError(e, res);
   }
 });
 

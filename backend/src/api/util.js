@@ -174,6 +174,20 @@ initializeConsoles = async () => {
 uuidRegex =
   "[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}";
 
+function returnError(e, res) {
+  //console.log(e);
+  let status = 400;
+  if (e.message === "Unauthorized") {
+    status = 401;
+  } else if (e.message === "Forbidden") {
+    status = 403;
+  } else if (e.message === "Invalid ID") {
+    status = 400;
+  }
+  return res.status(status).send(e.message);
+  //return { status, error: e.message };
+}
+
 module.exports = {
   isUserLoggedIn,
   isAssetInDatabase,
@@ -187,4 +201,5 @@ module.exports = {
   closeConsole,
   uuidRegex,
   initializeConsoles,
+  returnError,
 };
