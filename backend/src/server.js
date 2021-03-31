@@ -43,10 +43,11 @@ server.listen(port || 5000, () => {
   console.log(`Backend listening at port ${port}`);
   //setConsole(8002);
   //setConsole(9000);
-  initializeConsoles();
+
 });
 */
 
 serverSecure.listen(securePort, () => {
   console.log(`Backend listening at port ${securePort}`);
+  initializeConsoles();
 });

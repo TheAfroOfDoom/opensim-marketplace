@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
     console.log(req.body);
     console.log(firstname, lastname, password);
 
-    const consoleSession = regionConsoles[port || 8002];
+    const consoleSession = regionConsoles[8002];
 
     const response = await axios({
       method: "post",
