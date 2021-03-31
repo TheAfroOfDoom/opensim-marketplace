@@ -34,6 +34,7 @@
     "http": "^0.0.1-security",
     "ini": "^2.0.0",
     "jsdom": "^16.4.0",
+    "line-reader": "^0.4.0",
     "lodash": "^4.17.20",
     "lru-cache": "^6.0.0",
     "md5": "^2.3.0",

@@ -2,15 +2,23 @@ const app = require("./app");
 const http = require("http");
 const https = require("https");
 const { port } = require("./config");
+const securePort = 443;
 const {
   setConsole,
   closeConsole,
   regionConsoles,
   initializeConsoles,
 } = require("./api/util");
+const path = require("path");
 
-const server = http.createServer(app);
-const serverSecure = https.createServer(app);
+// Certificate
+const options = {
+  key: fs.readFileSync(path.resolve(__dirname, "./certs/key.pem")),
+  cert: fs.readFileSync(path.resolve(__dirname, "./certs/cert.pem")),
+};
+const serverSecure = https.createServer(options, app);
+
+//const server = http.createServer(app);
 
 // Code to run when server is shutdown
 process.on("exit", () => {
@@ -30,13 +38,15 @@ process.on("SIGTERM", () => {
   });
 });
 
+/*
 server.listen(port || 5000, () => {
   console.log(`Backend listening at port ${port}`);
   //setConsole(8002);
   //setConsole(9000);
   initializeConsoles();
 });
+*/
 
-serverSecure.listen(443, () => {
-  console.log(`Backend listening at port 443`);
+serverSecure.listen(securePort, () => {
+  console.log(`Backend listening at port ${securePort}`);
 });

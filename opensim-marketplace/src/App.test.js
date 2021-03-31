@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Route, Redirect, Link} from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Link } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import mockedAxios from "axios";
 import Cookies from "js-cookie";
@@ -18,7 +18,7 @@ import SearchScreen from "./components/Search/SearchScreen";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
 import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
-import MapScreen from "./components/Map/MapScreen"
+import MapScreen from "./components/Map/MapScreen";
 import userEvent from "@testing-library/user-event";
 
 import {
@@ -35,7 +35,9 @@ jest.mock("axios");
 
 describe("App", () => {
   test("Render App (Redirect Sign In Path)", () => {
-    const { getByText, getByDisplayValue, getByPlaceholderText } = render(<App />);
+    const { getByText, getByDisplayValue, getByPlaceholderText } = render(
+      <App />
+    );
     expect(getByText(/Sign In/i)).toBeInTheDocument();
     fireEvent.change(screen.getByPlaceholderText("First Name"), {
       target: { value: "wifi" },
@@ -50,7 +52,6 @@ describe("App", () => {
     });
     expect(screen.getByDisplayValue(/kenny123/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button"));
-
   });
 
   test("Failure Render App (Not Logged in)", () => {
@@ -93,11 +94,9 @@ describe("App", () => {
     });
     const { getByText, findByTestId, getByTestId } = render(<ItemScreen />);
     wait(() => {
-
       expect(getByText(/Creator Information/i)).toBeInTheDocument();
       expect(getByText(/Sound/i)).toBeInTheDocument();
     });
-
   });
 
   test("Render SearchScreen Asset Info", async () => {
@@ -147,41 +146,43 @@ describe("App", () => {
     Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
-      mockedAxios.get.mockResolvedValueOnce({invInfo: { inInventory: false },});
+    mockedAxios.get.mockResolvedValueOnce({ invInfo: { inInventory: false } });
     const handleAdd = jest.fn();
-    const {getByText} = render(<ItemScreen>
-      <Button onClick={handleAdd}>Add To Inventory</Button>
-    </ItemScreen>);
-      wait(() => {
-        fireEvent.click(screen.getByText(/Add To Inventory/i));
-        expect(handleAdd).toHaveBeenCalledTimes(1);
-      });
+    const { getByText } = render(
+      <ItemScreen>
+        <Button onClick={handleAdd}>Add To Inventory</Button>
+      </ItemScreen>
+    );
+    wait(() => {
+      fireEvent.click(screen.getByText(/Add To Inventory/i));
+      expect(handleAdd).toHaveBeenCalledTimes(1);
+    });
   });
 
   test("Render ItemScreen View In Inventory Button", async () => {
     Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
-      mockedAxios.get.mockResolvedValueOnce({invInfo: { inInventory: true },});
+    mockedAxios.get.mockResolvedValueOnce({ invInfo: { inInventory: true } });
 
-    const {getByText} = render(<ItemScreen>
-      <Button>View In Inventory</Button>
-    </ItemScreen>);
-      wait(() => {
-        fireEvent.click(screen.getByText(/View In Inventory/i));
-      });
+    const { getByText } = render(
+      <ItemScreen>
+        <Button>View In Inventory</Button>
+      </ItemScreen>
+    );
+    wait(() => {
+      fireEvent.click(screen.getByText(/View In Inventory/i));
+    });
   });
 });
 
-
 describe("Home Screen", () => {
-
   test("Render HomeScreen Redirect", async () => {
     Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
     mockedAxios.get.mockResolvedValueOnce({
-        assetType: 1,
+      assetType: 1,
     });
     const { getByText, getByTestId } = render(<HomeScreen />);
     wait(() => {
@@ -221,9 +222,7 @@ describe("Home Screen", () => {
     //expect(getByText(/Welcome/i)).toBeInTheDocument();
     //expect(getByText(/Recently Updated Items/i)).toBeInTheDocument();
   });
-
 });
-
 
 describe("Map Screen", () => {
   test("Map", async () => {
@@ -236,7 +235,6 @@ describe("Map Screen", () => {
     //expect(getByText(/Current Location/i)).toBeInTheDocument();
   });
 });
-
 
 describe("Navigation Bar", () => {
   test("Render NavigationBar Advanced Search", () => {
@@ -265,7 +263,7 @@ describe("Navigation Bar", () => {
     fireEvent.click(screen.getByText(/Advanced/i));
     fireEvent.click(screen.getByTestId(/switch2/i));
     fireEvent.change(screen.getByTestId(/select1/i), {
-      target: { value: 6 }
+      target: { value: 6 },
     });
     const linkElement = screen.getByDisplayValue(/Object/i);
     expect(linkElement).toBeInTheDocument();
@@ -283,7 +281,7 @@ describe("Navigation Bar", () => {
     fireEvent.click(screen.getByText(/Advanced/i));
     fireEvent.click(screen.getByTestId(/switch3/i));
     fireEvent.change(screen.getByTestId(/select2/i), {
-      target: { value: "NAME_ASC" }
+      target: { value: "NAME_ASC" },
     });
     const linkElement = screen.getByDisplayValue(/Name Ascending/i);
     expect(linkElement).toBeInTheDocument();
@@ -293,23 +291,23 @@ describe("Navigation Bar", () => {
     Cookies.get = jest
       .fn()
       .mockImplementation(() => "b07098d3-57e6-4e4c-a40f-7fae0eb65e4c");
-      mockedAxios.get.mockResolvedValueOnce({
-        count: 12,
-      });
+    mockedAxios.get.mockResolvedValueOnce({
+      count: 12,
+    });
     const { getByText, getByTestId, getByDisplayValue } = render(
       <Router>
         <NavigationBar />
       </Router>
     );
-      wait(() => {
-        fireEvent.click(screen.getByText(/Advanced/i));
-        fireEvent.click(screen.getByTestId(/switch1/i));
-        fireEvent.change(screen.getByDisplayValue(/0/i), {
-          target: { value: 2 }
-        });
-        const linkElement = getByDisplayValue(/2/i);
-        expect(linkElement).toBeInTheDocument();
+    wait(() => {
+      fireEvent.click(screen.getByText(/Advanced/i));
+      fireEvent.click(screen.getByTestId(/switch1/i));
+      fireEvent.change(screen.getByDisplayValue(/0/i), {
+        target: { value: 2 },
       });
+      const linkElement = getByDisplayValue(/2/i);
+      expect(linkElement).toBeInTheDocument();
+    });
     //fireEvent.click(screen.getByTestId(/date/i));
   });
 

@@ -6,7 +6,12 @@ const Tokens = require("../../models/Tokens");
 const UserAccounts = require("../../models/UserAccounts");
 const InventoryItems = require("../../models/InventoryItems");
 const _ = require("lodash");
-const { isUserLoggedIn, isAssetInDatabase, openjpeg } = require("../util.js");
+const {
+  isUserLoggedIn,
+  isAssetInDatabase,
+  openjpeg,
+  returnError,
+} = require("../util.js");
 
 /**
  * @swagger

@@ -9,9 +9,19 @@ const jsdom = require("jsdom");
 const Regions = require("../../models/Regions");
 const Tokens = require("../../models/Tokens");
 const { JSDOM } = jsdom;
-const { regionConsoles, setConsole, uuidRegex } = require("../util");
+const {
+  regionConsoles,
+  setConsole,
+  uuidRegex,
+  returnError,
+} = require("../util");
+
+fs = require("fs");
+const lineReader = require("line-reader");
 
 const { isUserLoggedIn } = require("../util.js");
+
+const { bin_location } = require("../../config");
 
 router.post("/login", async (req, res) => {
   try {
@@ -28,9 +38,11 @@ router.post("/login", async (req, res) => {
     console.log(req.body);
     console.log(firstname, lastname, password);
 
+    const consoleSession = regionConsoles[port || 8002];
+
     const response = await axios({
       method: "post",
-      url: "http://25.5.144.194:8002/wifi/login",
+      url: `${consoleSession.getFullAddress()}/wifi/login`,
       data: qs.stringify({
         firstname,
         lastname,
@@ -111,18 +123,32 @@ router.get("/region/get", async (req, res) => {
     const { sid } = req.cookies;
 
     if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
+      //throw new Error("Unauthorized");
     }
 
-    let { wifi } = req.query;
+    let { method } = req.query;
 
-    if (wifi === undefined) {
-      wifi = false;
+    if (method === undefined) {
+      wifi = "files";
     }
 
-    let response;
+    let response = ["0"];
 
-    if (wifi) {
+    if (wifi === "files") {
+      fs.readdirSync(`${bin_location}/opensim`).forEach((file) => {
+        console.log(file);
+        if (file === "region_1") {
+          lineReader.eachLine(
+            `${bin_location}/opensim/${file}/regions/regions.ini`,
+            (line) => {
+              // If line is not a comment
+              if (line.replace(" ", "")[0] === ";") {
+              }
+              console.log(line);
+            }
+          );
+        }
+      });
       /*
       const consoleSession = regionConsoles[8002];
 
@@ -149,7 +175,7 @@ router.get("/region/get", async (req, res) => {
       });
 
       res.send(await response.data);
-      */
+
 
       let test_string =
         "1363:normal:Name ID Position Owner ID Flags cis499server c78c5e0c-fc23-4501-8235-f28192bccad3 1000,1000 f577aa90-7db9-4a77-afc2-6daee8916c3e RegionOnline cis499server1 c78c5e0c-fc23-4501-8235-f28192bccad4 1001,1000 f577aa90-7db9-4a77-afc2-6daee8916c3e RegionOnline cis499server2 c78c5e0c-fc23-4501-8235-f28192bccad5 1000,1001 f577aa90-7db9-4a77-afc2-6daee8916c3e RegionOnline cis499server3 c78c5e0c-fc23-4501-8235-f28192bccad6 1001,1001 f577aa90-7db9-4a77-afc2-6daee8916c3e RegionOnline ";
@@ -189,6 +215,7 @@ router.get("/region/get", async (req, res) => {
         };
         response.push(region);
       }
+      */
     } else {
       response = await Regions.findAll({
         attributes: [

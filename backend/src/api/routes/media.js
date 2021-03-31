@@ -9,6 +9,7 @@ const {
   isUserLoggedIn,
   isAssetInDatabase,
   convertImage,
+  returnError,
 } = require("../util.js");
 const { assetTypes } = require("../types.js");
 
