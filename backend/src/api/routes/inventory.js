@@ -5,6 +5,7 @@ const InventoryItems = require("../../models/InventoryItems");
 const InventoryFolders = require("../../models/InventoryFolders");
 const Assets = require("../../models/Assets");
 const UserAccounts = require("../../models/UserAccounts");
+const MarketplaceTags = require("../../models/MarketplaceTags");
 const Tokens = require("../../models/Tokens");
 const _ = require("lodash");
 const axios = require("axios");
@@ -613,6 +614,35 @@ router.get("/downloadMulti", async (req, res) => {
   } catch (e) {
     const { status, error } = returnError(e, res);
     return res.status(status).send(error);
+  }
+});
+
+router.get("/tags/get", async (req, res) => {
+  try {
+    const { assetID } = req.query;
+    let response = await MarketplaceTags.findAll({
+      where: { id: assetID },
+      attributes: ["tag"],
+      order: [["tag", "ASC"]],
+    });
+    const arr = response.map((item) => {
+      return item.dataValues.tag;
+    });
+    console.log(arr);
+    return res.send(arr);
+  } catch (e) {
+    return returnError(e, res);
+  }
+});
+
+router.post("/tags/set", async (req, res) => {
+  try {
+    const { assetID, newTag } = req.body;
+    let response = await MarketplaceTags.create({ id: assetID, tag: newTag });
+
+    return res.sendStatus(201);
+  } catch (e) {
+    return returnError(e, res);
   }
 });
 

@@ -21,18 +21,21 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  IconButton,
   Menu,
   MenuItem,
+  Tabs,
+  Tab,
 } from "@material-ui/core";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 //Icons
+import IconButton from "@material-ui/core/IconButton";
 import LockIcon from "@material-ui/icons/Lock";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import CloseIcon from "@material-ui/icons/Close";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 export default function InventoryCard(props) {
   const [imgData, setImgData] = useState(null);
@@ -244,6 +247,8 @@ function EditAsset(props, edit, setEdit) {
   const [image, setImage] = useState(null);
   const [imgObj, setImageObj] = useState(null);
   const [name, setName] = useState(props.data.InventoryName);
+  const [value, setValue] = React.useState(0);
+  const [tags, setTags] = useState(null);
 
   const handleimagefile = (event) => {
     setImage(URL.createObjectURL(event.target.files[0]));
@@ -262,54 +267,161 @@ function EditAsset(props, edit, setEdit) {
     console.log(canvas.toDataURL("image/jpeg").toString());
   };
 
+  const fetchData = async (id) => {
+    try {
+      //console.log(id);
+      let response = await axios.get("/api/inventory/tags/get", {
+        params: { assetID: id },
+      });
+      console.log(response.data);
+      setTags(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (edit && value === 1) fetchData(props.data.assetID);
+  }, [edit, value]);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   return (
     <Dialog
       open={edit}
       onClose={() => setEdit(!edit)}
       fullWidth={true}
-      maxWidth="sm"
+      maxWidth="md"
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      style={{ minHeight: "300px" }}
     >
-      <DialogTitle id="alert-dialog-title">{"Edit Asset"}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>Change Name</DialogContentText>
-        <TextField
-          label=""
-          type="text"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-        <DialogContentText style={{ marginTop: "10px" }}>
-          Change Image
-        </DialogContentText>
-        <input
-          accept="image/*"
-          id="contained-button-file"
-          multiple
-          type="file"
-          onChange={handleimagefile}
-        />
-        <img onLoad={onImageLoad} src={image} />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={() => setEdit(!edit)}
-          variant="contained"
-          color="secondary"
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={() => {
-            props.image(props.data.assetID, imgObj, name);
-            setEdit(!edit);
-          }}
-        >
-          Save Changes
-        </Button>
-      </DialogActions>
+      <Tabs
+        value={value}
+        indicatorColor="primary"
+        textColor="primary"
+        onChange={handleChange}
+        aria-label="disabled tabs example"
+      >
+        <Tab label="General" />
+        <Tab label="Tags" />
+      </Tabs>
+      <div hidden={value !== 0}>
+        <DialogTitle id="alert-dialog-title">{"Edit Asset"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Change Name</DialogContentText>
+          <TextField
+            label=""
+            type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+          <DialogContentText style={{ marginTop: "10px" }}>
+            Change Image
+          </DialogContentText>
+          <input
+            accept="image/*"
+            id="contained-button-file"
+            multiple
+            type="file"
+            onChange={handleimagefile}
+          />
+          <img onLoad={onImageLoad} src={image} />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setEdit(!edit)}
+            variant="contained"
+            color="secondary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              props.image(props.data.assetID, imgObj, name);
+              setEdit(!edit);
+            }}
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </div>
+      <div
+        hidden={value !== 1}
+        style={{
+          minHeight: 200,
+        }}
+      >
+        <DialogTitle id="alert-dialog-title">Edit Tags</DialogTitle>
+        <DialogContent>
+          <DialogContentText style={{ marginTop: "10px" }}>
+            Enter the name of the tag and press submit
+          </DialogContentText>
+          <form
+            onSubmit={async (event) => {
+              event.preventDefault();
+              const newTag = event.target[0].value;
+              event.target[0].value = "";
+              console.log(newTag);
+              try {
+                let response = await axios.post("/api/inventory/tags/set", {
+                  assetID: props.data.assetID,
+                  newTag,
+                });
+                fetchData(props.data.assetID);
+              } catch (e) {
+                console.log("Error: " + e.message);
+              }
+            }}
+          >
+            <div>
+              <TextField autoFocus margin="dense" id="tag" label="New Tag" />
+              <Button type="submit" style={{ marginTop: 16 }}>
+                Submit
+              </Button>
+            </div>
+          </form>
+          <Divider style={{ marginTop: 15 }} />
+          <DialogContentText style={{ marginTop: "10px" }}>
+            Tags
+          </DialogContentText>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              marginBottom: 30,
+            }}
+          >
+            {tags &&
+              tags.map((tag) => {
+                return <TagBlock name={tag} />;
+              })}
+          </div>
+        </DialogContent>
+      </div>
     </Dialog>
+  );
+}
+
+function TagBlock(props) {
+  return (
+    <div
+      style={{
+        backgroundColor: "#DCDCDC",
+        height: "100%",
+        margin: "5px 10px 5px 10px",
+        padding: "5px 0px 5px 10px",
+        borderRadius: 10,
+      }}
+    >
+      {props.name}
+      <IconButton style={{ marginLeft: 5 }}>
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </div>
   );
 }
 
