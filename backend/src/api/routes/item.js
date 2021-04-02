@@ -11,6 +11,7 @@ const {
   isAssetInDatabase,
   openjpeg,
   returnError,
+  checkAuth,
 } = require("../util.js");
 
 /**
@@ -33,14 +34,10 @@ const {
  *       200:
  *         description: Successfully retrieved item information
  */
-router.get("/", async (req, res) => {
+router.get("/", checkAuth, async (req, res) => {
   try {
     //Check if user is authenticated
     const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     // Get assetID param
     const { id } = req.query;

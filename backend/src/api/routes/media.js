@@ -10,18 +10,12 @@ const {
   isAssetInDatabase,
   convertImage,
   returnError,
+  checkAuth,
 } = require("../util.js");
 const { assetTypes } = require("../types.js");
 
-router.get("/get", async (req, res) => {
+router.get("/get", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
-
     // Get assetID param
     const { assetID } = req.query;
     //console.log(req.query);
@@ -69,14 +63,10 @@ router.get("/get", async (req, res) => {
   }
 });
 
-router.post("/set", async (req, res) => {
+router.post("/set", checkAuth, async (req, res) => {
   try {
     //Check if user is logged in
     const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      //throw new Error("Unauthorized");
-    }
 
     let { assetID, imgData } = req.body;
 

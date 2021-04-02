@@ -25,6 +25,22 @@ async function isUserLoggedIn(sid) {
   return true;
 }
 
+async function checkAuth(req, res, next) {
+  const { sid } = req.cookies;
+
+  if (sid === undefined || sid === null) {
+    return res.sendStatus(401);
+  }
+
+  let sidInDatabase = await Tokens.findOne({
+    attributes: ["token"],
+    where: { token: sid },
+  });
+
+  if (_.isEmpty(sidInDatabase)) return res.sendStatus(401);
+  else return next();
+}
+
 async function isAssetInDatabase(assetID) {
   if (assetID === undefined || assetID === null) return false;
 
@@ -202,4 +218,5 @@ module.exports = {
   uuidRegex,
   initializeConsoles,
   returnError,
+  checkAuth,
 };

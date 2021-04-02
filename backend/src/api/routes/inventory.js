@@ -16,6 +16,7 @@ const {
   isAssetInDatabase,
   regionConsoles,
   returnError,
+  checkAuth,
 } = require("../util.js");
 fs = require("fs");
 const { marketplace_add_location } = require("../../config");
@@ -33,15 +34,8 @@ const { marketplace_add_location } = require("../../config");
  *       200:
  *         description: Return user inventory
  */
-router.get("/", async (req, res) => {
+router.get("/", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
-
     // Give relations
     InventoryItems.hasMany(Assets);
     Assets.belongsTo(InventoryItems);
@@ -104,14 +98,10 @@ router.get("/", async (req, res) => {
  *       200:
  *         description: Add item to user inventory
  */
-router.post("/add", async (req, res) => {
+router.post("/add", checkAuth, async (req, res) => {
   try {
     //Check if user is authenticated
     const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     // Get assetID param
     const { assetID, port } = req.body;
@@ -213,14 +203,10 @@ router.post("/add", async (req, res) => {
  *       200:
  *         description: Item successfully removed from user inventory
  */
-router.post("/remove", async (req, res) => {
+router.post("/remove", checkAuth, async (req, res) => {
   try {
     //Check if user is authenticated
     const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     // Get assetID param
     const { assetID } = req.body;
@@ -284,14 +270,10 @@ router.post("/remove", async (req, res) => {
  *       200:
  *         description: Item successfully made public
  */
-router.post("/upload", async (req, res) => {
+router.post("/upload", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
+    // Get user sessionID
     const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     // Get assetID param
     const { assetID } = req.body;
@@ -345,13 +327,10 @@ router.post("/upload", async (req, res) => {
  *       200:
  *         description: Item successfully made private
  */
-router.post("/private", async (req, res) => {
+router.post("/private", checkAuth, async (req, res) => {
   try {
     //Check if user is authenticated
     const { sid } = req.cookies;
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     // Get assetID param
     const { assetID } = req.body;
@@ -384,12 +363,9 @@ router.post("/private", async (req, res) => {
   }
 });
 
-router.get("/test", async (req, res) => {
+router.get("/test", checkAuth, async (req, res) => {
   try {
     const { sid } = req.cookies;
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     let uuidFromToken = await Tokens.findOne({
       attributes: ["uuid"],
@@ -474,14 +450,10 @@ router.get("/test", async (req, res) => {
   }
 });
 
-router.get("/download", async (req, res) => {
+router.get("/download", checkAuth, async (req, res) => {
   try {
     //Check if user is authenticated
     const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     const { inventorypath, assetID, inventoryName, isFile, port } = req.query;
 
@@ -522,14 +494,10 @@ router.get("/download", async (req, res) => {
   }
 });
 
-router.get("/downloadMulti", async (req, res) => {
+router.get("/downloadMulti", checkAuth, async (req, res) => {
   try {
     //Check if user is authenticated
     const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
 
     let uuidFromToken = await Tokens.findOne({
       attributes: ["uuid"],
@@ -617,7 +585,7 @@ router.get("/downloadMulti", async (req, res) => {
   }
 });
 
-router.get("/tags/get", async (req, res) => {
+router.get("/tags/get", checkAuth, async (req, res) => {
   try {
     const { assetID } = req.query;
     let response = await MarketplaceTags.findAll({
@@ -635,10 +603,24 @@ router.get("/tags/get", async (req, res) => {
   }
 });
 
-router.post("/tags/set", async (req, res) => {
+router.post("/tags/set", checkAuth, async (req, res) => {
   try {
     const { assetID, newTag } = req.body;
     let response = await MarketplaceTags.create({ id: assetID, tag: newTag });
+
+    return res.sendStatus(201);
+  } catch (e) {
+    return returnError(e, res);
+  }
+});
+
+router.post("/tags/remove", checkAuth, async (req, res) => {
+  try {
+    const { assetID, oldTag } = req.body;
+    console.log(assetID, oldTag);
+    let response = await MarketplaceTags.destroy({
+      where: { id: assetID, tag: oldTag },
+    });
 
     return res.sendStatus(201);
   } catch (e) {

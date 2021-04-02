@@ -14,6 +14,7 @@ const {
   setConsole,
   uuidRegex,
   returnError,
+  checkAuth,
 } = require("../util");
 
 fs = require("fs");
@@ -74,15 +75,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/map", async (req, res) => {
+router.get("/map", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
-
     const { x, y, zoom } = req.query;
     console.log(x, y, zoom);
     if (x === undefined) {
@@ -95,13 +89,7 @@ router.get("/map", async (req, res) => {
       throw new Error("Incorrect params");
     }
     console.log(req.query);
-    /*
-    let response = await axios({
-      method: "get",
-      url: `http://25.5.144.194:8002/map-${zoom}-${x}-${y}-objects.jpg`,
-    });
-    */
-    //console.log(response.data);
+
     res.writeHead(200, { "Content-Type": "image/jpeg" });
 
     let response = await axios
@@ -117,15 +105,8 @@ router.get("/map", async (req, res) => {
   }
 });
 
-router.get("/region/get", async (req, res) => {
+router.get("/region/get", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      //throw new Error("Unauthorized");
-    }
-
     let { method } = req.query;
 
     if (method === undefined) {
@@ -238,15 +219,8 @@ router.get("/region/get", async (req, res) => {
   }
 });
 
-router.post("/region/create", async (req, res) => {
+router.post("/region/create", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
-
     const { name, port, vport, folderName, gridIP, delay } = req.body;
     console.log(req.body);
     // Run: .\addRegion.ps1 –GridIP x.x.x.x –RegionFolder “FolderName” –RegionName “My Region” –Port “9000” –Vport “6599” –Delay “123”
@@ -277,18 +251,12 @@ router.post("/region/create", async (req, res) => {
   }
 });
 
-router.post("/region/cancel", async (req, res) => {
+router.post("/region/cancel", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
-
     res.send("Test");
   } catch (e) {
     return returnError(e, res);
   }
 });
+
 module.exports = router;

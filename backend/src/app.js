@@ -52,11 +52,13 @@ app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+// Check User Authentication
+//const { checkAuth } = require("./api/util.js");
+//app.use(checkAuth);
+
 // Endpoints
 
 app.use("/api/connection", require("./api/routes/connection"));
-
-app.use("/api/login", require("./api/routes/login"));
 
 app.use("/api/item", require("./api/routes/item"));
 

@@ -12,6 +12,7 @@ const {
   getCacheItem,
   objectFilter,
   returnError,
+  checkAuth,
 } = require("../util.js");
 const { assetTypes } = require("../types.js");
 
@@ -67,15 +68,8 @@ const { assetTypes } = require("../types.js");
  *       200:
  *         description: Return array of like objects
  */
-router.get("/", async (req, res) => {
+router.get("/", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
-
     // Give relations
     UserAccounts.hasMany(Assets);
     Assets.belongsTo(UserAccounts);
@@ -181,14 +175,8 @@ router.get("/", async (req, res) => {
  *       200:
  *         description: Return array of like objects
  */
-router.get("/public", async (req, res) => {
+router.get("/public", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
-    const { sid } = req.cookies;
-
-    if (!(await isUserLoggedIn(sid))) {
-      throw new Error("Unauthorized");
-    }
     // Give relations
     UserAccounts.hasMany(Assets);
     Assets.belongsTo(UserAccounts);
