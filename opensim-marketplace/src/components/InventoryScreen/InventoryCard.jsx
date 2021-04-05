@@ -244,16 +244,36 @@ export default function InventoryCard(props) {
 }
 
 function EditAsset(props, edit, setEdit) {
+  //State
   const [image, setImage] = useState(null);
+  const [confirm, setConfirm] = useState(true);
   const [imgObj, setImageObj] = useState(null);
   const [name, setName] = useState(props.data.InventoryName);
   const [value, setValue] = React.useState(0);
   const [tags, setTags] = useState(null);
 
+  /*--- Handlers ---*/
+
+  //Handle upload of an image
   const handleimagefile = (event) => {
     setImage(URL.createObjectURL(event.target.files[0]));
   };
 
+  //Handle Tag Remove
+  const handleRemove = async () => {
+    try {
+      console.log(props.data.assetID, name);
+      const response = await axios.post("/api/inventory/tags/remove", {
+        assetID: props.data.assetID,
+        oldTag: name,
+      });
+      props.fetchData(props.assetID);
+    } catch (e) {
+      console.log("Error: " + e.message);
+    }
+  };
+
+  //Onload of image, convert and get image data
   const onImageLoad = ({ target: img }) => {
     console.log(img.naturalHeight, img.naturalWidth, img);
     let canvas = document.createElement("canvas");
@@ -267,6 +287,7 @@ function EditAsset(props, edit, setEdit) {
     console.log(canvas.toDataURL("image/jpeg").toString());
   };
 
+  //Fetch Tags
   const fetchData = async (id) => {
     try {
       //console.log(id);
@@ -280,10 +301,12 @@ function EditAsset(props, edit, setEdit) {
     }
   };
 
+  //When edit window AND tags tag is opened
   useEffect(() => {
     if (edit && value === 1) fetchData(props.data.assetID);
   }, [edit, value]);
 
+  //Handle Tab change
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -291,8 +314,8 @@ function EditAsset(props, edit, setEdit) {
   return (
     <Dialog
       open={edit}
-      onClose={() => setEdit(!edit)}
-      fullWidth={true}
+      onClose={() => setEdit(false)}
+      fullWidth
       maxWidth="md"
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -309,7 +332,7 @@ function EditAsset(props, edit, setEdit) {
         <Tab label="Tags" />
       </Tabs>
       <div hidden={value !== 0}>
-        <DialogTitle id="alert-dialog-title">{"Edit Asset"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Edit Asset</DialogTitle>
         <DialogContent>
           <DialogContentText>Change Name</DialogContentText>
           <TextField
@@ -366,7 +389,7 @@ function EditAsset(props, edit, setEdit) {
               event.target[0].value = "";
               console.log(newTag);
               try {
-                let response = await axios.post("/api/inventory/tags/set", {
+                const response = await axios.post("/api/inventory/tags/set", {
                   assetID: props.data.assetID,
                   newTag,
                 });
@@ -397,16 +420,39 @@ function EditAsset(props, edit, setEdit) {
           >
             {tags &&
               tags.map((tag) => {
-                return <TagBlock name={tag} />;
+                return (
+                  <TagBlock
+                    assetID={props.data.assetID}
+                    name={tag}
+                    fetchData={fetchData}
+                  />
+                );
               })}
           </div>
         </DialogContent>
+        <Dialog open={confirm} onClose={() => setConfirm(false)} fullWidth>
+          <DialogTitle id="alert-dialog-title">Confirm</DialogTitle>
+          <DialogContentText style={{ margin: "10px" }}>
+            Are you sure you want to delete this tag?
+          </DialogContentText>
+          <DialogActions>
+            <Button
+              onClick={() => setConfirm(!confirm)}
+              variant="contained"
+              color="secondary"
+            >
+              Cancel
+            </Button>
+            <Button>Confirm</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </Dialog>
   );
 }
 
 function TagBlock(props) {
+  console.log(props);
   return (
     <div
       style={{
@@ -418,7 +464,7 @@ function TagBlock(props) {
       }}
     >
       {props.name}
-      <IconButton style={{ marginLeft: 5 }}>
+      <IconButton style={{ marginLeft: 5 }} onClick={async () => {}}>
         <CloseIcon fontSize="small" />
       </IconButton>
     </div>

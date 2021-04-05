@@ -246,7 +246,6 @@ router.get("/public", checkAuth, async (req, res) => {
     console.log(x);
     return res.send({ data: x, stats });
     */
-
     return res.send({ data: assets, stats, count });
   } catch (e) {
     return returnError(e, res);

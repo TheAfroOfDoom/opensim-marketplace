@@ -40,6 +40,11 @@ app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 app.use(
   express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
 );
+app.use((req, res, next) => {
+  var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+  console.log(fullUrl);
+  next();
+});
 app.use(
   "/marketplace",
   express.static(path.resolve(__dirname, "../../opensim-marketplace/build"))
