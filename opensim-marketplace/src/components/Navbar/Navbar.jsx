@@ -88,23 +88,6 @@ class NavigationBar extends React.Component {
     };
   }
 
-  //handles search button click functionality
-  onClick = () => {
-    //callback function, sends the user search string as well as the various advance search options they have selected
-    /*
-    this.props.searchData(
-      this.state.search,
-      this.state.limit,
-      this.state.type,
-      this.state.order,
-      this.state.dateStart,
-      this.state.dateEnd
-    );
-    */
-    //redirects to search page
-    //this.setState({ redirect: true });
-  };
-
   //Query's for the total number of public assets
   getTotal = async () => {
     const response = await axios.get("/api/search/public");

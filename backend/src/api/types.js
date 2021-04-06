@@ -1,4 +1,4 @@
-assetTypes = {
+const assetTypes = {
   MATERIAL: -2,
   TEXTURE: 0,
   SOUND: 1,
@@ -19,7 +19,7 @@ assetTypes = {
   SETTING: 56,
 };
 
-folderTypes = {
+const folderTypes = {
   USER_DEFINED: -1,
   TEXTURES: 0,
   SOUNDS: 1,
@@ -44,7 +44,7 @@ folderTypes = {
   MY_SUITCASE: 100,
 };
 
-regionFlags = {
+const regionFlags = {
   DEFAULT_REGION: 1,
   FALLBACK_REGION: 2,
   REGION_ONLINE: 4,
@@ -58,4 +58,10 @@ regionFlags = {
   DEFAULT_HG_REGION: 1024,
 };
 
-module.exports = { assetTypes, folderTypes, regionFlags };
+// List of OpenSims builtin IDs
+const opensimCreatorIDs = [
+  "11111111-1111-0000-0000-000100bba000",
+  "00000000-0000-0000-0000-000000000000",
+];
+
+module.exports = { assetTypes, folderTypes, regionFlags, opensimCreatorIDs };

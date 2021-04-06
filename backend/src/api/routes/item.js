@@ -14,6 +14,8 @@ const {
   checkAuth,
 } = require("../util.js");
 
+const { opensimCreatorIDs } = require("../types.js");
+
 /**
  * @swagger
  * /item:
@@ -34,9 +36,9 @@ const {
  *       200:
  *         description: Successfully retrieved item information
  */
+
 router.get("/", checkAuth, async (req, res) => {
   try {
-    //Check if user is authenticated
     const { sid } = req.cookies;
 
     // Get assetID param
@@ -46,94 +48,82 @@ router.get("/", checkAuth, async (req, res) => {
       throw new Error("Invalid ID");
     }
 
-    let userInfo,
-      creator = false,
-      invInfo;
+    const template = {
+      itemInfo: {},
+      userInfo: {},
+      creator: false,
+      invInfo: { inInventory: false },
+    };
 
-    // List of OpenSims builtin IDs
-    let opensimCreatorIDs = [
-      "11111111-1111-0000-0000-000100bba000",
-      "00000000-0000-0000-0000-000000000000",
-    ];
-
-    // Get Asset from Assets table
-    const [itemInfo] = await Assets.findAll({
-      attributes: [
-        "name",
-        "description",
-        "assetType",
-        "id",
-        "create_time",
-        "access_time",
-        "public",
-        "CreatorID",
-      ],
-      where: { id: id },
-    });
+    // Get Item Info
+    const itemInfo = await getAssetInfo(id);
+    template.itemInfo = itemInfo;
 
     let uuidFromToken = await Tokens.findOne({
       attributes: ["uuid"],
       where: { token: sid },
     });
 
-    let uuid = uuidFromToken.dataValues.uuid;
+    console.log(uuidFromToken);
 
-    let j2k;
-    //If there is an asset
-    if (!_.isEmpty(itemInfo)) {
-      if (opensimCreatorIDs.includes(itemInfo.CreatorID)) {
-        //Creator is System
-        creator = false;
-      } else {
-        // Get user based on Creator of asset
-        [userInfo] = await UserAccounts.findAll({
-          attributes: ["PrincipalID", "FirstName", "LastName"],
-          where: { PrincipalID: itemInfo.CreatorID },
-        });
-
-        // If User exists and id equals current uuid
-        if (!_.isEmpty(userInfo) && userInfo.PrincipalID === uuid) {
-          creator = true;
-        }
-
-        //Get info on item in inventory
-        [invInfo] = await InventoryItems.findAll({
-          where: { avatarID: uuid, assetID: id },
-        });
-      }
-
-      //Construct response object
-      return res.status(200).send({
-        itemInfo: itemInfo,
-        userInfo: !_.isEmpty(userInfo) ? userInfo : {},
-        creator: creator,
-        invInfo: !_.isEmpty(invInfo)
-          ? { ...invInfo.dataValues, inInventory: true }
-          : { inInventory: false },
-        imageInfo: itemInfo.assetType === 0 ? j2k : {},
-      });
+    // Check if the creator is not the system
+    if (!opensimCreatorIDs.includes(itemInfo.CreatorID)) {
+      const userInfo = await getUserInfo(itemInfo.CreatorID);
+      console.log(userInfo);
+      template.userInfo = userInfo;
     } else {
-      //No asset. Return all empty objects
-      return res.send({
-        itemInfo: {},
-        userInfo: {},
-        creator: false,
-        invInfo: { inInventory: false },
-        imageInfo: {},
-      });
+      template.userInfo = {
+        PrincipalID: itemInfo.CreatorID,
+        FirstName: "Default",
+        LastName: "Asset",
+      };
     }
+
+    //Get info on item in inventory
+    invInfo = await getInventoryInfo(uuidFromToken.dataValues.uuid, id);
+
+    // Set creator field
+    template.creator = uuidFromToken.dataValues.uuid === itemInfo.CreatorID;
+
+    if (invInfo !== null && !_.isEmpty(invInfo)) {
+      template.invInfo = { ...invInfo.dataValues, inInventory: true };
+    } else {
+      template.invInfo = { inInventory: false };
+    }
+
+    return res.json(template);
   } catch (e) {
     return returnError(e, res);
   }
 });
 
+async function getAssetInfo(id) {
+  return Assets.findOne({
+    attributes: [
+      "name",
+      "description",
+      "assetType",
+      "id",
+      "create_time",
+      "access_time",
+      "public",
+      "CreatorID",
+    ],
+    where: { id },
+  });
+}
+
+async function getUserInfo(creatorID) {
+  return UserAccounts.findOne({
+    attributes: ["PrincipalID", "FirstName", "LastName"],
+    where: { PrincipalID: creatorID },
+  });
+}
+
+async function getInventoryInfo(uuid, id) {
+  return InventoryItems.findOne({
+    where: { avatarID: uuid, assetID: id },
+  });
+}
+
 module.exports = router;
-
-/*
-  let arr = [];
-
-  for (let i = 0; i < result[0].data.length; i++) {
-    arr.push(result[0].data[i]);
-  }
-  let j2k = openjpeg(arr, "j2k");
-*/

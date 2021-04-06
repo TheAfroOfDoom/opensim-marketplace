@@ -65,7 +65,11 @@ export default function HomeScreen(props) {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <div className="progress-container">
+        <CircularProgress />
+      </div>
+    );
   } else if (redirect) {
     return <Redirect data-testid="Redirect" to="/search" />;
   } else {

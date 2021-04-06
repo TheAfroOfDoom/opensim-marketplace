@@ -5,24 +5,12 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 
 //Import NPM Packages
-import {
-  BrowserRouter as Router,
-  Route,
-  Redirect,
-  Switch,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Cookies from "js-cookie";
 
 //Import Custom Components
-import NavigationBar from "./components/Navbar/Navbar";
-import ItemScreen from "./components/ItemScreen/ItemScreen";
-import SearchScreen from "./components/Search/SearchScreen";
 import LoginScreen from "./components/LoginScreen/LoginScreen";
-import InventoryScreen from "./components/InventoryScreen/InventoryScreen";
-import HomeScreen from "./components/HomeScreen/HomeScreen";
-import ErrorScreen from "./components/HomeScreen/ErrorScreen";
-import MapScreen from "./components/Map/MapScreen";
+import Routes from "./Routes";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -36,10 +24,6 @@ function App() {
 
   const handleLogin = (newValue) => {
     setLoggedIn(newValue);
-  };
-
-  const handlePageChange = () => {
-    console.log("test");
   };
 
   if (loading) {
@@ -57,28 +41,13 @@ function App() {
             <Redirect to="/login" />
           </div>
         ) : (
-          <Routes hl={handleLogin} loggedIn={loggedIn} />
+          <Routes
+            hl={handleLogin}
+            loggedIn={loggedIn}
+            setLoggedIn={setLoggedIn}
+          />
         )}
       </Router>
-    </div>
-  );
-}
-
-function Routes(props) {
-  return (
-    <div>
-      <NavigationBar data={props.loggedIn} handleLogin={props.hl} />
-      <Switch>
-        <Route exact path="/login">
-          <Redirect to="/" />
-        </Route>
-        <Route exact path="/" component={HomeScreen} />
-        <Route path="/inventory" component={InventoryScreen} />
-        <Route path="/search/" component={SearchScreen} />
-        <Route path="/item/:assetId" component={ItemScreen} />
-        <Route exact path="/map" component={MapScreen} />
-        <Route component={ErrorScreen} />
-      </Switch>
     </div>
   );
 }
