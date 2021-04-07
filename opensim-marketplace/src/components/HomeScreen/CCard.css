@@ -1,0 +1,48 @@
+.ccard-root {
+  background-color: #02394a !important;
+  color: #fff !important;
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.details {
+  display: flex;
+  flex: 3;
+  flex-direction: column;
+}
+.content {
+  width: 100%;
+}
+.cover {
+  margin-left: 5px;
+  min-width: 150px !important;
+  min-height: 150px !important;
+  background-size: contain !important;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  padding-bottom: 5px;
+}
+.item-button {
+  right: 0;
+  color: #fff;
+  background-color: #ff8e32;
+  align-self: flex-end;
+  margin-bottom: auto;
+}
+.actions-container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.progress-container {
+  min-width: 150px !important;
+  min-height: 150px !important;
+  display: grid;
+  place-items: center;
+}
