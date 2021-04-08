@@ -33,34 +33,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import L from "leaflet";
 import RegionInformation from "./RegionInformation";
 
-const styles = {
-  paper: {
-    background: "#343a40",
-    top: 50,
-    width: "350px",
-  },
-  title: {
-    color: "white",
-    textAlign: "center",
-  },
-  coords: {
-    display: "flex",
-  },
-  coordright: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    width: "45%",
-    float: "left",
-    marginLeft: "5%",
-  },
-  coordleft: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    width: "45%",
-    float: "right",
-    marginRight: "5%",
-  },
-};
+const styles = {};
 
 const styles_textfield = (muiTheme) => ({
   label: {
@@ -378,7 +351,7 @@ class Map extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <div className="divcontainer">
         <div className="ccontainer" data-testid="map">
           <MapContainer
             style={{ top: 50 }}
@@ -415,14 +388,9 @@ class Map extends React.Component {
           </MapContainer>
         </div>
         <div>
-          <Drawer
-            variant="persistent"
-            anchor="left"
-            open={true}
-            classes={{ paper: classes.paper }}
-          >
+          <Drawer variant="persistent" anchor="left" open={true}>
             <List>
-              <div className={classes.title}>
+              <div className="title">
                 <Typography variant="h6" gutterBottom>
                   Coordinate Control
                 </Typography>
@@ -432,7 +400,7 @@ class Map extends React.Component {
                     this.tileTolatlong(this.state.currentPos)}
                 </Typography>
                 <form onSubmit={this.handleCoordSubmit}>
-                  <div className={classes.coordright}>
+                  <div className="coordright">
                     <TextField
                       error={{}}
                       label="X Coordinate"
@@ -443,7 +411,7 @@ class Map extends React.Component {
                       }}
                     />
                   </div>
-                  <div className={classes.coordleft}>
+                  <div className="coordleft">
                     <TextField
                       error={{}}
                       label="Y Coordinate"
@@ -509,7 +477,7 @@ class Map extends React.Component {
                     variant="contained"
                     color="secondary"
                     onClick={this.confirmationAll}
-                    style={{ margin: 15 }}
+                    className="button"
                   >
                     Shut Down All Regions
                   </Button>
@@ -547,8 +515,10 @@ class Map extends React.Component {
                 </div>
                 {this.CreateRegionPopup()}
               </div>
-              <div>
-                <Button onClick={this.handleCancel}>Cancel Shutdown</Button>
+              <div className="title">
+                <Button className="button" onClick={this.handleCancel}>
+                  Cancel Shutdown
+                </Button>
                 <Dialog
                   open={this.state.cancelShutdown}
                   onClose={this.state.cancelShutdown}
@@ -573,16 +543,18 @@ class Map extends React.Component {
                   </DialogActions>
                 </Dialog>
               </div>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ float: "right", margin: 5 }}
-                onClick={() => {
-                  this.setState({ createOpen: true });
-                }}
-              >
-                Create new Region
-              </Button>
+              <div className="title">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="button"
+                  onClick={() => {
+                    this.setState({ createOpen: true });
+                  }}
+                >
+                  Create new Region
+                </Button>
+              </div>
             </List>
           </Drawer>
         </div>
@@ -592,17 +564,3 @@ class Map extends React.Component {
 }
 
 export default withStyles(styles)(Map);
-
-/* FOR CENTERING ON MAP
-<div className={classes.title}>
-  <Typography variant="h6" gutterBottom>
-    Center Position: (1000, 1000)
-  </Typography>
-  <Typography variant="h6" gutterBottom>
-    Return to center
-  </Typography>
-  <Button onClick={() => this.centerMap(this.state.map)}>
-    Center
-  </Button>
-</div>
- */

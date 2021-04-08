@@ -1,6 +1,6 @@
 .leaflet-container {
-  width: 100wh;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 .coords-pane {
@@ -11,8 +11,54 @@
 }
 
 .ccontainer {
-  height: calc(100vh - 40px);
+  height: calc(100vh - 53px);
   width: calc(100vw - 350px);
   float: right;
-  overflow: hidden;
+}
+
+.divcontainer {
+  height: 100%;
+  width: 100%;
+}
+
+.MuiDrawer-paperAnchorDockedLeft {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: #343a40 !important;
+  top: 50px !important;
+  width: 350px !important;
+}
+
+.sidebar {
+  background-color: #343a40 !important;
+  top: 50px !important;
+  width: 350px !important;
+}
+
+.title {
+  color: white;
+  text-align: center;
+}
+
+.coords {
+  display: flex;
+}
+.coordright {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 45%;
+  float: left;
+  margin-left: 5%;
+}
+
+.coordleft {
+  padding-left: 10px;
+  padding-right: 10;
+  width: 45%;
+  float: right;
+  margin-right: 5%;
+}
+.button {
+  float: center !important;
+  margin: 5 !important;
+  display: block;
 }
