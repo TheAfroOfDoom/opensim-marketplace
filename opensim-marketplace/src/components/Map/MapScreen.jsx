@@ -378,7 +378,7 @@ class Map extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <div className="divcontainer">
         <div className="ccontainer" data-testid="map">
           <MapContainer
             style={{ top: 50 }}

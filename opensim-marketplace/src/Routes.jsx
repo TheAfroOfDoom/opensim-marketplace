@@ -37,7 +37,7 @@ export default withRouter(function Routes(props) {
   }, [props.location.pathname]);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div>
       <NavigationBar data={props.loggedIn} handleLogin={props.hl} />
       <Switch>
         <Route exact path="/login">

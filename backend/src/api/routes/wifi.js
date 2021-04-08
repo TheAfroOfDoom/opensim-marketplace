@@ -110,7 +110,7 @@ router.get("/region/get", checkAuth, async (req, res) => {
     let { method } = req.query;
 
     if (method === undefined) {
-      wifi = "files";
+      wifi = "SQL";
     }
 
     let response = ["0"];
